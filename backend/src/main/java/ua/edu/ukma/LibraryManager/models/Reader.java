@@ -36,6 +36,9 @@ public class Reader {
     @Column(name = "phone_number")
     private List<String> phoneNumbers;
 
+    @OneToMany(mappedBy = "reader")
+    private List<Checkout> checkouts;
+
     @Column(name = "birth_date")
     private LocalDate birthDate;
 

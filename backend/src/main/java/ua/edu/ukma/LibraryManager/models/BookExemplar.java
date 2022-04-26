@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "book_exemplar")
@@ -21,4 +22,10 @@ public class BookExemplar {
 
     @Column(name = "shelf")
     private String shelf;
+
+    @OneToMany(mappedBy = "exemplar")
+    private List<Checkout> checkouts;
+
+    @ManyToOne
+    private Book parentBook;
 }

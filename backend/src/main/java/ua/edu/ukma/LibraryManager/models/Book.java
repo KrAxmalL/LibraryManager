@@ -29,6 +29,12 @@ public class Book {
     @Column(name = "author_name")
     private List<String> authors;
 
+    @OneToMany(mappedBy = "parentBook")
+    private List<BookExemplar> exemplars;
+
+    @ManyToMany(mappedBy = "books")
+    private List<SubjectArea> areas;
+
     @Column(name = "publishing_city")
     private String publishingCity;
 
