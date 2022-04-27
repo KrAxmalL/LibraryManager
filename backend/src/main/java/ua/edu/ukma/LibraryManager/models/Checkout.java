@@ -1,5 +1,6 @@
 package ua.edu.ukma.LibraryManager.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -34,9 +35,13 @@ public class Checkout {
     @Column(name = "compensation")
     private BigDecimal compensation;
 
+    @JsonIgnore
     @ManyToOne
+    @JoinColumn(name = "exemplar_inventory_number")
     private BookExemplar exemplar;
 
+    @JsonIgnore
     @ManyToOne
+    @JoinColumn(name = "reader_ticket_number")
     private Reader reader;
 }

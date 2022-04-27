@@ -1,5 +1,6 @@
 package ua.edu.ukma.LibraryManager.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,10 +24,11 @@ public class SubjectArea {
     @Column(name = "subject_area_name")
     private String subjectAreaName;
 
+    @JsonIgnore
     @ManyToMany
     @JoinTable(name = "book_subject_area",
-            joinColumns = @JoinColumn(name = "book_isbn"),
-            inverseJoinColumns = @JoinColumn(name = "subject_area_cipher")
+            joinColumns = @JoinColumn(name = "subject_area_cipher"),
+            inverseJoinColumns = @JoinColumn(name = "book_isbn")
     )
     private List<Book> books;
 }
