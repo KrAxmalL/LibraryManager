@@ -18,6 +18,7 @@ public class BookExemplar {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "inventory_number")
     private Integer inventoryNumber;
 
     @Column(name = "shelf")

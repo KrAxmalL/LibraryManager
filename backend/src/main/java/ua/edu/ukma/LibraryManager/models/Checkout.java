@@ -18,16 +18,17 @@ import java.time.LocalDate;
 public class Checkout {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "checkout_number")
     private Integer actNumber;
 
-    @Column(name = "replacement_date")
+    @Column(name = "checkout_start_date")
     private LocalDate startDate;
 
-    @Column(name = "replacement_date")
+    @Column(name = "checkout_expected_finish_date")
     private LocalDate expectedFinishDate;
 
-    @Column(name = "replacement_date")
+    @Column(name = "checkout_real_finish_date")
     private LocalDate realFinishDate;
 
     @Column(name = "compensation")

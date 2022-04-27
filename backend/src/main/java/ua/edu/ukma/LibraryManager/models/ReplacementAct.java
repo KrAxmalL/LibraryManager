@@ -17,7 +17,7 @@ import java.time.LocalDate;
 public class ReplacementAct {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer actNumber;
 
     @Column(name = "replacement_date")
@@ -25,9 +25,9 @@ public class ReplacementAct {
 
     @OneToOne
     @JoinColumn(name = "replaced_exemplar_number", referencedColumnName = "inventory_number")
-    private Book replacedBook;
+    private BookExemplar replacedExemplar;
 
     @OneToOne
     @JoinColumn(name = "new_exemplar_number", referencedColumnName = "inventory_number")
-    private Book newBook;
+    private BookExemplar newExemplar;
 }
