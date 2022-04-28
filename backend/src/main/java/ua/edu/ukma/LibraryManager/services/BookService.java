@@ -1,8 +1,7 @@
 package ua.edu.ukma.LibraryManager.services;
 
-import ua.edu.ukma.LibraryManager.models.Book;
-import ua.edu.ukma.LibraryManager.models.BookExemplar;
-import ua.edu.ukma.LibraryManager.models.SubjectArea;
+import ua.edu.ukma.LibraryManager.models.domain.Book;
+import ua.edu.ukma.LibraryManager.models.domain.BookExemplar;
 
 import java.time.LocalDate;
 import java.util.List;

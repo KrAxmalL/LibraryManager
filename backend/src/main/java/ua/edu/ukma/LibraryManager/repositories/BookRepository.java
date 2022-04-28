@@ -3,8 +3,8 @@ package ua.edu.ukma.LibraryManager.repositories;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import ua.edu.ukma.LibraryManager.models.Book;
-import ua.edu.ukma.LibraryManager.models.BookExemplar;
+import ua.edu.ukma.LibraryManager.models.domain.Book;
+import ua.edu.ukma.LibraryManager.models.domain.BookExemplar;
 
 import java.util.List;
 
