@@ -1,4 +1,4 @@
-package ua.edu.ukma.LibraryManager.models;
+package ua.edu.ukma.LibraryManager.models.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;

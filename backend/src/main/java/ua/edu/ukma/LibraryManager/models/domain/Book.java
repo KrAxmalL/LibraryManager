@@ -1,4 +1,4 @@
-package ua.edu.ukma.LibraryManager.models;
+package ua.edu.ukma.LibraryManager.models.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
