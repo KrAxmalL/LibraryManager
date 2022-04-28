@@ -31,7 +31,7 @@ public interface BookService {
 
     List<BookExemplar> getAvailableExemplars(String bookIsbn);
 
-    LocalDate getClosestAvailableExemplarDate(String bookIsbn);
+    Optional<LocalDate> getClosestAvailableExemplarDate(String bookIsbn);
 
     boolean addAreasForBook(String bookIsbn, List<String> areaCiphers);
 

@@ -73,12 +73,12 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<BookExemplar> getAvailableExemplars(String bookIsbn) {
-        return null;
+        return bookRepository.findAvailableBookExemplars(bookIsbn);
     }
 
     @Override
-    public LocalDate getClosestAvailableExemplarDate(String bookIsbn) {
-        return null;
+    public Optional<LocalDate> getClosestAvailableExemplarDate(String bookIsbn) {
+        return bookRepository.findClosestExemplarAvailableDate(bookIsbn);
     }
 
     @Override
