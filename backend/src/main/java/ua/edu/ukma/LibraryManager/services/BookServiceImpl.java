@@ -1,6 +1,7 @@
 package ua.edu.ukma.LibraryManager.services;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +18,7 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
+@Slf4j
 public class BookServiceImpl implements BookService {
 
     private final BookRepository bookRepository;
@@ -39,6 +41,31 @@ public class BookServiceImpl implements BookService {
     @Override
     public List<Book> getBooksOfAuthor(String authorName) {
         return bookRepository.findBooksByAuthor(authorName);
+    }
+
+    @Override
+    public List<Book> getBooksByTitle(String title) {
+        return bookRepository.findBooksByTitle(title);
+    }
+
+    @Override
+    public List<Book> getBooksOfAuthorAndTitle(String title, List<String> authors) {
+        return bookRepository.findBooksByAuthorsAndTitle(title, authors);
+    }
+
+    @Override
+    public List<Book> getBooksOfAreaAndTitle(String title, List<String> areasIds) {
+        return bookRepository.findBooksByAreasAndTitle(title, areasIds);
+    }
+
+    @Override
+    public List<Book> getBooksOfAuthorAndAreaAndTitle(String title, List<String> authors, List<String> areasIds) {
+        return bookRepository.findBooksByAreasAndAuthorsAndTitle(title, areasIds, authors);
+    }
+
+    @Override
+    public List<String> getAllAuthors() {
+        return bookRepository.findAllAuthors();
     }
 
     @Override

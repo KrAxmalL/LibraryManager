@@ -18,6 +18,16 @@ public interface BookService {
 
     List<Book> getBooksOfAuthor(String authorName);
 
+    List<Book> getBooksByTitle(String title);
+
+    List<Book> getBooksOfAuthorAndTitle(String title, List<String> authors);
+
+    List<Book> getBooksOfAreaAndTitle(String title, List<String> areasIds);
+
+    List<Book> getBooksOfAuthorAndAreaAndTitle(String title, List<String> authors, List<String> areasIds);
+
+    List<String> getAllAuthors();
+
     List<BookExemplar> getBookExemplars(String bookIsbn);
 
     List<BookExemplar> getAvailableExemplars(String bookIsbn);
