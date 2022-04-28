@@ -28,7 +28,6 @@ public class BookExemplar {
     @OneToMany(mappedBy = "exemplar")
     private List<Checkout> checkouts;
 
-    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "book_isbn")
     private Book parentBook;

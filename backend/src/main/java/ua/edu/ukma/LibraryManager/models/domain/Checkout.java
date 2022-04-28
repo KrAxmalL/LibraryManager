@@ -35,12 +35,10 @@ public class Checkout {
     @Column(name = "compensation")
     private BigDecimal compensation;
 
-    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "exemplar_inventory_number")
     private BookExemplar exemplar;
 
-    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "reader_ticket_number")
     private Reader reader;

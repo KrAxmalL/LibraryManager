@@ -23,8 +23,7 @@ public class SubjectArea {
 
     @Column(name = "subject_area_name")
     private String subjectAreaName;
-
-    @JsonIgnore
+    
     @ManyToMany
     @JoinTable(name = "book_subject_area",
             joinColumns = @JoinColumn(name = "subject_area_cipher"),
