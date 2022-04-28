@@ -19,7 +19,7 @@ public class BookDetailsDTO {
     private String title;
     private List<String> authors;
     private List<String> areas;
-    private List<String> availableExemplars;
+    private List<Integer> availableExemplars;
     private LocalDate closestAvailableExemplar;
     private String publishingCity;
     private String publisher;
