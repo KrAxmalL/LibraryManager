@@ -12,6 +12,7 @@ import ua.edu.ukma.LibraryManager.repositories.BookRepository;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -73,7 +74,15 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<BookExemplar> getAvailableExemplars(String bookIsbn) {
-        return bookRepository.findAvailableBookExemplars(bookIsbn);
+        List<Object[]> exemplarsAsObjects = bookRepository.findAvailableBookExemplars(bookIsbn);
+        return exemplarsAsObjects.stream().map((exemplar) -> {
+            BookExemplar resultExemplar = new BookExemplar();
+            resultExemplar.setInventoryNumber((Integer) exemplar[0]);
+            resultExemplar.setShelf((String) exemplar[1]);
+            resultExemplar.setCheckouts(null);
+            resultExemplar.setParentBook(null);
+            return resultExemplar;
+        }).collect(Collectors.toList());
     }
 
     @Override
