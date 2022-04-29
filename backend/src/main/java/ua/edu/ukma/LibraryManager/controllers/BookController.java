@@ -10,6 +10,8 @@ import ua.edu.ukma.LibraryManager.models.domain.BookExemplar;
 import ua.edu.ukma.LibraryManager.models.dto.book.BookDetailsDTO;
 import ua.edu.ukma.LibraryManager.models.dto.book.BookSummaryDTO;
 import ua.edu.ukma.LibraryManager.models.dto.mappers.BookMapper;
+import ua.edu.ukma.LibraryManager.repositories.BookExemplarRepository;
+import ua.edu.ukma.LibraryManager.repositories.BookRepository;
 import ua.edu.ukma.LibraryManager.services.BookService;
 
 import java.time.LocalDate;
