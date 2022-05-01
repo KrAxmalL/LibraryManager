@@ -2,6 +2,7 @@ package ua.edu.ukma.LibraryManager.services;
 
 import ua.edu.ukma.LibraryManager.models.domain.Book;
 import ua.edu.ukma.LibraryManager.models.domain.BookExemplar;
+import ua.edu.ukma.LibraryManager.models.dto.book.AddBookDTO;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -32,6 +33,8 @@ public interface BookService {
     List<BookExemplar> getAvailableExemplars(String bookIsbn);
 
     Optional<LocalDate> getClosestAvailableExemplarDate(String bookIsbn);
+
+    boolean addNewBook(AddBookDTO bookToAdd);
 
     boolean addAreasForBook(String bookIsbn, List<String> areaCiphers);
 

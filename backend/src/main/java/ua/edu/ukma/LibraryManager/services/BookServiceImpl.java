@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ukma.LibraryManager.models.domain.Book;
 import ua.edu.ukma.LibraryManager.models.domain.BookExemplar;
+import ua.edu.ukma.LibraryManager.models.dto.book.AddBookDTO;
 import ua.edu.ukma.LibraryManager.repositories.BookRepository;
 
 import java.time.LocalDate;
@@ -21,6 +22,8 @@ import java.util.stream.Collectors;
 public class BookServiceImpl implements BookService {
 
     private final BookRepository bookRepository;
+
+    private static final String ISBN_REGEXP = "^\\d{3}-\\d-\\d{5}-\\d{3}-\\d$";
 
     @Override
     public List<Book> getAllBooks() {
@@ -91,6 +94,24 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    public boolean addNewBook(AddBookDTO bookToAdd) {
+        final String bookIsbn = bookToAdd.getIsbn();
+        //todo: add check if subject area cipher exists and authors in list are not empty
+        if(isValidBook(bookToAdd) && !bookRepository.existsById(bookIsbn)) {
+            bookRepository.addBook(bookIsbn, bookToAdd.getTitle(), bookToAdd.getPublishingCity(),
+                    bookToAdd.getPublisher(), bookToAdd.getPublishingYear(), bookToAdd.getPageNumber(),
+                    bookToAdd.getPrice()
+            );
+            bookToAdd.getAuthors().forEach(authorName -> bookRepository.addAuthorForBook(bookIsbn, authorName));
+            bookToAdd.getAreas().forEach(areaCipher -> bookRepository.addAreaForBook(bookIsbn, areaCipher));
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    @Override
     public boolean addAreasForBook(String bookIsbn, List<String> areaCiphers) {
         return false;
     }
@@ -103,5 +124,23 @@ public class BookServiceImpl implements BookService {
     @Override
     public boolean deleteBook(String isbn) {
         return false;
+    }
+
+    public boolean isValidBook(AddBookDTO bookToAdd) {
+        return isNotNullOrBlank(bookToAdd.getIsbn())
+                && bookToAdd.getIsbn().matches(ISBN_REGEXP)
+                && isNotNullOrBlank(bookToAdd.getTitle())
+                && isNotNullOrBlank(bookToAdd.getPublishingCity())
+                && isNotNullOrBlank(bookToAdd.getPublisher())
+                && bookToAdd.getPublishingYear() != null
+                && bookToAdd.getPageNumber() != null
+                && bookToAdd.getPrice() != null
+                && bookToAdd.getAuthors() != null
+                && bookToAdd.getAreas() != null
+                && !bookToAdd.getAreas().isEmpty();
+    }
+
+    private boolean isNotNullOrBlank(String str) {
+        return str != null && !str.isBlank();
     }
 }

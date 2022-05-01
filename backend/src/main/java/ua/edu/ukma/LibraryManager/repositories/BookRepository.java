@@ -1,11 +1,13 @@
 package ua.edu.ukma.LibraryManager.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import ua.edu.ukma.LibraryManager.models.domain.Book;
 import ua.edu.ukma.LibraryManager.models.domain.BookExemplar;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -71,4 +73,31 @@ public interface BookRepository extends JpaRepository<Book, String> {
     @Query(value  = "SELECT DISTINCT author_name FROM book_author",
             nativeQuery = true)
     List<String> findAllAuthors();
+
+    @Modifying
+    @Query(value = "INSERT INTO book(isbn, title, publishing_city, publisher, publishing_year, page_number, price) " +
+                   "VALUES(:target_isbn, :target_title, :target_publishing_city, :target_publisher, " +
+                          ":target_publishing_year, :target_page_number, :target_price)",
+            nativeQuery = true)
+    void addBook(@Param("target_isbn") String isbn,
+                 @Param("target_title") String title,
+                 @Param("target_publishing_city") String publishingCity,
+                 @Param("target_publisher") String publisher,
+                 @Param("target_publishing_year") Integer publishingYear,
+                 @Param("target_page_number") Integer pageNumber,
+                 @Param("target_price") BigDecimal price);
+
+    @Modifying
+    @Query(value  = "INSERT INTO book_subject_area(book_isbn, subject_area_cipher) " +
+            "VALUES(:target_book_isbn, :target_subject_area_cipher)",
+            nativeQuery = true)
+    void addAreaForBook(@Param("target_book_isbn") String bookIsbn,
+                        @Param("target_subject_area_cipher") String areaCipher);
+
+    @Modifying
+    @Query(value  = "INSERT INTO book_author(book_isbn, author_name) " +
+                    "VALUES(:target_book_isbn, :target_author_name)",
+            nativeQuery = true)
+    void addAuthorForBook(@Param("target_book_isbn") String bookIsbn,
+                          @Param("target_author_name") String authorName);
 }

@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ua.edu.ukma.LibraryManager.models.domain.Book;
 import ua.edu.ukma.LibraryManager.models.domain.BookExemplar;
+import ua.edu.ukma.LibraryManager.models.dto.book.AddBookDTO;
 import ua.edu.ukma.LibraryManager.models.dto.book.BookDetailsDTO;
 import ua.edu.ukma.LibraryManager.models.dto.book.BookSummaryDTO;
 import ua.edu.ukma.LibraryManager.models.dto.mappers.BookMapper;
@@ -93,5 +94,17 @@ public class BookController {
     @GetMapping("/authors")
     public List<String> getAllAuthors() {
         return bookService.getAllAuthors();
+    }
+
+    @PostMapping("")
+    public ResponseEntity<Void> addNewBook(@RequestBody(required = true) AddBookDTO bookToAdd) {
+        log.info(bookToAdd.toString());
+        final boolean addedSuccessfully = bookService.addNewBook(bookToAdd);
+        if(addedSuccessfully) {
+            return ResponseEntity.noContent().build();
+        }
+        else {
+            return ResponseEntity.badRequest().build();
+        }
     }
 }
