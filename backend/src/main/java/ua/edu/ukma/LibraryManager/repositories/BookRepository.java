@@ -74,6 +74,16 @@ public interface BookRepository extends JpaRepository<Book, String> {
             nativeQuery = true)
     List<String> findAllAuthors();
 
+    @Query(value  = "SELECT author_name FROM book_author " +
+                    "WHERE book_isbn = :target_book_isbn",
+            nativeQuery = true)
+    List<String> findAuthorsOfBook(@Param("target_book_isbn") String bookIsbn);
+
+    @Query(value  = "SELECT subject_area_cipher FROM book_subject_area " +
+            "WHERE book_isbn = :target_book_isbn",
+            nativeQuery = true)
+    List<String> findAreasOfBook(@Param("target_book_isbn") String bookIsbn);
+
     @Modifying
     @Query(value = "INSERT INTO book(isbn, title, publishing_city, publisher, publishing_year, page_number, price) " +
                    "VALUES(:target_isbn, :target_title, :target_publishing_city, :target_publisher, " +

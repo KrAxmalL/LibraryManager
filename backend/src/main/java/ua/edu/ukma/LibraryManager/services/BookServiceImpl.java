@@ -9,6 +9,7 @@ import ua.edu.ukma.LibraryManager.models.domain.Book;
 import ua.edu.ukma.LibraryManager.models.domain.BookExemplar;
 import ua.edu.ukma.LibraryManager.models.dto.book.AddBookDTO;
 import ua.edu.ukma.LibraryManager.repositories.BookRepository;
+import ua.edu.ukma.LibraryManager.repositories.SubjectAreaRepository;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
 public class BookServiceImpl implements BookService {
 
     private final BookRepository bookRepository;
+    private final SubjectAreaRepository subjectAreaRepository;
 
     private static final String ISBN_REGEXP = "^\\d{3}-\\d-\\d{5}-\\d{3}-\\d$";
 
@@ -96,24 +98,23 @@ public class BookServiceImpl implements BookService {
     @Override
     public boolean addNewBook(AddBookDTO bookToAdd) {
         final String bookIsbn = bookToAdd.getIsbn();
-        //todo: add check if subject area cipher exists and authors in list are not empty
+        //todo: use exceptions for better error handling
         if(isValidBook(bookToAdd) && !bookRepository.existsById(bookIsbn)) {
             bookRepository.addBook(bookIsbn, bookToAdd.getTitle(), bookToAdd.getPublishingCity(),
                     bookToAdd.getPublisher(), bookToAdd.getPublishingYear(), bookToAdd.getPageNumber(),
                     bookToAdd.getPrice()
             );
-            bookToAdd.getAuthors().forEach(authorName -> bookRepository.addAuthorForBook(bookIsbn, authorName));
-            bookToAdd.getAreas().forEach(areaCipher -> bookRepository.addAreaForBook(bookIsbn, areaCipher));
-            return true;
+
+            boolean authorsAdded = addAuthorsForBook(bookIsbn, bookToAdd.getAuthors());
+            boolean areasAdded = false;
+            if(authorsAdded) {
+                areasAdded = addAreasForBook(bookIsbn, bookToAdd.getAreas());
+            }
+            return authorsAdded && areasAdded;
         }
         else {
             return false;
         }
-    }
-
-    @Override
-    public boolean addAreasForBook(String bookIsbn, List<String> areaCiphers) {
-        return false;
     }
 
     @Override
@@ -138,6 +139,46 @@ public class BookServiceImpl implements BookService {
                 && bookToAdd.getAuthors() != null
                 && bookToAdd.getAreas() != null
                 && !bookToAdd.getAreas().isEmpty();
+    }
+
+    @Override
+    public boolean addAuthorsForBook(String bookIsbn, List<String> authorNames) {
+        if(authorNames == null) {
+            return false;
+        }
+
+        //todo: check for author duplication in list and in db
+        List<String> authorNamesForBook = bookRepository.findAuthorsOfBook(bookIsbn);
+        for(String authorName: authorNames) {
+            String authorNameTrimmed = authorName.trim();
+            if(authorNameTrimmed.isBlank() || authorNamesForBook.contains(authorNameTrimmed)) {
+                return false;
+            }
+            else {
+                bookRepository.addAuthorForBook(bookIsbn, authorName);
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean addAreasForBook(String bookIsbn, List<String> areaCiphers) {
+        if(areaCiphers == null || areaCiphers.isEmpty()) {
+            return false;
+        }
+
+        //todo: check for area duplication in list and in db
+        List<String> areasForBook = bookRepository.findAreasOfBook(bookIsbn);
+        for(String areaCipher: areaCiphers) {
+            String areaCipherTrimmed = areaCipher.trim();
+            if(areaCipherTrimmed.isBlank() || areasForBook.contains(areaCipherTrimmed)) {
+                return false;
+            }
+            else {
+                bookRepository.addAreaForBook(bookIsbn, areaCipher);
+            }
+        }
+        return true;
     }
 
     private boolean isNotNullOrBlank(String str) {

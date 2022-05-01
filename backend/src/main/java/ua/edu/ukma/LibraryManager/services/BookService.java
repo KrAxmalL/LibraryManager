@@ -36,6 +36,8 @@ public interface BookService {
 
     boolean addNewBook(AddBookDTO bookToAdd);
 
+    boolean addAuthorsForBook(String bookIsbn, List<String> authorNames);
+
     boolean addAreasForBook(String bookIsbn, List<String> areaCiphers);
 
     boolean addExemplarForBook(String bookIsbn, Integer exemplarInventoryNumber);
