@@ -18,7 +18,6 @@ public class CheckoutDetailsDTO {
     private LocalDate checkoutStartDate;
     private LocalDate checkoutExpectedFinishDate;
     private LocalDate checkoutRealFinishDate;
-    private BigDecimal compensation;
 
     private String bookIsbn;
     private String bookTitle;

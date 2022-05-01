@@ -38,10 +38,9 @@ public class CheckoutServiceImpl implements CheckoutService {
                     ? null
                     : LocalDate.parse(realFinishDateObj.toString());
             resCheckout.setCheckoutRealFinishDate(realFinishDate);
-            resCheckout.setCompensation((BigDecimal) checkoutObj[4]);
-            resCheckout.setBookIsbn((String) checkoutObj[5]);
-            resCheckout.setBookTitle((String) checkoutObj[6]);
-            resCheckout.setExemplarInventoryNumber((Integer) checkoutObj[7]);
+            resCheckout.setBookIsbn((String) checkoutObj[4]);
+            resCheckout.setBookTitle((String) checkoutObj[5]);
+            resCheckout.setExemplarInventoryNumber((Integer) checkoutObj[6]);
             return resCheckout;
         }).collect(Collectors.toList());
     }

@@ -12,7 +12,7 @@ public interface CheckoutRepository extends JpaRepository<Checkout, Integer> {
 
     @Query(value = "SELECT checkout_history.checkout_number, checkout_history.checkout_start_date," +
             " checkout_history.checkout_expected_finish_date, checkout_history.checkout_real_finish_date," +
-            " checkout_history.compensation, book.isbn, book.title, book_exemplar.inventory_number" +
+            " book.isbn, book.title, book_exemplar.inventory_number" +
             " FROM checkout_history INNER JOIN book_exemplar" +
             "  ON checkout_history.exemplar_inventory_number = book_exemplar.inventory_number" +
             "  INNER JOIN book" +

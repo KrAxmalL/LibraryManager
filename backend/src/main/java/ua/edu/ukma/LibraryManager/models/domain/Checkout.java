@@ -32,9 +32,6 @@ public class Checkout {
     @Column(name = "checkout_real_finish_date")
     private LocalDate realFinishDate;
 
-    @Column(name = "compensation")
-    private BigDecimal compensation;
-
     @ManyToOne
     @JoinColumn(name = "exemplar_inventory_number")
     private BookExemplar exemplar;
