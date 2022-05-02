@@ -98,7 +98,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public boolean addNewBook(AddBookDTO bookToAdd) {
         final String bookIsbn = bookToAdd.getIsbn();
-        //todo: use exceptions for better error handling
+
         if(isValidBook(bookToAdd) && !bookRepository.existsById(bookIsbn)) {
             bookRepository.addBook(bookIsbn, bookToAdd.getTitle(), bookToAdd.getPublishingCity(),
                     bookToAdd.getPublisher(), bookToAdd.getPublishingYear(), bookToAdd.getPageNumber(),
@@ -147,11 +147,9 @@ public class BookServiceImpl implements BookService {
             return false;
         }
 
-        //todo: check for author duplication in list and in db
-        List<String> authorNamesForBook = bookRepository.findAuthorsOfBook(bookIsbn);
         for(String authorName: authorNames) {
             String authorNameTrimmed = authorName.trim();
-            if(authorNameTrimmed.isBlank() || authorNamesForBook.contains(authorNameTrimmed)) {
+            if(authorNameTrimmed.isBlank() || bookHasAuthor(bookIsbn, authorName)) {
                 return false;
             }
             else {
@@ -167,11 +165,9 @@ public class BookServiceImpl implements BookService {
             return false;
         }
 
-        //todo: check for area duplication in list and in db
-        List<String> areasForBook = bookRepository.findAreasOfBook(bookIsbn);
         for(String areaCipher: areaCiphers) {
             String areaCipherTrimmed = areaCipher.trim();
-            if(areaCipherTrimmed.isBlank() || areasForBook.contains(areaCipherTrimmed)) {
+            if(areaCipherTrimmed.isBlank() || bookHasArea(bookIsbn, areaCipher)) {
                 return false;
             }
             else {
@@ -179,6 +175,14 @@ public class BookServiceImpl implements BookService {
             }
         }
         return true;
+    }
+
+    private boolean bookHasAuthor(String bookIsbn, String authorName) {
+        return bookRepository.findBookByIsbnAndAuthor(bookIsbn, authorName).isPresent();
+    }
+
+    private boolean bookHasArea(String bookIsbn, String areaCipher) {
+        return bookRepository.findBookByIsbnAndArea(bookIsbn, areaCipher).isPresent();
     }
 
     private boolean isNotNullOrBlank(String str) {
