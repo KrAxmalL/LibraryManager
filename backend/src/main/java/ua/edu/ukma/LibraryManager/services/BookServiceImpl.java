@@ -11,6 +11,7 @@ import ua.edu.ukma.LibraryManager.models.dto.book.AddBookDTO;
 import ua.edu.ukma.LibraryManager.repositories.BookRepository;
 import ua.edu.ukma.LibraryManager.repositories.SubjectAreaRepository;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -140,8 +141,11 @@ public class BookServiceImpl implements BookService {
                 && isNotNullOrBlank(bookToAdd.getPublishingCity())
                 && isNotNullOrBlank(bookToAdd.getPublisher())
                 && bookToAdd.getPublishingYear() != null
+                && bookToAdd.getPublishingYear() > 0
                 && bookToAdd.getPageNumber() != null
+                && bookToAdd.getPageNumber() > 0
                 && bookToAdd.getPrice() != null
+                && bookToAdd.getPrice().compareTo(BigDecimal.valueOf(0)) > 0
                 && bookToAdd.getAuthors() != null
                 && bookToAdd.getAreas() != null
                 && !bookToAdd.getAreas().isEmpty();
