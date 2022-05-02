@@ -43,4 +43,6 @@ public interface BookService {
     boolean addExemplarForBook(String bookIsbn, Integer exemplarInventoryNumber);
 
     boolean deleteBook(String isbn);
+
+    boolean bookExists(String bookIsbn);
 }

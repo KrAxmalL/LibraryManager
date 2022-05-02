@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static ua.edu.ukma.LibraryManager.utils.StringUtils.isNotNullOrBlank;
+
 @Service
 @Transactional
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -23,7 +25,6 @@ import java.util.stream.Collectors;
 public class BookServiceImpl implements BookService {
 
     private final BookRepository bookRepository;
-    private final SubjectAreaRepository subjectAreaRepository;
 
     private static final String ISBN_REGEXP = "^\\d{3}-\\d-\\d{5}-\\d{3}-\\d$";
 
@@ -127,6 +128,11 @@ public class BookServiceImpl implements BookService {
         return false;
     }
 
+    @Override
+    public boolean bookExists(String bookIsbn) {
+        return bookRepository.existsById(bookIsbn);
+    }
+
     public boolean isValidBook(AddBookDTO bookToAdd) {
         return isNotNullOrBlank(bookToAdd.getIsbn())
                 && bookToAdd.getIsbn().matches(ISBN_REGEXP)
@@ -183,9 +189,5 @@ public class BookServiceImpl implements BookService {
 
     private boolean bookHasArea(String bookIsbn, String areaCipher) {
         return bookRepository.findBookByIsbnAndArea(bookIsbn, areaCipher).isPresent();
-    }
-
-    private boolean isNotNullOrBlank(String str) {
-        return str != null && !str.isBlank();
     }
 }
