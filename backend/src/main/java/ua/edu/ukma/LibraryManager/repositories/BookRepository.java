@@ -122,4 +122,25 @@ public interface BookRepository extends JpaRepository<Book, String> {
             nativeQuery = true)
     void addAuthorForBook(@Param("target_book_isbn") String bookIsbn,
                           @Param("target_author_name") String authorName);
+
+    @Query(value  = "SELECT checkout_number FROM checkout_history " +
+                    "WHERE checkout_real_finish_date IS NOT NULL " +
+                          "AND exemplar_inventory_number IN " +
+                              "(SELECT inventory_number " +
+                               "FROM book_exemplar " +
+                               "WHERE book_isbn = :target_book_isbn)",
+            nativeQuery = true)
+    List<Integer> getActiveCheckoutOfBook(@Param("target_book_isbn") String bookIsbn);
+
+    @Modifying
+    @Query(value = "DELETE FROM book " +
+                   "WHERE isbn = :target_book_isbn " +
+                          "AND NOT EXISTS (SELECT * FROM checkout_history " +
+                                          "WHERE checkout_real_finish_date IS NOT NULL " +
+                                          "AND exemplar_inventory_number IN (SELECT inventory_number " +
+                                                                            "FROM book_exemplar " +
+                                                                            "WHERE book_isbn = :target_book_isbn)" +
+                                         ")",
+            nativeQuery = true)
+    void deleteBook(@Param("target_book_isbn") String bookIsbn);
 }

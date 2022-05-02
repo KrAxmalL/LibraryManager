@@ -126,6 +126,15 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public boolean deleteBook(String isbn) {
+        String isbnToDelete = isbn.trim();
+        if(!isbnToDelete.matches(ISBN_REGEXP) || bookExists(isbnToDelete)) {
+            List<Integer> activeCheckouts = bookRepository.getActiveCheckoutOfBook(isbnToDelete);
+            if(activeCheckouts.isEmpty()) {
+                bookRepository.deleteBook(isbnToDelete);
+                return true;
+            }
+        }
+
         return false;
     }
 

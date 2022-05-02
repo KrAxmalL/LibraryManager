@@ -107,4 +107,15 @@ public class BookController {
             return ResponseEntity.badRequest().build();
         }
     }
+
+    @DeleteMapping("/{isbn}")
+    public ResponseEntity<Void> deleteBook(@PathVariable(name = "isbn", required = true) String isbn) {
+        boolean deletedSuccessfully = bookService.deleteBook(isbn);
+        if(deletedSuccessfully) {
+            return ResponseEntity.noContent().build();
+        }
+        else {
+            return ResponseEntity.badRequest().build();
+        }
+    }
 }
