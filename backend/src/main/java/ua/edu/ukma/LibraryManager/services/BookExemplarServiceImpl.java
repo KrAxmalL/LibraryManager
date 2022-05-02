@@ -42,6 +42,11 @@ public class BookExemplarServiceImpl implements BookExemplarService {
         }
     }
 
+    @Override
+    public boolean exemplarIsAvailableForCheckout(Integer inventoryNumber) {
+        return bookExemplarRepository.findExemplarAvailableForCheckout(inventoryNumber).isPresent();
+    }
+
     public boolean isValidBookExemplar(AddBookExemplarDTO exemplarToAdd) {
         return exemplarToAdd.getInventoryNumber() != null
                 && exemplarToAdd.getInventoryNumber() > 0

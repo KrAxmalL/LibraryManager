@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import ua.edu.ukma.LibraryManager.models.domain.BookExemplar;
 
+import java.util.Optional;
+
 public interface BookExemplarRepository extends JpaRepository<BookExemplar, Integer> {
 
     @Modifying
@@ -14,4 +16,12 @@ public interface BookExemplarRepository extends JpaRepository<BookExemplar, Inte
     void addNewBookExemplar(@Param("target_book_isbn") String bookIsbn,
                             @Param("target_inventory_number")Integer inventoryNumber,
                             @Param("target_shelf") String shelf);
+
+    @Query(value = "SELECT inventory_number FROM book_exemplar " +
+                   "WHERE inventory_number = :target_inventory_number " +
+                   "AND NOT EXISTS (SELECT exemplar_inventory_number FROM checkout_history " +
+                                   "WHERE exemplar_inventory_number = :target_inventory_number " +
+                                   "AND checkout_real_finish_date IS NULL)",
+            nativeQuery = true)
+    Optional<Integer> findExemplarAvailableForCheckout(@Param("target_inventory_number") Integer inventoryNumber);
 }
