@@ -18,7 +18,6 @@ import java.util.List;
 public class BookExemplar {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "inventory_number")
     private Integer inventoryNumber;
 
