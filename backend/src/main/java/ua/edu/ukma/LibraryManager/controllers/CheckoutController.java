@@ -44,7 +44,7 @@ public class CheckoutController {
     }
 
     @PatchMapping("/{checkoutNumber}/finish")
-    public ResponseEntity<Void> addCheckout(@PathVariable(name = "checkoutNumber", required = true) Integer checkoutNumber,
+    public ResponseEntity<Void> finishCheckout(@PathVariable(name = "checkoutNumber", required = true) Integer checkoutNumber,
                                             @RequestBody(required = true) FinishCheckoutDTO checkoutToFinish) {
         log.info("checkoutNumber: " + checkoutNumber.toString());
         log.info("checkoutToFinish: " + checkoutToFinish.toString());
@@ -58,7 +58,7 @@ public class CheckoutController {
     }
 
     @PatchMapping("/{checkoutNumber}/continue")
-    public ResponseEntity<Void> addCheckout(@PathVariable(name = "checkoutNumber", required = true) Integer checkoutNumber,
+    public ResponseEntity<Void> continueCheckout(@PathVariable(name = "checkoutNumber", required = true) Integer checkoutNumber,
                                             @RequestBody(required = true) ContinueCheckoutDTO checkoutToContinue) {
         log.info("checkoutNumber: " + checkoutNumber.toString());
         log.info("newFinishDate: " + checkoutToContinue.getNewExpectedFinishDate().toString());
