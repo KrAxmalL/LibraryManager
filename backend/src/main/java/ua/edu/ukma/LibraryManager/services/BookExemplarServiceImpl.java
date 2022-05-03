@@ -5,9 +5,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ua.edu.ukma.LibraryManager.models.domain.BookExemplar;
 import ua.edu.ukma.LibraryManager.models.dto.book.AddBookDTO;
 import ua.edu.ukma.LibraryManager.models.dto.bookExemplar.AddBookExemplarDTO;
 import ua.edu.ukma.LibraryManager.repositories.BookExemplarRepository;
+
+import java.util.Optional;
 
 import static ua.edu.ukma.LibraryManager.utils.StringUtils.isNotNullOrBlank;
 
@@ -45,6 +48,13 @@ public class BookExemplarServiceImpl implements BookExemplarService {
     @Override
     public boolean exemplarIsAvailableForCheckout(Integer inventoryNumber) {
         return bookExemplarRepository.findExemplarAvailableForCheckout(inventoryNumber).isPresent();
+    }
+
+    @Override
+    public boolean changeShelfForExemplar(Integer inventoryNumber, String newShelf) {
+        bookExemplarRepository.changeShelfForBookExemplar(inventoryNumber, newShelf);
+        Optional<BookExemplar> exemplarOpt = bookExemplarRepository.findById(inventoryNumber);
+        return exemplarOpt.map(bookExemplar -> bookExemplar.getShelf().equalsIgnoreCase(newShelf)).orElse(false);
     }
 
     public boolean isValidBookExemplar(AddBookExemplarDTO exemplarToAdd) {

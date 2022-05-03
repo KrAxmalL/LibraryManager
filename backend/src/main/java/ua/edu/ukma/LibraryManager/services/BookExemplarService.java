@@ -7,4 +7,6 @@ public interface BookExemplarService {
     boolean addExemplarForBook(AddBookExemplarDTO exemplarToAdd);
 
     boolean exemplarIsAvailableForCheckout(Integer inventoryNumber);
+
+    boolean changeShelfForExemplar(Integer inventoryNumber, String newShelf);
 }

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import ua.edu.ukma.LibraryManager.models.domain.Checkout;
 import ua.edu.ukma.LibraryManager.models.dto.checkout.AddCheckoutDTO;
 import ua.edu.ukma.LibraryManager.models.dto.checkout.CheckoutDetailsDTO;
+import ua.edu.ukma.LibraryManager.models.dto.checkout.FinishCheckoutDTO;
 import ua.edu.ukma.LibraryManager.repositories.CheckoutRepository;
 import ua.edu.ukma.LibraryManager.services.CheckoutService;
 
@@ -33,6 +34,20 @@ public class CheckoutController {
         log.info("checkout to add: " + checkoutToAdd.toString());
         boolean addedSuccessfully = checkoutService.addNewCheckout(checkoutToAdd);
         if(addedSuccessfully) {
+            return ResponseEntity.noContent().build();
+        }
+        else {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @PatchMapping("/{checkoutNumber}/finish")
+    public ResponseEntity<Void> addCheckout(@PathVariable(name = "checkoutNumber", required = true) Integer checkoutNumber,
+                                            @RequestBody(required = true) FinishCheckoutDTO checkoutToFinish) {
+        log.info("checkoutNumber: " + checkoutNumber.toString());
+        log.info("checkoutToFinish: " + checkoutToFinish.toString());
+        boolean finishedSuccessfully = checkoutService.finishCheckout(checkoutNumber, checkoutToFinish);
+        if(finishedSuccessfully) {
             return ResponseEntity.noContent().build();
         }
         else {

@@ -30,7 +30,7 @@ public interface CheckoutRepository extends JpaRepository<Checkout, Integer> {
             nativeQuery = true)
     List<Object[]> findCheckoutsOfReader(@Param("searched_reader_email") String readerEmail);
 
-    @Modifying
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query(value = "INSERT INTO checkout_history(checkout_start_date, checkout_expected_finish_date, checkout_real_finish_date, " +
                                                 "exemplar_inventory_number, reader_ticket_number) " +
                    "VALUES(:target_start_date, :target_expected_finish_date, NULL, " +
@@ -40,4 +40,11 @@ public interface CheckoutRepository extends JpaRepository<Checkout, Integer> {
                         @Param("target_expected_finish_date") LocalDate finishDate,
                         @Param("target_exemplar_inventory_number") Integer inventoryNumber,
                         @Param("target_reader_ticket_number") Integer ticketNumber);
+
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Query(value = "UPDATE checkout_history SET checkout_real_finish_date = :target_real_finish_date " +
+                   "WHERE checkout_number = :target_checkout_number",
+            nativeQuery = true)
+    void setRealFinishDateForCheckout(@Param("target_checkout_number") Integer checkoutNumber,
+                                      @Param("target_real_finish_date") LocalDate realFinishDate);
 }

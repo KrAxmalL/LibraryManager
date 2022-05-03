@@ -5,9 +5,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ua.edu.ukma.LibraryManager.models.domain.Checkout;
 import ua.edu.ukma.LibraryManager.models.dto.checkout.AddCheckoutDTO;
 import ua.edu.ukma.LibraryManager.models.dto.checkout.CheckoutDetailsDTO;
+import ua.edu.ukma.LibraryManager.models.dto.checkout.FinishCheckoutDTO;
 import ua.edu.ukma.LibraryManager.repositories.CheckoutRepository;
+import ua.edu.ukma.LibraryManager.utils.StringUtils;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -59,6 +62,27 @@ public class CheckoutServiceImpl implements CheckoutService {
                     checkoutRepository.addNewCheckout(checkoutToAdd.getStartDate(), checkoutToAdd.getExpectedFinishDate(),
                             checkoutToAdd.getExemplarInventoryNumber(), checkoutToAdd.getReaderTicketNumber());
                     return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean finishCheckout(Integer checkoutNumber, FinishCheckoutDTO checkoutToFinish) {
+        if(checkoutToFinish.getRealFinishDate() != null
+            && StringUtils.isNotNullOrBlank(checkoutToFinish.getNewShelfForExemplar())) {
+            checkoutToFinish.setNewShelfForExemplar(checkoutToFinish.getNewShelfForExemplar().trim());
+
+            Optional<Checkout> checkoutOpt = checkoutRepository.findById(checkoutNumber);
+            if(checkoutOpt.isPresent()) {
+                Checkout checkout = checkoutOpt.get();
+                if(checkout.getRealFinishDate() == null) {
+                    Integer exemplarInventoryNumber = checkout.getExemplar().getInventoryNumber();
+                    checkoutRepository.setRealFinishDateForCheckout(
+                            checkoutNumber, checkoutToFinish.getRealFinishDate());
+                    return bookExemplarService.changeShelfForExemplar(exemplarInventoryNumber,
+                            checkoutToFinish.getNewShelfForExemplar());
                 }
             }
         }
