@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ukma.LibraryManager.models.domain.Reader;
+import ua.edu.ukma.LibraryManager.models.dto.principal.RegisterReaderDTO;
 import ua.edu.ukma.LibraryManager.repositories.ReaderRepository;
 
 import java.util.List;
@@ -18,11 +19,20 @@ import java.util.Optional;
 public class ReaderServiceImpl implements ReaderService {
 
     private final ReaderRepository readerRepository;
-    private final PrincipalService principalService;
 
     @Override
     public boolean readerExists(Integer ticketNumber) {
         return readerRepository.existsById(ticketNumber);
+    }
+
+    @Override
+    public boolean addReader(RegisterReaderDTO readerToRegister, Integer principalId) {
+        readerRepository.addReader(readerToRegister.getLastName(), readerToRegister.getFirstName(),
+                readerToRegister.getPatronymic(), readerToRegister.getBirthDate(), readerToRegister.getHomeCity(),
+                readerToRegister.getHomeStreet(), readerToRegister.getHomeBuildingNumber(),
+                readerToRegister.getHomeFlatNumber(), readerToRegister.getWorkPlace(), principalId);
+
+        return readerRepository.findReaderByPrincipalId(principalId).isPresent();
     }
 
     @Override
@@ -33,8 +43,7 @@ public class ReaderServiceImpl implements ReaderService {
                 List<Integer> activeCheckouts = readerRepository.findActiveCheckoutsOfReader(ticketNumber);
                 if(activeCheckouts.isEmpty()) {
                     readerRepository.deleteReader(ticketNumber);
-                    boolean principalDeleted = principalService.deletePrincipal(principalIdOpt.get());
-                    return principalDeleted && !readerExists(ticketNumber);
+                    return !readerExists(ticketNumber);
                 }
             }
         }
