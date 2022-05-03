@@ -8,7 +8,7 @@ import ua.edu.ukma.LibraryManager.models.domain.Principal;
 
 import java.util.Optional;
 
-public interface PrincipalRepository extends CrudRepository<Principal, Long> {
+public interface PrincipalRepository extends CrudRepository<Principal, Integer> {
 
     @Query(value = "SELECT * FROM principal " +
                    "WHERE email = :target_email",
@@ -19,5 +19,5 @@ public interface PrincipalRepository extends CrudRepository<Principal, Long> {
     @Query(value = "DELETE FROM principal " +
                    "WHERE principal_id = :target_principal_id ",
             nativeQuery = true)
-    void deletePrincipal(@Param("target_principal_id") Long principalId);
+    void deletePrincipal(@Param("target_principal_id") Integer principalId);
 }

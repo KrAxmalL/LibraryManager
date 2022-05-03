@@ -22,7 +22,7 @@ public class PrincipalServiceImpl implements PrincipalService, UserDetailsServic
     private final PrincipalRepository principalRepository;
 
     @Override
-    public Optional<Principal> getPrincipalById(Long principalId) {
+    public Optional<Principal> getPrincipalById(Integer principalId) {
         return principalRepository.findById(principalId);
     }
 
@@ -39,7 +39,7 @@ public class PrincipalServiceImpl implements PrincipalService, UserDetailsServic
     }
 
     @Override
-    public boolean deletePrincipal(Long principalId) {
+    public boolean deletePrincipal(Integer principalId) {
         if(principalId != null && principalRepository.existsById(principalId)) {
             principalRepository.deletePrincipal(principalId);
             return !principalRepository.existsById(principalId);

@@ -16,7 +16,7 @@ public class Principal implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "principal_id")
-    private Long id;
+    private Integer id;
 
     @Column(name = "email")
     private String email;
@@ -31,11 +31,11 @@ public class Principal implements UserDetails {
             inverseJoinColumns = {@JoinColumn(name = "role_id")})
     private Collection<Role> roles;
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
