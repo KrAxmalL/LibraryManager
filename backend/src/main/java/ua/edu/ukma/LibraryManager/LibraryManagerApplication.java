@@ -13,9 +13,4 @@ public class LibraryManagerApplication {
         SpringApplication.run(LibraryManagerApplication.class, args);
     }
 
-    @Bean
-    PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
 }
