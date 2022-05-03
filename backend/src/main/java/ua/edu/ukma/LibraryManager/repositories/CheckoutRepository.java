@@ -1,10 +1,12 @@
 package ua.edu.ukma.LibraryManager.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import ua.edu.ukma.LibraryManager.models.domain.Checkout;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface CheckoutRepository extends JpaRepository<Checkout, Integer> {
@@ -27,4 +29,15 @@ public interface CheckoutRepository extends JpaRepository<Checkout, Integer> {
             "          );",
             nativeQuery = true)
     List<Object[]> findCheckoutsOfReader(@Param("searched_reader_email") String readerEmail);
+
+    @Modifying
+    @Query(value = "INSERT INTO checkout_history(checkout_start_date, checkout_expected_finish_date, checkout_real_finish_date, " +
+                                                "exemplar_inventory_number, reader_ticket_number) " +
+                   "VALUES(:target_start_date, :target_expected_finish_date, NULL, " +
+                          ":target_exemplar_inventory_number, :target_reader_ticket_number)",
+            nativeQuery = true)
+    void addNewCheckout(@Param("target_start_date") LocalDate startDate,
+                        @Param("target_expected_finish_date") LocalDate finishDate,
+                        @Param("target_exemplar_inventory_number") Integer inventoryNumber,
+                        @Param("target_reader_ticket_number") Integer ticketNumber);
 }

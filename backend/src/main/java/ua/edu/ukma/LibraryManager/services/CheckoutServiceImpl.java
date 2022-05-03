@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ua.edu.ukma.LibraryManager.models.dto.checkout.AddCheckoutDTO;
 import ua.edu.ukma.LibraryManager.models.dto.checkout.CheckoutDetailsDTO;
 import ua.edu.ukma.LibraryManager.repositories.CheckoutRepository;
 
@@ -23,6 +24,8 @@ import java.util.stream.Collectors;
 public class CheckoutServiceImpl implements CheckoutService {
 
     private final CheckoutRepository checkoutRepository;
+    private final BookExemplarService bookExemplarService;
+    private final ReaderService readerService;
 
     @Override
     public List<CheckoutDetailsDTO> getCheckoutOfUser(String readerEmail) {
@@ -43,5 +46,30 @@ public class CheckoutServiceImpl implements CheckoutService {
             resCheckout.setExemplarInventoryNumber((Integer) checkoutObj[6]);
             return resCheckout;
         }).collect(Collectors.toList());
+    }
+
+    @Override
+    public boolean addNewCheckout(AddCheckoutDTO checkoutToAdd) {
+        if(isValidCheckout(checkoutToAdd)) {
+            boolean readerExists = readerService.readerExists(checkoutToAdd.getReaderTicketNumber());
+            if(readerExists) {
+                boolean exemplarAvailable = bookExemplarService.exemplarIsAvailableForCheckout(
+                        checkoutToAdd.getExemplarInventoryNumber());
+                if(exemplarAvailable) {
+                    checkoutRepository.addNewCheckout(checkoutToAdd.getStartDate(), checkoutToAdd.getExpectedFinishDate(),
+                            checkoutToAdd.getExemplarInventoryNumber(), checkoutToAdd.getReaderTicketNumber());
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean isValidCheckout(AddCheckoutDTO checkoutToAdd) {
+        return checkoutToAdd.getExemplarInventoryNumber() != null
+                && checkoutToAdd.getReaderTicketNumber() != null
+                && checkoutToAdd.getStartDate() != null
+                && checkoutToAdd.getExpectedFinishDate() != null
+                && checkoutToAdd.getExpectedFinishDate().isAfter(checkoutToAdd.getStartDate());
     }
 }
