@@ -8,7 +8,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ua.edu.ukma.LibraryManager.models.domain.Principal;
+import ua.edu.ukma.LibraryManager.models.security.Principal;
 import ua.edu.ukma.LibraryManager.repositories.PrincipalRepository;
 
 import java.util.Optional;

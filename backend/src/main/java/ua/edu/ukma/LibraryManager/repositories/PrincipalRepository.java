@@ -4,7 +4,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
-import ua.edu.ukma.LibraryManager.models.domain.Principal;
+import ua.edu.ukma.LibraryManager.models.security.Principal;
 
 import java.util.Optional;
 

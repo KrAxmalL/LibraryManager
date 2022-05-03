@@ -1,6 +1,6 @@
 package ua.edu.ukma.LibraryManager.services;
 
-import ua.edu.ukma.LibraryManager.models.domain.Principal;
+import ua.edu.ukma.LibraryManager.models.security.Principal;
 
 import java.util.Optional;
 
