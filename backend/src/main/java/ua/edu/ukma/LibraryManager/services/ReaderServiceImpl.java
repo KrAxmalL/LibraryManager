@@ -26,6 +26,14 @@ public class ReaderServiceImpl implements ReaderService {
     }
 
     @Override
+    public Optional<Integer> getIdOfPrincipal(Integer ticketNumber) {
+        if(ticketNumber != null && readerExists(ticketNumber)) {
+            return readerRepository.findIdOfPrincipal(ticketNumber);
+        }
+        return Optional.empty();
+    }
+
+    @Override
     public boolean addReader(RegisterReaderDTO readerToRegister, Integer principalId) {
         readerRepository.addReader(readerToRegister.getLastName(), readerToRegister.getFirstName(),
                 readerToRegister.getPatronymic(), readerToRegister.getBirthDate(), readerToRegister.getHomeCity(),
