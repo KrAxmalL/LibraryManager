@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import ua.edu.ukma.LibraryManager.models.domain.BookExemplar;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface BookExemplarRepository extends JpaRepository<BookExemplar, Integer> {
@@ -31,4 +32,19 @@ public interface BookExemplarRepository extends JpaRepository<BookExemplar, Inte
             nativeQuery = true)
     void changeShelfForBookExemplar(@Param("target_inventory_number") Integer inventoryNumber,
                                        @Param("target_shelf") String shelf);
+
+    @Query(value = "SELECT checkout_number FROM checkout_history " +
+            "WHERE exemplar_inventory_number = :target_inventory_number " +
+            "       AND checkout_real_finish_date IS NULL",
+            nativeQuery = true)
+    List<Integer> findActiveCheckoutsOfExemplar(@Param("target_inventory_number") Integer inventoryNumber);
+
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Query(value = "DELETE FROM book_exemplar " +
+            "WHERE inventory_number = :target_inventory_number " +
+            "AND NOT EXISTS (SELECT * FROM checkout_history " +
+            "WHERE exemplar_inventory_number = :target_inventory_number " +
+            "AND checkout_real_finish_date IS NULL)",
+            nativeQuery = true)
+    void deleteBookExemplar(@Param("target_inventory_number") Integer inventoryNumber);
 }

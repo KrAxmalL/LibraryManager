@@ -9,4 +9,6 @@ public interface BookExemplarService {
     boolean exemplarIsAvailableForCheckout(Integer inventoryNumber);
 
     boolean changeShelfForExemplar(Integer inventoryNumber, String newShelf);
+
+    boolean deleteExemplar(Integer inventoryNumber);
 }

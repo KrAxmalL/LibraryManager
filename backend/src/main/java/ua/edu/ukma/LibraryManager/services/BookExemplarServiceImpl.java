@@ -10,6 +10,7 @@ import ua.edu.ukma.LibraryManager.models.dto.book.AddBookDTO;
 import ua.edu.ukma.LibraryManager.models.dto.bookExemplar.AddBookExemplarDTO;
 import ua.edu.ukma.LibraryManager.repositories.BookExemplarRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 import static ua.edu.ukma.LibraryManager.utils.StringUtils.isNotNullOrBlank;
@@ -55,6 +56,19 @@ public class BookExemplarServiceImpl implements BookExemplarService {
         bookExemplarRepository.changeShelfForBookExemplar(inventoryNumber, newShelf);
         Optional<BookExemplar> exemplarOpt = bookExemplarRepository.findById(inventoryNumber);
         return exemplarOpt.map(bookExemplar -> bookExemplar.getShelf().equalsIgnoreCase(newShelf)).orElse(false);
+    }
+
+    @Override
+    public boolean deleteExemplar(Integer inventoryNumber) {
+        if(bookExemplarRepository.existsById(inventoryNumber)) {
+            List<Integer> activeCheckout = bookExemplarRepository.findActiveCheckoutsOfExemplar(inventoryNumber);
+            if(activeCheckout.isEmpty()) {
+                bookExemplarRepository.deleteBookExemplar(inventoryNumber);
+                return !bookExemplarRepository.existsById(inventoryNumber);
+            }
+        }
+
+        return false;
     }
 
     public boolean isValidBookExemplar(AddBookExemplarDTO exemplarToAdd) {

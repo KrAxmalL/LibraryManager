@@ -4,10 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ua.edu.ukma.LibraryManager.models.dto.bookExemplar.AddBookExemplarDTO;
 import ua.edu.ukma.LibraryManager.services.BookExemplarService;
 
@@ -29,4 +26,17 @@ public class BookExemplarController {
             return ResponseEntity.badRequest().build();
         }
     }
+
+    @DeleteMapping("/{inventoryNumber}")
+    public ResponseEntity<Void> deleteExemplar(@PathVariable(value = "inventoryNumber", required = true)
+                                                           Integer inventoryNumber) {
+        final boolean deletedSuccessfully = bookExemplarService.deleteExemplar(inventoryNumber);
+        if(deletedSuccessfully) {
+            return ResponseEntity.noContent().build();
+        }
+        else {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
 }
