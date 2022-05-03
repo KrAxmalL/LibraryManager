@@ -17,6 +17,7 @@ public class JWTManager {
 
     private static final long ACCESS_TOKEN_EXPIRATION_TIME_MILLIS = 10 * 60 * 1000;
     private static final String CLAIM = "roles";
+    private static final String ISSUER = "LibraryManagerApplication";
 
     private final Algorithm algorithm;
     private final JWTVerifier verifier;
@@ -27,11 +28,11 @@ public class JWTManager {
         this.verifier = JWT.require(algorithm).build();
     }
 
-    public String getAccessToken(Principal principal, String issuer) {
+    public String getAccessToken(Principal principal) {
         return JWT.create()
                   .withSubject(principal.getUsername())
                   .withExpiresAt(new Date(System.currentTimeMillis() + ACCESS_TOKEN_EXPIRATION_TIME_MILLIS))
-                  .withIssuer(issuer)
+                  .withIssuer(ISSUER)
                   .withClaim(CLAIM, principal.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
                   .sign(algorithm);
     }
