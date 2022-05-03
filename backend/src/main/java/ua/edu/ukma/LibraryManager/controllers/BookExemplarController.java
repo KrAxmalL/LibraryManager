@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ua.edu.ukma.LibraryManager.models.dto.bookExemplar.AddBookExemplarDTO;
+import ua.edu.ukma.LibraryManager.models.dto.replacementAct.AddReplacementActDTO;
 import ua.edu.ukma.LibraryManager.services.BookExemplarService;
 
 @RestController
@@ -39,4 +40,16 @@ public class BookExemplarController {
         }
     }
 
+    @PostMapping("/{inventoryNumber}/replace")
+    public ResponseEntity<Void> replaceExemplar(@PathVariable(value = "inventoryNumber", required = true)
+                                                       Integer inventoryNumber,
+                                                @RequestBody AddReplacementActDTO replacementData) {
+        final boolean replacedSuccessfully = bookExemplarService.replaceExemplar(inventoryNumber, replacementData);
+        if(replacedSuccessfully) {
+            return ResponseEntity.noContent().build();
+        }
+        else {
+            return ResponseEntity.badRequest().build();
+        }
+    }
 }

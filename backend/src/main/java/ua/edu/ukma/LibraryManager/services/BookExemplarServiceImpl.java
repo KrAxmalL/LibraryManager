@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ukma.LibraryManager.models.domain.BookExemplar;
 import ua.edu.ukma.LibraryManager.models.dto.book.AddBookDTO;
 import ua.edu.ukma.LibraryManager.models.dto.bookExemplar.AddBookExemplarDTO;
+import ua.edu.ukma.LibraryManager.models.dto.replacementAct.AddReplacementActDTO;
 import ua.edu.ukma.LibraryManager.repositories.BookExemplarRepository;
 
 import java.util.List;
@@ -23,6 +24,7 @@ public class BookExemplarServiceImpl implements BookExemplarService {
 
     private final BookExemplarRepository bookExemplarRepository;
     private final BookService bookService;
+    private final ReplacementActService replacementActService;
 
     @Override
     public boolean addExemplarForBook(AddBookExemplarDTO exemplarToAdd) {
@@ -66,6 +68,16 @@ public class BookExemplarServiceImpl implements BookExemplarService {
                 bookExemplarRepository.deleteBookExemplar(inventoryNumber);
                 return !bookExemplarRepository.existsById(inventoryNumber);
             }
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean replaceExemplar(Integer inventoryNumber, AddReplacementActDTO replacementData) {
+        if(bookExemplarRepository.existsById(inventoryNumber)
+                && bookExemplarRepository.existsById(replacementData.getNewExemplarInventoryNumber())) {
+            return replacementActService.addReplacementAct(inventoryNumber, replacementData);
         }
 
         return false;
