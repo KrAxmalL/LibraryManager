@@ -8,10 +8,12 @@ import org.springframework.web.bind.annotation.*;
 import ua.edu.ukma.LibraryManager.models.domain.Checkout;
 import ua.edu.ukma.LibraryManager.models.dto.checkout.AddCheckoutDTO;
 import ua.edu.ukma.LibraryManager.models.dto.checkout.CheckoutDetailsDTO;
+import ua.edu.ukma.LibraryManager.models.dto.checkout.ContinueCheckoutDTO;
 import ua.edu.ukma.LibraryManager.models.dto.checkout.FinishCheckoutDTO;
 import ua.edu.ukma.LibraryManager.repositories.CheckoutRepository;
 import ua.edu.ukma.LibraryManager.services.CheckoutService;
 
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 
@@ -48,6 +50,20 @@ public class CheckoutController {
         log.info("checkoutToFinish: " + checkoutToFinish.toString());
         boolean finishedSuccessfully = checkoutService.finishCheckout(checkoutNumber, checkoutToFinish);
         if(finishedSuccessfully) {
+            return ResponseEntity.noContent().build();
+        }
+        else {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @PatchMapping("/{checkoutNumber}/continue")
+    public ResponseEntity<Void> addCheckout(@PathVariable(name = "checkoutNumber", required = true) Integer checkoutNumber,
+                                            @RequestBody(required = true) ContinueCheckoutDTO checkoutToContinue) {
+        log.info("checkoutNumber: " + checkoutNumber.toString());
+        log.info("newFinishDate: " + checkoutToContinue.getNewExpectedFinishDate().toString());
+        boolean continuedSuccessfully = checkoutService.continueCheckout(checkoutNumber, checkoutToContinue);
+        if(continuedSuccessfully) {
             return ResponseEntity.noContent().build();
         }
         else {

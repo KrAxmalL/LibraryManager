@@ -47,4 +47,11 @@ public interface CheckoutRepository extends JpaRepository<Checkout, Integer> {
             nativeQuery = true)
     void setRealFinishDateForCheckout(@Param("target_checkout_number") Integer checkoutNumber,
                                       @Param("target_real_finish_date") LocalDate realFinishDate);
+
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Query(value = "UPDATE checkout_history SET checkout_expected_finish_date = :target_expected_finish_date " +
+                   "WHERE checkout_number = :target_checkout_number",
+            nativeQuery = true)
+    void setExpectedFinishDateForCheckout(@Param("target_checkout_number") Integer checkoutNumber,
+                                      @Param("target_expected_finish_date") LocalDate expectedFinishDate);
 }

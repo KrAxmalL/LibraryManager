@@ -2,6 +2,7 @@ package ua.edu.ukma.LibraryManager.services;
 
 import ua.edu.ukma.LibraryManager.models.dto.checkout.AddCheckoutDTO;
 import ua.edu.ukma.LibraryManager.models.dto.checkout.CheckoutDetailsDTO;
+import ua.edu.ukma.LibraryManager.models.dto.checkout.ContinueCheckoutDTO;
 import ua.edu.ukma.LibraryManager.models.dto.checkout.FinishCheckoutDTO;
 
 import java.util.List;
@@ -13,4 +14,6 @@ public interface CheckoutService {
     boolean addNewCheckout(AddCheckoutDTO checkoutToAdd);
 
     boolean finishCheckout(Integer checkoutNumber, FinishCheckoutDTO checkoutToFinish);
+
+    boolean continueCheckout(Integer checkoutNumber, ContinueCheckoutDTO checkoutToContinue);
 }

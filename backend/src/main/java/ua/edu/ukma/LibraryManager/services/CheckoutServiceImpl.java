@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ukma.LibraryManager.models.domain.Checkout;
 import ua.edu.ukma.LibraryManager.models.dto.checkout.AddCheckoutDTO;
 import ua.edu.ukma.LibraryManager.models.dto.checkout.CheckoutDetailsDTO;
+import ua.edu.ukma.LibraryManager.models.dto.checkout.ContinueCheckoutDTO;
 import ua.edu.ukma.LibraryManager.models.dto.checkout.FinishCheckoutDTO;
 import ua.edu.ukma.LibraryManager.repositories.CheckoutRepository;
 import ua.edu.ukma.LibraryManager.utils.StringUtils;
@@ -84,6 +85,18 @@ public class CheckoutServiceImpl implements CheckoutService {
                     return bookExemplarService.changeShelfForExemplar(exemplarInventoryNumber,
                             checkoutToFinish.getNewShelfForExemplar());
                 }
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean continueCheckout(Integer checkoutNumber, ContinueCheckoutDTO checkoutToContinue) {
+        if(checkoutToContinue.getNewExpectedFinishDate() != null) {
+            if(checkoutRepository.existsById(checkoutNumber)) {
+                checkoutRepository.setExpectedFinishDateForCheckout(
+                            checkoutNumber, checkoutToContinue.getNewExpectedFinishDate());
+                return true;
             }
         }
         return false;
