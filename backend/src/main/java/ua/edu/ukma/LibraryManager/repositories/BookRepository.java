@@ -96,7 +96,7 @@ public interface BookRepository extends JpaRepository<Book, String> {
     Optional<String> findBookByIsbnAndArea(@Param("target_book_isbn") String bookIsbn,
                                              @Param("target_area_cipher") String areaCipher);
 
-    @Modifying
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query(value = "INSERT INTO book(isbn, title, publishing_city, publisher, publishing_year, page_number, price) " +
                    "VALUES(:target_isbn, :target_title, :target_publishing_city, :target_publisher, " +
                           ":target_publishing_year, :target_page_number, :target_price)",
@@ -109,14 +109,14 @@ public interface BookRepository extends JpaRepository<Book, String> {
                  @Param("target_page_number") Integer pageNumber,
                  @Param("target_price") BigDecimal price);
 
-    @Modifying
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query(value  = "INSERT INTO book_subject_area(book_isbn, subject_area_cipher) " +
             "VALUES(:target_book_isbn, :target_subject_area_cipher)",
             nativeQuery = true)
     void addAreaForBook(@Param("target_book_isbn") String bookIsbn,
                         @Param("target_subject_area_cipher") String areaCipher);
 
-    @Modifying
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query(value  = "INSERT INTO book_author(book_isbn, author_name) " +
                     "VALUES(:target_book_isbn, :target_author_name)",
             nativeQuery = true)
@@ -132,7 +132,7 @@ public interface BookRepository extends JpaRepository<Book, String> {
             nativeQuery = true)
     List<Integer> getActiveCheckoutOfBook(@Param("target_book_isbn") String bookIsbn);
 
-    @Modifying
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query(value = "DELETE FROM book " +
                    "WHERE isbn = :target_book_isbn " +
                           "AND NOT EXISTS (SELECT * FROM checkout_history " +
