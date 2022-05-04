@@ -19,20 +19,22 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.util.Arrays.stream;
 
 @Slf4j
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
+    private static final List<String> ignoredPaths = List.of("/api/login", "/api/token/refresh");
+    private static final String BEARER_STR = "Bearer ";
+    private static final int BEARER_LENGTH = BEARER_STR.length();
+
     private final JWTManager jwtManager;
-    private final List<String> ignoredPaths;
 
     public JwtAuthorizationFilter(JWTManager jwtManager) {
         super();
-
         this.jwtManager = jwtManager;
-        this.ignoredPaths = List.of("/api/login", "/api/token/refresh");
     }
 
     @Override
@@ -43,24 +45,23 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         }
         else {
             String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-            if(authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            if(authorizationHeader != null && authorizationHeader.startsWith(BEARER_STR)) {
                 try {
-                    String token = authorizationHeader.substring("Bearer ".length());
-                    DecodedJWT decodedJWT = jwtManager.verifyToken(token);
-                    String username = decodedJWT.getSubject();
-                    String[] roles = decodedJWT.getClaim("roles").asArray(String.class);
-                    Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
-                    stream(roles).forEach(role -> authorities.add(new SimpleGrantedAuthority(role)));
+                    String token = authorizationHeader.substring(BEARER_LENGTH);
+                    String username = jwtManager.getEmail(token);
+                    Collection<SimpleGrantedAuthority> authorities =
+                            jwtManager.getRoles(token)
+                                      .stream()
+                                      .map(SimpleGrantedAuthority::new)
+                                      .collect(Collectors.toList());
+
                     UsernamePasswordAuthenticationToken authenticationToken =
                             new UsernamePasswordAuthenticationToken(username, null, authorities);
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-                    log.info("Current path: {}", request.getServletPath());
-                    log.info("authenticated!");
                     filterChain.doFilter(request, response);
                 } catch(Exception ex) {
                     log.error("Error logging in: {}", ex.getMessage());
-                    response.setStatus(HttpStatus.FORBIDDEN.value());
-                    //response.sendError(HttpStatus.FORBIDDEN.value());
+                    response.setStatus(HttpStatus.UNAUTHORIZED.value());
                     Map<String, String> errorMap = new HashMap<>();
                     errorMap.put("errorMessage", ex.getMessage());
                     response.setContentType(MediaType.APPLICATION_JSON_VALUE);
