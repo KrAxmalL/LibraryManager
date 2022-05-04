@@ -24,11 +24,11 @@ public interface ReaderRepository extends JpaRepository<Reader, Integer> {
     List<Integer> findActiveCheckoutsOfReader(@Param("target_ticket_number") Integer ticketNumber);
 
     @Modifying(clearAutomatically = true, flushAutomatically = true)
-    @Query(value = "INSERT INTO reader(last_name, first_name, patronymic," +
-                                      "birth_date, home_city, home_street" +
-                                      "home_building_number, home_flat_number" +
+    @Query(value = "INSERT INTO reader(ticket_number, last_name, first_name, patronymic," +
+                                      "birth_date, home_city, home_street," +
+                                      "home_building_number, home_flat_number," +
                                       "work_place, principal_id)" +
-                   "VALUES(:target_last_name, :target_first_name, :target_patronymic, :target_birth_date, :target_home_city," +
+                   "VALUES(2222, :target_last_name, :target_first_name, :target_patronymic, :target_birth_date, :target_home_city," +
                           ":target_home_street, :target_home_building_number, :target_home_flat_number, :target_work_place," +
                           ":target_principal_id)",
             nativeQuery = true)
@@ -40,8 +40,15 @@ public interface ReaderRepository extends JpaRepository<Reader, Integer> {
                    @Param("target_home_street") String homeStreet,
                    @Param("target_home_building_number") String homeBuildingNumber,
                    @Param("target_home_flat_number") Integer homeFlatNumber,
-                   @Param("target_workPlace") String workPlace,
-                   @Param("target_principalId") Integer principalId);
+                   @Param("target_work_place") String workPlace,
+                   @Param("target_principal_id") Integer principalId);
+
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Query(value = "INSERT INTO reader_phone(phone_number, reader_ticket_number) " +
+                   "VALUES(:target_phone_number, :target_ticket_number)",
+            nativeQuery = true)
+    void addPhoneForReader(@Param("target_phone_number") String phoneNumber,
+                           @Param("target_ticket_number") Integer ticketNumber);
 
     @Query(value = "SELECT ticket_number FROM reader " +
                    "WHERE principal_id = :target_principal_id",

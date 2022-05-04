@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ukma.LibraryManager.models.domain.Reader;
+import ua.edu.ukma.LibraryManager.models.dto.principal.AddReaderDTO;
 import ua.edu.ukma.LibraryManager.models.dto.principal.RegisterReaderDTO;
 import ua.edu.ukma.LibraryManager.repositories.ReaderRepository;
 
@@ -34,13 +35,20 @@ public class ReaderServiceImpl implements ReaderService {
     }
 
     @Override
-    public boolean addReader(RegisterReaderDTO readerToRegister, Integer principalId) {
-        readerRepository.addReader(readerToRegister.getLastName(), readerToRegister.getFirstName(),
-                readerToRegister.getPatronymic(), readerToRegister.getBirthDate(), readerToRegister.getHomeCity(),
-                readerToRegister.getHomeStreet(), readerToRegister.getHomeBuildingNumber(),
-                readerToRegister.getHomeFlatNumber(), readerToRegister.getWorkPlace(), principalId);
+    public boolean addReader(AddReaderDTO readerToAdd, Integer principalId) {
+        readerRepository.addReader(readerToAdd.getLastName(), readerToAdd.getFirstName(),
+                readerToAdd.getPatronymic(), readerToAdd.getBirthDate(), readerToAdd.getHomeCity(),
+                readerToAdd.getHomeStreet(), readerToAdd.getHomeBuildingNumber(),
+                readerToAdd.getHomeFlatNumber(), readerToAdd.getWorkPlace(), principalId);
 
-        return readerRepository.findReaderByPrincipalId(principalId).isPresent();
+        Optional<Integer> ticketNumberOpt = readerRepository.findReaderByPrincipalId(principalId);
+        if(ticketNumberOpt.isPresent()) {
+            Integer ticketNumber = ticketNumberOpt.get();
+            readerToAdd.getPhoneNumbers().forEach(number -> readerRepository.addPhoneForReader(number, ticketNumber));
+
+            return true;
+        }
+        return false;
     }
 
     @Override

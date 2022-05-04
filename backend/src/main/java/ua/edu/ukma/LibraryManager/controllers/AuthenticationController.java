@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ua.edu.ukma.LibraryManager.models.dto.jwt.JwtToken;
 import ua.edu.ukma.LibraryManager.models.dto.principal.LoginPrincipalDTO;
+import ua.edu.ukma.LibraryManager.models.dto.principal.RegisterReaderDTO;
 import ua.edu.ukma.LibraryManager.models.security.Principal;
 import ua.edu.ukma.LibraryManager.security.jwt.JWTManager;
 import ua.edu.ukma.LibraryManager.services.PrincipalService;
@@ -28,6 +29,7 @@ public class AuthenticationController {
 
     private final AuthenticationManager authenticationManager;
     private final JWTManager jwtManager;
+    private final PrincipalService principalService;
 
     @PostMapping("/login")
     public ResponseEntity<JwtToken> login(@RequestBody LoginPrincipalDTO principalToLogin) {
@@ -41,5 +43,17 @@ public class AuthenticationController {
         } catch(AuthenticationException ex) {
             return ResponseEntity.badRequest().build();
         }
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<JwtToken> register(@RequestBody RegisterReaderDTO readerToRegister) {
+        Optional<Principal> registeredPrincipalOpt = principalService.registerReader(readerToRegister);
+        if(registeredPrincipalOpt.isPresent()) {
+            Principal principal = registeredPrincipalOpt.get();
+            String accessToken = jwtManager.getAccessToken(principal);
+            return ResponseEntity.ok(new JwtToken(accessToken));
+        }
+
+        return ResponseEntity.badRequest().build();
     }
 }
