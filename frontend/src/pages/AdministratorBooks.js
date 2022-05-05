@@ -1,13 +1,12 @@
 import React from "react";
 import Layout from "../components/layout/Layout";
-import LoginForm from "../components/Login/LoginForm";
 
-function Login() {
+function AdministratorBooks() {
     return (
         <Layout>
-            <LoginForm />
+            <div>Administrator Books page!</div>
         </Layout>
     );
 }
 
-export default Login;
+export default AdministratorBooks;
