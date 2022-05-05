@@ -1,8 +1,11 @@
 import React from "react";
+import Layout from "../components/layout/Layout";
 
 function ReaderRegistration() {
     return (
-        <div>Reader Registration Page</div>
+        <Layout>
+            <div>Reader Registration Page</div>
+        </Layout>
     );
 }
 

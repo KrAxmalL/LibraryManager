@@ -1,8 +1,11 @@
 import React from "react";
+import Layout from "../components/layout/Layout";
 
 function Login() {
     return (
-        <div>App Login Page</div>
+        <Layout>
+            <div>App Login Page</div>
+        </Layout>
     );
 }
 
