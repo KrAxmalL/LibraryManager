@@ -4,4 +4,13 @@
 
 body {
   margin: 0;
+
+  background: url('https://cdn.britannica.com/92/216092-050-4B31C2B7/custom-library.jpg') no-repeat center center fixed;
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        background-size: cover;
+        -o-background-size: cover;
+
+  display: flex;
+  flex-direction: column;
 }

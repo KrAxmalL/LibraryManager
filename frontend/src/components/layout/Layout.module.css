@@ -1,10 +1,8 @@
 .main {
-    background: url('https://cdn.britannica.com/92/216092-050-4B31C2B7/custom-library.jpg') no-repeat center center fixed;
-    -webkit-background-size: cover;
-    -moz-background-size: cover;
-    background-size: cover;
-    -o-background-size: cover;
-
-    width: 100%;
+    width: fit-content;
     height: fit-content;
+    align-self: center;
+    justify-self: center;
+    border: 0;
+    background-color: white;
 }
