@@ -1,0 +1,16 @@
+.page-title {
+    font-family:'Imprint MT Shadow';
+    font-size: 60px;
+    color:#523931;
+}
+
+.btn {
+    margin: 1%;
+    background-color:#bb8c46;
+    border-radius: 10px;
+}
+
+.middle-container {
+    font-family:Georgia;
+    font-size: 20px;
+}

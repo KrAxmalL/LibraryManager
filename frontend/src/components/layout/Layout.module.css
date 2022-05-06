@@ -1,3 +1,16 @@
+.top-container {
+    margin: 10%;
+}
+
+.middle-container {
+    border-radius: 30px;
+    margin: 30%;
+}
+
+.card {
+    border-radius: 30px;
+}
+
 .main {
     width: fit-content;
     height: fit-content;

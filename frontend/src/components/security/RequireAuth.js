@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
-import Unauthorized from "../../pages/Unauthorized";
+import Unauthorized from "../../pages/public/Unauthorized";
 
 function RequireAuth({allowedRoles}) {
     const roles = useSelector(state => state.auth.roles);

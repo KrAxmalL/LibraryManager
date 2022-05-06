@@ -11,7 +11,7 @@ import jwtDecode from "jwt-decode";
 import { login } from "../../api/authentication";
 
 import classes from './LoginForm.module.css';
-import { useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 
 function LoginForm() {
   const dispatch = useDispatch();
@@ -39,7 +39,7 @@ function LoginForm() {
         console.log('decoded token: ' + decodedToken.toLocaleString());
         console.log('roles: ' + roles);
         navigate({
-          pathname: '/readerBooks'
+          pathname: '/reader/books'
         });
     } catch(error) {
       //todo: add proper error handling
@@ -48,13 +48,17 @@ function LoginForm() {
   }
 
     return (
-        <form className={classes['login-form']} onSubmit={submitFormHandler}>
-            <h3>Login</h3>
-            <label htmlFor="email">Your email</label>
-            <input type='email' id='email' placeholder="Please, enter your email" ref={emailInputRef}></input>
-            <label htmlFor="password">Your password</label>
-            <input type='password' id='password' placeholder="Please, enter your password" ref={passwordInputRef}></input>
-            <input type='submit' value='Login'></input>
+        <form onSubmit={submitFormHandler}>
+          <div>
+            <input className={classes.input} type='email' placeholder="Email" id='email' required  ref={emailInputRef}></input>
+          </div>
+          <div>
+            <input className={classes.input} type='password' placeholder="Password" id='password' required ref={passwordInputRef}></input>
+          </div>
+          <div>
+            <input className={`${classes.input} ${classes.submit}`} type='submit' value='Login'></input>
+            <Link className={classes.link} to='../registerReader'>Register</Link>
+          </div>
         </form>
     );
 }
