@@ -9,6 +9,8 @@ import reportWebVitals from './reportWebVitals';
 import jwtDecode from 'jwt-decode';
 import { authActions } from './store/auth-slice';
 
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 const accessToken = localStorage.getItem('accessToken');
 const roles = accessToken
                 ? jwtDecode(accessToken).roles
