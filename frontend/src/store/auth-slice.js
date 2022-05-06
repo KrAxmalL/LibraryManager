@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import jwtDecode from "jwt-decode";
 
 const authSlice = createSlice({
     name: 'auth',
@@ -16,7 +17,6 @@ const authSlice = createSlice({
         setRoles(state, action) {
             const newRoles = action.payload.roles;
             state.roles = newRoles;
-            localStorage.setItem('roles', newRoles);
         },
 
         deleteAccessToken(state, action) {
@@ -26,7 +26,14 @@ const authSlice = createSlice({
 
         deleteRoles(state, action) {
             state.roles = null;
-            localStorage.removeItem('roles');
+        },
+
+        loadTokenFromStorage(state, action) {
+            const loadedToken = localStorage.getItem('accessToken');
+            if(loadedToken) {
+                state.accessToken = loadedToken;
+                state.roles = jwtDecode(loadedToken).roles;
+            }
         }
     }
 });
