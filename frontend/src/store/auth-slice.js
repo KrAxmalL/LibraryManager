@@ -34,6 +34,12 @@ const authSlice = createSlice({
                 state.accessToken = loadedToken;
                 state.roles = jwtDecode(loadedToken).roles;
             }
+        },
+
+        logout(state, action) {
+            state.accessToken = null;
+            state.roles = null;
+            localStorage.removeItem('accessToken');
         }
     }
 });

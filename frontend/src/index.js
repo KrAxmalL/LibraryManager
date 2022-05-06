@@ -9,10 +9,10 @@ import reportWebVitals from './reportWebVitals';
 import jwtDecode from 'jwt-decode';
 import { authActions } from './store/auth-slice';
 
-
 const accessToken = localStorage.getItem('accessToken');
-const roles = jwtDecode(accessToken).roles;
-
+const roles = accessToken
+                ? jwtDecode(accessToken).roles
+                : null;
 store.dispatch(authActions.setAccessToken({ accessToken }));
 store.dispatch(authActions.setRoles({ roles }));
 
