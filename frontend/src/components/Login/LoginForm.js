@@ -36,7 +36,7 @@ function LoginForm() {
         const decodedToken = jwtDecode(accessToken);
         const roles = decodedToken.roles;
         dispatch(authActions.setRoles({ roles }));
-        console.log('decoded token: ' + decodedToken.toLocaleString());
+        console.log('decoded token: ' + JSON.stringify(decodedToken));
         console.log('roles: ' + roles);
         navigate({
           pathname: '/reader/books'

@@ -3,8 +3,7 @@
 }
 
 .nav-link {
-    margin-left: 150px;
     font-family:'Imprint MT Shadow';
-    font-size: 30px;
+    font-size: 2rem !important;
     color:white;
 }
