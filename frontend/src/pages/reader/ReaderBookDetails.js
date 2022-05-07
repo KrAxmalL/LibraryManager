@@ -29,7 +29,7 @@ function ReaderBookDetails() {
                 fetchedBook.availability =
                     fetchedBook.availableExemplars.length === 0
                      ? `Доступних примірників немає! Найближча дата повернення: ${fetchedBook.closestAvailableExemplar}`
-                     : `${fetchedBook.availableExemplars.reduce((acc, curr) => acc + ', ' + curr)}`;
+                     : `${fetchedBook.availableExemplars}`;
                 delete fetchedBook.availableExemplars;
                 delete fetchedBook.closestAvailableExemplar;
                 setBook([fetchedBook]);
@@ -44,7 +44,7 @@ function ReaderBookDetails() {
 
     return (
         <HeaderLayout>
-            <h1 className={classes['page-title']}>Детально про книгу {params.bookIsbn}</h1>
+            <h1 className={classes['page-title']}>Книга</h1>
             <div className="container">
                 <div className={`container text-left ${classes['middle-container']}`}>
                     {!isLoading && <ContentTable columns={bookFields} data={book} />}
