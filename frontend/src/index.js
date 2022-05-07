@@ -12,11 +12,12 @@ import { authActions } from './store/auth-slice';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const accessToken = localStorage.getItem('accessToken');
-const roles = accessToken
-                ? jwtDecode(accessToken).roles
-                : null;
-store.dispatch(authActions.setAccessToken({ accessToken }));
-store.dispatch(authActions.setRoles({ roles }));
+if(accessToken) {
+  const roles = jwtDecode(accessToken).roles;
+
+  store.dispatch(authActions.setAccessToken({ accessToken }));
+  store.dispatch(authActions.setRoles({ roles }));
+}
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
