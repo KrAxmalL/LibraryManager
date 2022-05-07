@@ -4,11 +4,11 @@ import classes from './Layout.module.css';
 
 function Layout(props) {
     return (
-        <div className={`container text-center ${classes['top-container']}`}>
+        <div className={`${classes['top-container']}`}>
             <div className={`card border-0 shadow my-4 ${classes['middle-container']}`}>
-                <div className={`card-body p-4${classes['card']}`}>
+                <main className={`card-body p-4${classes['card-content']}`}>
                     {props.children}
-                </div>
+                </main>
             </div>
         </div>
     );

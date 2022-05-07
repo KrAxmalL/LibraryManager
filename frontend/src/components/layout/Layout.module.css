@@ -1,13 +1,18 @@
 .top-container {
-    margin: 10%;
+    min-width: 10%;
+    max-width: 100%;
+    margin-top: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .middle-container {
     border-radius: 30px;
-    margin: 30%;
+    width: fit-content;
 }
 
-.card {
+.card-content {
     border-radius: 30px;
 }
 
