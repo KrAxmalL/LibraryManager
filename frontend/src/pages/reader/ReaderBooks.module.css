@@ -1,7 +1,24 @@
 .page-title {
+    text-align: center;
     font-family:'Imprint MT Shadow';
     font-size: 60px;
     color:#523931;
+}
+
+.input {
+    margin-left: 0.5rem;
+}
+
+.paragraph {
+    margin-bottom: 0.3rem;
+}
+
+.checkbox-list li {
+    list-style: none;
+}
+
+.checkbox-list input {
+    margin-right: 0.3rem;
 }
 
 .btn {

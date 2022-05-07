@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import ContentTable from "../../components/layout/ContentTable";
 import HeaderLayout from "../../components/layout/HeaderLayout";
 
-import { getBooksSummary } from '../../api/books';
+import { getAllAuthors, getBooksSummary } from '../../api/books';
 import classes from './ReaderBooks.module.css';
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { getAllAreas } from "../../api/areas";
+import CheckboxGroup from "../../components/CheckboxGroup/CheckboxGroup";
 
 const bookFields = ['ISBN', 'Назва', 'Автори', 'Жанри', 'Детальніше'];
 
@@ -14,10 +16,14 @@ function ReaderBooks() {
     const accessToken = useSelector(state => state.auth.accessToken);
     const [isLoading, setIsLoading] = useState(false);
     const [books, setBooks] = useState([]);
+    const [authors, setAuthors] = useState([]);
+    const [selectedAuthors, setSelectedAuthors] = useState([]);
+    const [areas, setAreas] = useState([]);
+    const [selectedAreas, setSelectedAreas] = useState([]);
+    const titleInputRef = useRef();
 
     useEffect(() => {
         const fetchBooks = async() => {
-            setIsLoading(true);
             try {
                 console.log(accessToken);
                 console.log('fetching books');
@@ -29,28 +35,86 @@ function ReaderBooks() {
                 setBooks(mappedBooks);
             } catch(e) {
                 console.log(e);
-            } finally {
-                setIsLoading(false);
             }
         }
-        fetchBooks();
+
+        const fetchAuthors = async() => {
+            try {
+                const fetchedAuthors = await getAllAuthors(accessToken);
+                setAuthors(fetchedAuthors);
+            } catch(e) {
+                console.log(e);
+            }
+        }
+
+        const fetchAreas = async() => {
+            try {
+                const fetchedAreas = await getAllAreas(accessToken);
+                setAreas(fetchedAreas);
+            } catch(e) {
+                console.log(e);
+            }
+        }
+
+        const fetchData = async() => {
+            setIsLoading(true);
+            Promise.all([fetchBooks(accessToken), fetchAuthors(accessToken), fetchAreas(accessToken)]);
+            setIsLoading(false);
+        }
+
+        fetchData();
+
     }, [accessToken, setIsLoading]);
+
+    const authorsSelectionChangeHandler = (newSelectedAuthors) => {
+        //setSelectedAuthors(newSelectedAuthors.filter(author => author));
+        console.log(newSelectedAuthors);
+    }
+
+    const areasSelectionChangeHandler = (newSelectedAreas) => {
+        console.log(newSelectedAreas);
+    }
+
+    const findClickHandler = () => {
+        
+    }
+
+    // const displayBooks = useMemo(() => {
+    //     books.filter(book => {
+    //         let bookIsCorrect = false;
+    //         return book.authors.some(author => selectedAuthors.includes(author))
+    //                && book.areas.some(area => selectedAreas.find(selectedArea => selectedArea.cipher === area.cipher));
+    //     });
+    // }, [books, selectedAuthors, selectedAreas, titleInputRef]);
 
     return (
         <HeaderLayout>
-            <h1 className={classes['page-title']}>Бібліотека</h1>
+            <h1 className={classes['page-title']}>Каталог книг</h1>
             <div className="container">
+            {!isLoading &&
                 <div className={`container text-left ${classes['middle-container']}`}>
-                        <p>Пошук:
-                            <input type="text" size="40" />
-                            <button className={classes.btn}>Знайти</button>
-                        </p>
-                        <p>Жанри</p>
-                        <ul></ul>
-                        <p>Автори:</p>
-                        <ul></ul>
-                        {!isLoading && <ContentTable columns={bookFields} data={books} />}
-                </div>
+                    <p className={classes.paragraph}>Назва:
+                        <input className={classes.input} type="text" size="40" ref={titleInputRef} />
+                        <button className={classes.btn} onClick={findClickHandler}>Знайти</button>
+                    </p>
+                    <p className={classes.paragraph}>Жанри:</p>
+                    <CheckboxGroup className={classes['checkbox-list']} items={areas.map(area => {
+                            return {
+                                id: area.cipher,
+                                displayValue: area.subjectAreaName
+                            }
+                        }
+                    )} onSelectionChange={areasSelectionChangeHandler} />
+                    <p className={classes.paragraph}>Автори:</p>
+                    <CheckboxGroup className={classes['checkbox-list']} items={authors.map((author, index) => {
+                            return {
+                                id: index,
+                                displayValue: author
+                            }
+                        }
+                    )} onSelectionChange={authorsSelectionChangeHandler} />
+                    <ContentTable columns={bookFields} data={books} />
+                </div> }
             </div>
         </HeaderLayout>
     );
