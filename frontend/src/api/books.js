@@ -33,3 +33,20 @@ export async function getBookDetails(accessToken, bookIsbn) {
         throw new Error("Book fetching failed");
     }
 };
+
+export async function getAllAuthors(accessToken) {
+    const response = await fetch(BOOKS_URL + '/authors', {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${accessToken}`
+        },
+    });
+
+    if(response.ok) {
+        return await response.json();
+    }
+    else {
+        throw new Error("Book fetching failed");
+    }
+};
+
