@@ -14,6 +14,19 @@ export async function getAllReaders(accessToken) {
         return await response.json();
     }
     else {
-        throw new Error("Checkouts fetching failed");
+        throw new Error("Readers fetching failed");
+    }
+};
+
+export async function deleteReader(accessToken, readerTicketNumber) {
+    const response = await fetch(READERS_URL + `/${readerTicketNumber}`, {
+        method: 'DELETE',
+        headers: {
+            'Authorization': `Bearer ${accessToken}`
+        },
+    });
+
+    if(!response.ok) {
+        throw new Error("Readers fetching failed");
     }
 };
