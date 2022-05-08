@@ -13,7 +13,9 @@ function ContentTable(props) {
         for(const field in item) {
             const dataOfField = item[field];
             if(dataOfField instanceof Array) {
-                elem = dataOfField.reduce((acc, curr) => acc + ', ' + curr);
+                elem = dataOfField.length === 0
+                        ? ''
+                        : dataOfField.reduce((acc, curr) => acc + ', ' + curr);
             }
             else {
                 elem = dataOfField;
