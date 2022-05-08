@@ -2,7 +2,7 @@ import { DOMAIN_URL } from "../config/config";
 
 const CHECKOUTS_URL = DOMAIN_URL + '/checkouts';
 
-export async function getCheckoutsForUser(accessToken) {
+export async function getAllCheckouts(accessToken) {
     const response = await fetch(CHECKOUTS_URL, {
         method: 'GET',
         headers: {
