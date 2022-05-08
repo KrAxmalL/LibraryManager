@@ -1,0 +1,19 @@
+.continue-checkout-form {
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    color: #484043;
+}
+
+.input {
+    margin: 1%;
+    border-radius: 10px;
+}
+
+.submit {
+    background-color:#bb8c46;
+}
+
+.subheader {
+
+}
