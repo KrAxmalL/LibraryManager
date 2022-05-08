@@ -21,6 +21,24 @@ function LoginForm() {
 
   const navigate = useNavigate();
 
+  const navigateAfterLogin = (roles) => {
+    if(!roles) {
+      return '/login';
+    }
+    else if(roles.includes('READER')) {
+      return '/reader/books';
+    }
+    else if(roles.includes('LIBRARIAN')) {
+      return '/librarian/books';
+    }
+    else if(roles.includes('ADMINISTRATOR')) {
+      return '/administrator/books';
+    }
+    else {
+      return '/unauthorized';
+    }
+  }
+
   const submitFormHandler = async (e) => {
     e.preventDefault();
 
@@ -39,7 +57,7 @@ function LoginForm() {
         console.log('decoded token: ' + JSON.stringify(decodedToken));
         console.log('roles: ' + roles);
         navigate({
-          pathname: '/reader/books'
+          pathname: navigateAfterLogin(roles)
         });
     } catch(error) {
       //todo: add proper error handling

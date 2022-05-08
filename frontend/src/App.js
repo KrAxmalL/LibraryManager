@@ -13,17 +13,41 @@ import AdministratorBooks from './pages/administrator/AdministratorBooks';
 import { useSelector } from 'react-redux';
 import ReaderCheckouts from './pages/reader/ReaderCheckouts';
 import ReaderBookDetails from './pages/reader/ReaderBookDetails';
+import LibrarianAddBook from './pages/librarian/LibrarianAddBook';
+import LibrarianCheckouts from './pages/librarian/LibrarianCheckouts';
+import LibrarianReaders from './pages/librarian/LibrarianReaders';
+import Unauthorized from './pages/public/Unauthorized';
+import LibrarianBookDetails from './pages/librarian/LibrarianBookDetails';
 
 function App() {
 
   const roles = useSelector(state => state.auth.roles);
 
+  const navigateAfterLogin = (roles) => {
+    if(!roles) {
+      return '/login';
+    }
+    else if(roles.includes('READER')) {
+      return '/reader/books';
+    }
+    else if(roles.includes('LIBRARIAN')) {
+      return '/librarian/books';
+    }
+    else if(roles.includes('ADMINISTRATOR')) {
+      return '/administrator/books';
+    }
+    else {
+      return '/unauthorized';
+    }
+  }
+
   return (
     <div className="App">
       <Routes>
-        <Route path='/' exact element={<Navigate redirect to={roles ? '/reader/books' : '/login'} />}></Route>
+        <Route path='/' exact element={<Navigate redirect to={navigateAfterLogin(roles)} />}></Route>
         <Route path='/login' exact element={<Login />}></Route>
         <Route path='/registerReader' exact element={<ReaderRegistration />}></Route>
+        <Route path='/unauthorized' exact element={<Unauthorized />}></Route>
 
         <Route element={<RequireAuth allowedRoles={['READER']}></RequireAuth>}>
           <Route path='/reader/books' element={<ReaderBooks />} />
@@ -32,6 +56,10 @@ function App() {
         </Route>
         <Route element={<RequireAuth allowedRoles={['LIBRARIAN']}></RequireAuth>}>
           <Route path='/librarian/books' element={<LibrarianBooks />} />
+          <Route path='/librarian/books/:bookIsbn' element={<LibrarianBookDetails />} />
+          <Route path='/librarian/books/add' element={<LibrarianAddBook />} />
+          <Route path='/librarian/checkouts' element={<LibrarianCheckouts />} />
+          <Route path='/librarian/readers' element={<LibrarianReaders />} />
         </Route>
         <Route element={<RequireAuth allowedRoles={['ADMINISTRATOR']}></RequireAuth>}>
           <Route path='/administratorBooks' element={<AdministratorBooks />} />
