@@ -11,7 +11,6 @@ import java.util.List;
 
 public interface CheckoutRepository extends JpaRepository<Checkout, Integer> {
 
-
     @Query(value = "SELECT checkout_history.checkout_number, checkout_history.checkout_start_date," +
             " checkout_history.checkout_expected_finish_date, checkout_history.checkout_real_finish_date," +
             " book.isbn, book.title, book_exemplar.inventory_number" +
@@ -29,6 +28,19 @@ public interface CheckoutRepository extends JpaRepository<Checkout, Integer> {
             "          );",
             nativeQuery = true)
     List<Object[]> findCheckoutsOfReader(@Param("searched_reader_email") String readerEmail);
+
+    @Query(value = "SELECT reader.ticket_number, reader.last_name, reader.first_name, reader.patronymic, " +
+            "checkout_history.checkout_number, checkout_history.checkout_start_date," +
+            " checkout_history.checkout_expected_finish_date, checkout_history.checkout_real_finish_date," +
+            " book.isbn, book.title, book_exemplar.inventory_number" +
+            " FROM checkout_history INNER JOIN book_exemplar" +
+            "  ON checkout_history.exemplar_inventory_number = book_exemplar.inventory_number" +
+            "  INNER JOIN book" +
+            "  ON book.isbn = book_exemplar.book_isbn" +
+            "  INNER JOIN reader" +
+            "  ON reader.ticket_number = checkout_history.reader_ticket_number;",
+            nativeQuery = true)
+    List<Object[]> findAllCheckouts();
 
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query(value = "INSERT INTO checkout_history(checkout_start_date, checkout_expected_finish_date, checkout_real_finish_date, " +

@@ -1,13 +1,12 @@
 package ua.edu.ukma.LibraryManager.services;
 
-import ua.edu.ukma.LibraryManager.models.dto.checkout.AddCheckoutDTO;
-import ua.edu.ukma.LibraryManager.models.dto.checkout.CheckoutDetailsDTO;
-import ua.edu.ukma.LibraryManager.models.dto.checkout.ContinueCheckoutDTO;
-import ua.edu.ukma.LibraryManager.models.dto.checkout.FinishCheckoutDTO;
+import ua.edu.ukma.LibraryManager.models.dto.checkout.*;
 
 import java.util.List;
 
 public interface CheckoutService {
+
+    List<LibrarianCheckoutDetailsDTO> getAllCheckouts();
 
     List<CheckoutDetailsDTO> getCheckoutOfUser(String readerEmail);
 

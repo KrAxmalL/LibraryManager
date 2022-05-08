@@ -6,10 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ukma.LibraryManager.models.domain.Checkout;
-import ua.edu.ukma.LibraryManager.models.dto.checkout.AddCheckoutDTO;
-import ua.edu.ukma.LibraryManager.models.dto.checkout.CheckoutDetailsDTO;
-import ua.edu.ukma.LibraryManager.models.dto.checkout.ContinueCheckoutDTO;
-import ua.edu.ukma.LibraryManager.models.dto.checkout.FinishCheckoutDTO;
+import ua.edu.ukma.LibraryManager.models.dto.checkout.*;
 import ua.edu.ukma.LibraryManager.repositories.CheckoutRepository;
 import ua.edu.ukma.LibraryManager.utils.StringUtils;
 
@@ -30,6 +27,29 @@ public class CheckoutServiceImpl implements CheckoutService {
     private final CheckoutRepository checkoutRepository;
     private final BookExemplarService bookExemplarService;
     private final ReaderService readerService;
+
+    @Override
+    public List<LibrarianCheckoutDetailsDTO> getAllCheckouts() {
+        List<Object[]> checkoutsObj = checkoutRepository.findAllCheckouts();
+        return checkoutsObj.stream().map(checkoutObj -> {
+            LibrarianCheckoutDetailsDTO resCheckout = new LibrarianCheckoutDetailsDTO();
+            resCheckout.setReaderTicketNumber((Integer) checkoutObj[0]);
+            resCheckout.setInitials(checkoutObj[1].toString() + ' ' + checkoutObj[2].toString() + ' ' + checkoutObj[3].toString());
+            resCheckout.setCheckoutNumber((Integer) checkoutObj[4]);
+            resCheckout.setCheckoutStartDate(LocalDate.parse(checkoutObj[5].toString()));
+            resCheckout.setCheckoutExpectedFinishDate(LocalDate.parse(checkoutObj[6].toString()));
+            Object realFinishDateObj = checkoutObj[7];
+            LocalDate realFinishDate =
+                    realFinishDateObj == null
+                            ? null
+                            : LocalDate.parse(realFinishDateObj.toString());
+            resCheckout.setCheckoutRealFinishDate(realFinishDate);
+            resCheckout.setBookIsbn((String) checkoutObj[8]);
+            resCheckout.setBookTitle((String) checkoutObj[9]);
+            resCheckout.setExemplarInventoryNumber((Integer) checkoutObj[10]);
+            return resCheckout;
+        }).collect(Collectors.toList());
+    }
 
     @Override
     public List<CheckoutDetailsDTO> getCheckoutOfUser(String readerEmail) {
