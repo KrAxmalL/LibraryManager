@@ -23,9 +23,22 @@ function LibrarianCheckouts() {
                 console.log('fetching checkouts');
                 const fetchedCheckouts = await getAllCheckouts(accessToken);
                 const mappedCheckouts = fetchedCheckouts.map(checkout => {
+                    let content;
+                    if(checkout.checkoutRealFinishDate) {
+                        content = checkout.checkoutRealFinishDate;
+                    }
+                    else {
+                        content = (
+                            <React.Fragment>
+                                <p>Книга ще у читача</p>
+                                <button className={classes.btn}>Продовжити</button>
+                                <button className={classes.btn}>Прийняти книгу</button>
+                            </React.Fragment>
+                        );
+                    }
                     return {
                         ...checkout,
-                        checkoutRealFinishDate: checkout.checkoutRealFinishDate || 'Книга ще у читача'
+                        checkoutRealFinishDate: content
                     }
                 })
                 setCheckouts(mappedCheckouts);
