@@ -19,7 +19,7 @@ export async function getBooksSummary(accessToken) {
 };
 
 export async function getBookDetails(accessToken, bookIsbn) {
-    const response = await fetch(BOOKS_URL + `/${bookIsbn}?checkoutDetails=true`, {
+    const response = await fetch(BOOKS_URL + `/${bookIsbn}`, {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${accessToken}`

@@ -9,7 +9,7 @@ import { getBookDetails } from "../../api/books";
 import classes from './ReaderBookDetails.module.css';
 import ReaderLayout from "../../components/reader/ReaderLayout";
 
-const bookFields = ['ISBN', 'Назва', 'Жанри', 'Автори', 'Місто видання', 'Видавництво', 'Рік видання',
+const bookFields = ['ISBN', 'Назва', 'Автори', 'Жанри', 'Місто видання', 'Видавництво', 'Рік видання',
                     'Кількість сторінок', 'Доступні примірники'];
 
 function ReaderBookDetails() {
