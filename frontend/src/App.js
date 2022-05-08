@@ -31,7 +31,7 @@ function App() {
           <Route path='/reader/checkouts' element={<ReaderCheckouts />} />
         </Route>
         <Route element={<RequireAuth allowedRoles={['LIBRARIAN']}></RequireAuth>}>
-          <Route path='/librarianBooks' element={<LibrarianBooks />} />
+          <Route path='/librarian/books' element={<LibrarianBooks />} />
         </Route>
         <Route element={<RequireAuth allowedRoles={['ADMINISTRATOR']}></RequireAuth>}>
           <Route path='/administratorBooks' element={<AdministratorBooks />} />

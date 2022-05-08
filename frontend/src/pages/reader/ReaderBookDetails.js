@@ -7,6 +7,7 @@ import HeaderLayout from "../../components/layout/HeaderLayout";
 import { getBookDetails } from "../../api/books";
 
 import classes from './ReaderBookDetails.module.css';
+import ReaderLayout from "../../components/reader/ReaderLayout";
 
 const bookFields = ['ISBN', 'Назва', 'Жанри', 'Автори', 'Місто видання', 'Видавництво', 'Рік видання',
                     'Кількість сторінок', 'Доступні примірники'];
@@ -43,14 +44,14 @@ function ReaderBookDetails() {
     }, [accessToken, params, setIsLoading]);
 
     return (
-        <HeaderLayout>
+        <ReaderLayout>
             <h1 className={classes['page-title']}>Книга</h1>
             <div className="container">
                 <div className={`container text-left ${classes['middle-container']}`}>
                     {!isLoading && <ContentTable columns={bookFields} data={book} />}
                 </div>
             </div>
-        </HeaderLayout>
+        </ReaderLayout>
     );
 }
 

@@ -6,6 +6,7 @@ import HeaderLayout from "../../components/layout/HeaderLayout";
 import { getCheckoutsForUser } from "../../api/checkouts";
 
 import classes from './ReaderCheckouts.module.css';
+import ReaderLayout from "../../components/reader/ReaderLayout";
 
 const checkoutFields = ['ISBN', 'Книга', 'Примірник', 'Номер видачі', 'Дата видачі', 'Очікувана дата повернення', 'Реальна дата повернення'];
 
@@ -38,14 +39,14 @@ function ReaderCheckouts() {
     }, [accessToken, setIsLoading]);
 
     return (
-        <HeaderLayout>
+        <ReaderLayout>
             <h1 className={classes['page-title']}>Історія видач</h1>
             <div className="container">
                 <div className={`container text-left ${classes['middle-container']}`}>
                     {!isLoading && <ContentTable columns={checkoutFields} data={checkouts} />}
                 </div>
             </div>
-        </HeaderLayout>
+        </ReaderLayout>
     );
 }
 

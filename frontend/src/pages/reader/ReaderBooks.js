@@ -8,6 +8,7 @@ import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { getAllAreas } from "../../api/areas";
 import CheckboxGroup from "../../components/CheckboxGroup/CheckboxGroup";
+import ReaderLayout from "../../components/reader/ReaderLayout";
 
 const bookFields = ['ISBN', 'Назва', 'Автори', 'Жанри', 'Детальніше'];
 
@@ -88,7 +89,7 @@ function ReaderBooks() {
     // }, [books, selectedAuthors, selectedAreas, titleInputRef]);
 
     return (
-        <HeaderLayout>
+        <ReaderLayout>
             <h1 className={classes['page-title']}>Каталог книг</h1>
             <div className="container">
             {!isLoading &&
@@ -116,7 +117,7 @@ function ReaderBooks() {
                     <ContentTable columns={bookFields} data={books} />
                 </div> }
             </div>
-        </HeaderLayout>
+        </ReaderLayout>
     );
 }
 

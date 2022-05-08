@@ -6,6 +6,7 @@ import { authActions } from "../../store/auth-slice";
 import classes from './Header.module.css';
 
 function Header(props) {
+    const menus = props.menus;
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -21,10 +22,13 @@ function Header(props) {
     return (
         <nav className={`navbar navbar-expand-lg navbar-dark mb-1 ${classes['nav-color']}`}>
             <div className="container" >
-                <NavLink className={`navbar-brand ${classes['nav-color']} ${classes['nav-link']}`}
-                         to='/reader/books'>Книги</NavLink>
-                <NavLink className={`navbar-brand ${classes['nav-color']} ${classes['nav-link']}`}
-                         to='/reader/checkouts'>Історія видач</NavLink>
+                {menus.map(menu => {
+                    return (
+                        <NavLink key={menu.link} className={`navbar-brand ${classes['nav-color']} ${classes['nav-link']}`}
+                                 to={menu.link}>{menu.title}
+                        </NavLink>
+                );
+                })}
                 <NavLink className={`navbar-brand ${classes['nav-color']} ${classes['nav-link']}`}
                          to='../login' onClick={exitClickHandler}>Вийти</NavLink>
             </div>

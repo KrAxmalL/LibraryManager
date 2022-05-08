@@ -5,7 +5,7 @@ import Layout from "./Layout";
 function HeaderLayout(props) {
     return (
         <React.Fragment>
-            <Header></Header>
+            <Header menus={props.menus}></Header>
             <Layout>{props.children}</Layout>
         </React.Fragment>
     );
