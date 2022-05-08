@@ -8,10 +8,12 @@ import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ukma.LibraryManager.models.domain.Reader;
 import ua.edu.ukma.LibraryManager.models.dto.principal.AddReaderDTO;
 import ua.edu.ukma.LibraryManager.models.dto.principal.RegisterReaderDTO;
+import ua.edu.ukma.LibraryManager.models.dto.reader.ReaderDetailsDTO;
 import ua.edu.ukma.LibraryManager.repositories.ReaderRepository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -24,6 +26,26 @@ public class ReaderServiceImpl implements ReaderService {
     @Override
     public boolean readerExists(Integer ticketNumber) {
         return readerRepository.existsById(ticketNumber);
+    }
+
+    @Override
+    public List<ReaderDetailsDTO> getAllReaders() {
+        List<Reader> readers = readerRepository.findAll();
+        return readers.stream().map(reader -> {
+            ReaderDetailsDTO resDTO = new ReaderDetailsDTO();
+            resDTO.setTicketNumber(reader.getTicketNumber());
+            resDTO.setLastName(reader.getLastName());
+            resDTO.setFirstName(reader.getFirstName());
+            resDTO.setPatronymic(reader.getPatronymic());
+            resDTO.setPhoneNumbers(reader.getPhoneNumbers());
+            resDTO.setBirthDate(reader.getBirthDate());
+            resDTO.setHomeCity(reader.getHomeCity());
+            resDTO.setHomeStreet(reader.getHomeStreet());
+            resDTO.setHomeBuildingNumber(reader.getHomeBuildingNumber());
+            resDTO.setHomeFlatNumber(reader.getHomeFlatNumber());
+            resDTO.setWorkPlace(reader.getWorkPlace());
+            return resDTO;
+        }).collect(Collectors.toList());
     }
 
     @Override
