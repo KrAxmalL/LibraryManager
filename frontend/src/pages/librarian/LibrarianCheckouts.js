@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { continueCheckout, finishCheckout, getAllCheckouts } from "../../api/checkouts";
 import ContentTable from "../../components/layout/ContentTable";
@@ -21,20 +21,16 @@ function LibrarianCheckouts() {
     const [continueFormVisible, setContinueFormVisible] = useState(false);
     const [finishFormVisible, setFinishFormVisible] = useState(false);
 
-    const editableCheckouts = checkouts.filter(checkout => checkout.checkoutRealFinishDate === null);
-    const checkoutForContinueCheckout = editableCheckouts.map(checkout => {
-        return {
-            checkoutNumber: checkout.checkoutNumber,
-            checkoutExpectedFinishDate: checkout.checkoutExpectedFinishDate
-        }}
-    );
-
-    const checkoutForFinishCheckout = editableCheckouts.map(checkout => {
-        return {
-            checkoutNumber: checkout.checkoutNumber,
-            checkoutStartDate: checkout.checkoutStartDate
-        }}
-    );
+    const checkoutsForEditing = useMemo(() => {
+        return checkouts.filter(checkout => checkout.checkoutRealFinishDate === null)
+                        .map(checkout => {
+                                return {
+                                    checkoutNumber: checkout.checkoutNumber,
+                                    checkoutStartDate: checkout.checkoutStartDate,
+                                    checkoutExpectedFinishDate: checkout.checkoutExpectedFinishDate
+                                }}
+                            );
+    }, [checkouts]);
 
     const continueClickHandler = (e) => {
         setContinueFormVisible(true);
@@ -86,20 +82,20 @@ function LibrarianCheckouts() {
                                                  data={checkouts.map(checkout => {
                                                             return {
                                                                 ...checkout,
-                                                                checkoutRealFinishDate: checkout.checkoutRealFinishDate 
+                                                                checkoutRealFinishDate: checkout.checkoutRealFinishDate
                                                                                         || 'Книга ще у читача'
                                                             }
                                                 })}
                                     />
                     }
                 </div>
-                <button className={classes.btn} onClick={continueClickHandler}>Продовжити</button>
+                <button className={classes.btn} onClick={continueClickHandler}>Продовжити видачу</button>
                 <button className={classes.btn} onClick={finishClickHandler}>Прийняти книгу</button>
                 {modalVisible &&
                     <Modal onClose={hideModalClickHandler}>
-                        {continueFormVisible && <ContinueCheckoutForm checkouts={checkoutForContinueCheckout}
+                        {continueFormVisible && <ContinueCheckoutForm checkouts={checkoutsForEditing}
                                                                       onContinueDateSelected={sendContinueCheckout}/>}
-                        {finishFormVisible && <FinishCheckoutForm checkouts={checkoutForFinishCheckout}
+                        {finishFormVisible && <FinishCheckoutForm checkouts={checkoutsForEditing}
                                                                   onFinishDateSelected={sendFinishCheckout}/>}
                     </Modal>
                 }
