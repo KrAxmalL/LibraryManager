@@ -30,10 +30,7 @@ export async function continueCheckout(accessToken, checkoutNumber, newDate) {
         })
     });
 
-    if(response.ok) {
-        return await response.json();
-    }
-    else {
+    if(!response.ok) {
         throw new Error("Checkouts fetching failed");
     }
 };
@@ -51,10 +48,7 @@ export async function finishCheckout(accessToken, checkoutNumber, finishDate, sh
         })
     });
 
-    if(response.ok) {
-        return await response.json();
-    }
-    else {
+    if(!response.ok) {
         throw new Error("Checkouts fetching failed");
     }
 };
