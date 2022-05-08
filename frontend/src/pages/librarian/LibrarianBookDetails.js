@@ -43,6 +43,11 @@ function LibrarianBookDetails() {
                 <div className={`container text-left ${classes['middle-container']}`}>
                     {!isLoading && <ContentTable columns={bookFields} data={book} />}
                 </div>
+                <button className={classes.btn}>Видати книгу</button>
+                <button className={classes.btn}>Додати примірник</button>
+                <button className={classes.btn}>Замінити примірник</button>
+                <button className={classes.btn}>Редагувати жанри</button>
+                <button className={classes.btn}>Списати книгу</button>
             </div>
         </LibrarianLayout>
     );

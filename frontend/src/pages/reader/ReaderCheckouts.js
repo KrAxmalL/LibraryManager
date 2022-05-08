@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import ContentTable from "../../components/layout/ContentTable";
 import HeaderLayout from "../../components/layout/HeaderLayout";
 
-import { getCheckoutsForUser } from "../../api/checkouts";
+import { getAllCheckouts } from "../../api/checkouts";
 
 import classes from './ReaderCheckouts.module.css';
 import ReaderLayout from "../../components/reader/ReaderLayout";
@@ -16,12 +16,12 @@ function ReaderCheckouts() {
     const [checkouts, setCheckouts] = useState([]);
 
     useEffect(() => {
-        const fetchBooks = async() => {
+        const fetchCheckouts = async() => {
             setIsLoading(true);
             try {
                 console.log(accessToken);
                 console.log('fetching checkouts');
-                const fetchedCheckouts = await getCheckoutsForUser(accessToken);
+                const fetchedCheckouts = await getAllCheckouts(accessToken);
                 const mappedCheckouts = fetchedCheckouts.map(checkout => {
                     return {
                         ...checkout,
@@ -35,7 +35,7 @@ function ReaderCheckouts() {
                 setIsLoading(false);
             }
         }
-        fetchBooks();
+        fetchCheckouts();
     }, [accessToken, setIsLoading]);
 
     return (
