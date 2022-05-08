@@ -21,17 +21,18 @@ function LibrarianCheckouts() {
     const [continueFormVisible, setContinueFormVisible] = useState(false);
     const [finishFormVisible, setFinishFormVisible] = useState(false);
 
-    const checkoutForContinueCheckout = checkouts.map(checkout => {
+    const editableCheckouts = checkouts.filter(checkout => checkout.checkoutRealFinishDate === null);
+    const checkoutForContinueCheckout = editableCheckouts.map(checkout => {
         return {
             checkoutNumber: checkout.checkoutNumber,
             checkoutExpectedFinishDate: checkout.checkoutExpectedFinishDate
         }}
     );
 
-    const checkoutForFinishCheckout = checkouts.map(checkout => {
+    const checkoutForFinishCheckout = editableCheckouts.map(checkout => {
         return {
             checkoutNumber: checkout.checkoutNumber,
-            checkoutRealFinishDate: checkout.checkoutRealFinishDate
+            checkoutStartDate: checkout.checkoutStartDate
         }}
     );
 
@@ -66,13 +67,7 @@ function LibrarianCheckouts() {
                 console.log(accessToken);
                 console.log('fetching checkouts');
                 const fetchedCheckouts = await getAllCheckouts(accessToken);
-                const mappedCheckouts = fetchedCheckouts.map(checkout => {
-                    return {
-                        ...checkout,
-                        checkoutRealFinishDate: checkout.checkoutRealFinishDate || 'Книга ще у читача'
-                    }
-                })
-                setCheckouts(mappedCheckouts);
+                setCheckouts(fetchedCheckouts);
             } catch(e) {
                 console.log(e);
             } finally {
@@ -87,7 +82,16 @@ function LibrarianCheckouts() {
             <h1 className={classes['page-title']}>Історія видач</h1>
             <div className="container">
                 <div className={`container text-left ${classes['middle-container']}`}>
-                    {!isLoading && <ContentTable columns={checkoutFields} data={checkouts} />}
+                    {!isLoading && <ContentTable columns={checkoutFields}
+                                                 data={checkouts.map(checkout => {
+                                                            return {
+                                                                ...checkout,
+                                                                checkoutRealFinishDate: checkout.checkoutRealFinishDate 
+                                                                                        || 'Книга ще у читача'
+                                                            }
+                                                })}
+                                    />
+                    }
                 </div>
                 <button className={classes.btn} onClick={continueClickHandler}>Продовжити</button>
                 <button className={classes.btn} onClick={finishClickHandler}>Прийняти книгу</button>
