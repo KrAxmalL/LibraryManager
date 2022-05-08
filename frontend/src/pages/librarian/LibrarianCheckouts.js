@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { getAllCheckouts } from "../../api/checkouts";
+import { continueCheckout, finishCheckout, getAllCheckouts } from "../../api/checkouts";
 import ContentTable from "../../components/layout/ContentTable";
 import Layout from "../../components/layout/Layout";
 import Modal from "../../components/layout/Modal";
@@ -21,9 +21,17 @@ function LibrarianCheckouts() {
     const [continueFormVisible, setContinueFormVisible] = useState(false);
     const [finishFormVisible, setFinishFormVisible] = useState(false);
 
-    const checkoutToChoose = checkouts.map(checkout => {
+    const checkoutForContinueCheckout = checkouts.map(checkout => {
         return {
-            checkoutNumber: checkout.checkoutNumber
+            checkoutNumber: checkout.checkoutNumber,
+            checkoutExpectedFinishDate: checkout.checkoutExpectedFinishDate
+        }}
+    );
+
+    const checkoutForFinishCheckout = checkouts.map(checkout => {
+        return {
+            checkoutNumber: checkout.checkoutNumber,
+            checkoutRealFinishDate: checkout.checkoutRealFinishDate
         }}
     );
 
@@ -43,12 +51,12 @@ function LibrarianCheckouts() {
         setFinishFormVisible(false);
     }
 
-    const continueCheckout = async(checkoutNumber, newDate) => {
-
+    const sendContinueCheckout = async(checkoutNumber, newDate) => {
+        await continueCheckout(accessToken, checkoutNumber, newDate);
     }
 
-    const finishCheckout = async(checkoutNumber, newDate) => {
-        
+    const sendFinishCheckout = async(checkoutNumber, newDate, newShelf) => {
+        await finishCheckout(accessToken, checkoutNumber, newDate, newShelf);
     }
 
     useEffect(() => {
@@ -85,8 +93,10 @@ function LibrarianCheckouts() {
                 <button className={classes.btn} onClick={finishClickHandler}>Прийняти книгу</button>
                 {modalVisible &&
                     <Modal onClose={hideModalClickHandler}>
-                        {continueFormVisible && <ContinueCheckoutForm checkouts={checkoutToChoose}/>}
-                        {finishFormVisible && <FinishCheckoutForm checkouts={checkoutToChoose}/>}
+                        {continueFormVisible && <ContinueCheckoutForm checkouts={checkoutForContinueCheckout}
+                                                                      onContinueDateSelected={sendContinueCheckout}/>}
+                        {finishFormVisible && <FinishCheckoutForm checkouts={checkoutForFinishCheckout}
+                                                                  onFinishDateSelected={sendFinishCheckout}/>}
                     </Modal>
                 }
             </div>
