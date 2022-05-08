@@ -4,8 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import ua.edu.ukma.LibraryManager.models.domain.BookExemplar;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -13,16 +13,16 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Setter
-public class BookDetailsDTO {
+public class LibrarianBookDetailsDTO {
 
     private String isbn;
     private String title;
     private List<String> authors;
     private List<String> areas;
-    private List<Integer> availableExemplars;
-    private LocalDate closestAvailableExemplar;
     private String publishingCity;
     private String publisher;
     private Integer publishingYear;
     private Integer pageNumber;
+    private List<Integer> exemplars;
+    private BigDecimal price;
 }

@@ -3,16 +3,18 @@ package ua.edu.ukma.LibraryManager.controllers;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ua.edu.ukma.LibraryManager.models.domain.Book;
 import ua.edu.ukma.LibraryManager.models.domain.BookExemplar;
 import ua.edu.ukma.LibraryManager.models.dto.book.AddBookDTO;
-import ua.edu.ukma.LibraryManager.models.dto.book.BookDetailsDTO;
+import ua.edu.ukma.LibraryManager.models.dto.book.LibrarianBookDetailsDTO;
+import ua.edu.ukma.LibraryManager.models.dto.book.ReaderBookDetailsDTO;
 import ua.edu.ukma.LibraryManager.models.dto.book.BookSummaryDTO;
 import ua.edu.ukma.LibraryManager.models.dto.mappers.BookMapper;
-import ua.edu.ukma.LibraryManager.repositories.BookExemplarRepository;
-import ua.edu.ukma.LibraryManager.repositories.BookRepository;
+import ua.edu.ukma.LibraryManager.security.jwt.JWTManager;
 import ua.edu.ukma.LibraryManager.services.BookService;
 
 import java.time.LocalDate;
@@ -26,7 +28,10 @@ import java.util.stream.Collectors;
 @Slf4j
 public class BookController {
 
+    private static final int BEARER_LENGTH = "Bearer ".length();
+
     private final BookService bookService;
+    private final JWTManager jwtManager;
 
     @GetMapping("")
     public List<BookSummaryDTO> getBooks(@RequestParam(name = "title", required = false) Optional<String> titleOpt,
@@ -63,31 +68,35 @@ public class BookController {
     }
 
     @GetMapping("/{isbn}")
-    public ResponseEntity<BookDetailsDTO> getBook(@PathVariable(name = "isbn", required = true) String isbn,
-                                  @RequestParam(name = "checkoutDetails", required = true, defaultValue = "false")
-                                Boolean checkoutDetailsNeeded) {
+    public Object getBook(@PathVariable(name = "isbn", required = true) String isbn,
+                                                           @RequestHeader HttpHeaders headers) {
+        List<String> authorizationHeaderValues = headers.get(HttpHeaders.AUTHORIZATION);
+        log.info("authorization header value: " + authorizationHeaderValues.get(0));
+        String accessToken = authorizationHeaderValues.get(0).substring(BEARER_LENGTH);
+        List<String> roles = jwtManager.getRoles(accessToken);
 
         Optional<Book> bookOpt = bookService.getBookByIsbn(isbn);
-        if(bookOpt.isPresent()) {
-            Book book = bookOpt.get();
-            BookDetailsDTO resultBook = BookMapper.toBookDetailsDTO(book);
-            if (checkoutDetailsNeeded) {
-                List<BookExemplar> availableExemplars = bookService.getAvailableExemplars(resultBook.getIsbn());
-                if(availableExemplars.isEmpty()) {
-                    Optional<LocalDate> closestDate = bookService.getClosestAvailableExemplarDate(resultBook.getIsbn());
-                    resultBook.setClosestAvailableExemplar(closestDate.orElse(null));
-                }
-                else {
-                    List<Integer> exemplarsIds = availableExemplars.stream()
-                                                                   .map(BookExemplar::getInventoryNumber)
-                                                                   .collect(Collectors.toList());
-                    resultBook.setAvailableExemplars(exemplarsIds);
-                }
+        if(roles.contains("LIBRARIAN")) {
+            return bookOpt.map(book -> ResponseEntity.ok().body(BookMapper.toLibrarianBookDetailsDTO(book)))
+                    .orElseGet(() -> ResponseEntity.notFound().build());
+        }
+        else if(roles.contains("READER")) {
+            ReaderBookDetailsDTO resultBook = BookMapper.toReaderBookDetailsDTO(bookOpt.get());
+            List<BookExemplar> availableExemplars = bookService.getAvailableExemplars(resultBook.getIsbn());
+            if(availableExemplars.isEmpty()) {
+                Optional<LocalDate> closestDate = bookService.getClosestAvailableExemplarDate(resultBook.getIsbn());
+                resultBook.setClosestAvailableExemplar(closestDate.orElse(null));
+            }
+            else {
+                List<Integer> exemplarsIds = availableExemplars.stream()
+                        .map(BookExemplar::getInventoryNumber)
+                        .collect(Collectors.toList());
+                resultBook.setAvailableExemplars(exemplarsIds);
             }
             return ResponseEntity.ok().body(resultBook);
         }
         else {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
 

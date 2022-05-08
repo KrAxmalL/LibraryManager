@@ -14,13 +14,13 @@ import java.time.LocalDate;
 @Setter
 public class CheckoutDetailsDTO {
 
-    private Integer checkoutNumber;
-    private LocalDate checkoutStartDate;
-    private LocalDate checkoutExpectedFinishDate;
-    private LocalDate checkoutRealFinishDate;
-
     private String bookIsbn;
     private String bookTitle;
 
     private Integer exemplarInventoryNumber;
+
+    private Integer checkoutNumber;
+    private LocalDate checkoutStartDate;
+    private LocalDate checkoutExpectedFinishDate;
+    private LocalDate checkoutRealFinishDate;
 }
