@@ -18,6 +18,27 @@ export async function getAllCheckouts(accessToken) {
     }
 };
 
+export async function addCheckout(accessToken, exemplarInventoryNumber, readerTicketNumber,
+                                       startDate, returnDate) {
+    const response = await fetch(CHECKOUTS_URL, {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${accessToken}`,
+            'Content-Type': 'application/json; charset=utf-8'
+        },
+        body: JSON.stringify({
+           readerTicketNumber,
+           exemplarInventoryNumber,
+           startDate,
+           expectedFinishDate: returnDate
+        })
+    });
+
+    if(!response.ok) {
+        throw new Error("Checkouts fetching failed");
+    }
+};
+
 export async function continueCheckout(accessToken, checkoutNumber, newDate) {
     const response = await fetch(CHECKOUTS_URL + `/${checkoutNumber}/continue`, {
         method: 'PATCH',
