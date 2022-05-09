@@ -7,12 +7,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ukma.LibraryManager.models.domain.BookExemplar;
 import ua.edu.ukma.LibraryManager.models.dto.book.AddBookDTO;
-import ua.edu.ukma.LibraryManager.models.dto.bookExemplar.AddBookExemplarDTO;
+import ua.edu.ukma.LibraryManager.models.dto.bookExemplar.BookExemplarDTO;
 import ua.edu.ukma.LibraryManager.models.dto.replacementAct.AddReplacementActDTO;
 import ua.edu.ukma.LibraryManager.repositories.BookExemplarRepository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static ua.edu.ukma.LibraryManager.utils.StringUtils.isNotNullOrBlank;
 
@@ -23,25 +24,33 @@ import static ua.edu.ukma.LibraryManager.utils.StringUtils.isNotNullOrBlank;
 public class BookExemplarServiceImpl implements BookExemplarService {
 
     private final BookExemplarRepository bookExemplarRepository;
-    private final BookService bookService;
     private final ReplacementActService replacementActService;
 
     @Override
-    public boolean addExemplarForBook(AddBookExemplarDTO exemplarToAdd) {
+    public List<BookExemplarDTO> getAllExemplars() {
+        List<BookExemplar> exemplars = bookExemplarRepository.findAll();
+        return exemplars.stream().map(exemplar -> {
+            BookExemplarDTO resDTO = new BookExemplarDTO();
+            resDTO.setInventoryNumber(exemplar.getInventoryNumber());
+            resDTO.setShelf(exemplar.getShelf());
+            resDTO.setBookIsbn(exemplar.getParentBook().getIsbn());
+            return resDTO;
+        }).collect(Collectors.toList());
+    }
+
+    @Override
+    public boolean addExemplarForBook(BookExemplarDTO exemplarToAdd) {
         if(isValidBookExemplar(exemplarToAdd)) {
-            String bookIsbn = exemplarToAdd.getBookIsbn().trim();
-            if(!bookService.bookExists(bookIsbn)) {
+            try {
+                String bookIsbn = exemplarToAdd.getBookIsbn().trim();
+                Integer inventoryNumber = exemplarToAdd.getInventoryNumber();
+                String shelf = exemplarToAdd.getShelf().trim();
+                bookExemplarRepository.addNewBookExemplar(bookIsbn, inventoryNumber, shelf);
+                return true;
+            } catch(Exception ex) {
+                ex.printStackTrace();
                 return false;
             }
-
-            Integer inventoryNumber = exemplarToAdd.getInventoryNumber();
-            if(bookExemplarRepository.existsById(inventoryNumber)) {
-                return false;
-            }
-
-            String shelf = exemplarToAdd.getShelf().trim();
-            bookExemplarRepository.addNewBookExemplar(bookIsbn, inventoryNumber, shelf);
-            return true;
         }
         else {
             return false;
@@ -83,7 +92,7 @@ public class BookExemplarServiceImpl implements BookExemplarService {
         return false;
     }
 
-    public boolean isValidBookExemplar(AddBookExemplarDTO exemplarToAdd) {
+    public boolean isValidBookExemplar(BookExemplarDTO exemplarToAdd) {
         return exemplarToAdd.getInventoryNumber() != null
                 && exemplarToAdd.getInventoryNumber() > 0
                 && isNotNullOrBlank(exemplarToAdd.getShelf())

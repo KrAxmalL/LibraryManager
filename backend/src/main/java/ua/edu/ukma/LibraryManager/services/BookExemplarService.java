@@ -1,11 +1,15 @@
 package ua.edu.ukma.LibraryManager.services;
 
-import ua.edu.ukma.LibraryManager.models.dto.bookExemplar.AddBookExemplarDTO;
+import ua.edu.ukma.LibraryManager.models.dto.bookExemplar.BookExemplarDTO;
 import ua.edu.ukma.LibraryManager.models.dto.replacementAct.AddReplacementActDTO;
+
+import java.util.List;
 
 public interface BookExemplarService {
 
-    boolean addExemplarForBook(AddBookExemplarDTO exemplarToAdd);
+    List<BookExemplarDTO> getAllExemplars();
+
+    boolean addExemplarForBook(BookExemplarDTO exemplarToAdd);
 
     boolean exemplarIsAvailableForCheckout(Integer inventoryNumber);
 
