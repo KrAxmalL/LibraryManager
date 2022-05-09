@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
-import { getBookDetails } from "../../api/books";
+import { useNavigate, useParams } from "react-router-dom";
+import { deleteBook, getBookDetails } from "../../api/books";
 import { addCheckout, getAllCheckouts } from "../../api/checkouts";
 import { addExemplar, getAllExemplars } from "../../api/exemplars";
 import { getAllReaders } from "../../api/readers";
@@ -9,6 +9,7 @@ import ContentTable from "../../components/layout/ContentTable";
 import Modal from "../../components/layout/Modal";
 import AddCheckoutForm from "../../components/librarian/AddCheckoutForm";
 import AddExemplarForm from "../../components/librarian/AddExemplarForm";
+import DeleteBookForm from "../../components/librarian/DeleteBookForm";
 import LibrarianLayout from "../../components/librarian/LibrarianLayout";
 
 import classes from './LibrarianBookDetails.module.css';
@@ -19,6 +20,7 @@ const bookFields = ['ISBN', 'Назва', 'Автори', 'Жанри', 'Міс�
 function LibrarianBookDetails() {
 
     const params = useParams();
+    const navigate  = useNavigate();
 
     const accessToken = useSelector(state => state.auth.accessToken);
     const [isLoading, setIsLoading] = useState(false);
@@ -75,6 +77,13 @@ function LibrarianBookDetails() {
         await addExemplar(accessToken, book.isbn, inventoryNumber, shelf);
     }
 
+    const sendDeleteBook = async() => {
+        await deleteBook(accessToken, book.isbn);
+        navigate({
+            pathname: '/librarian/books'
+        })
+    }
+
     useEffect(() => {
         const fetchBooks = async() => {
             setIsLoading(true);
@@ -86,9 +95,10 @@ function LibrarianBookDetails() {
                 const fetchedReaders = await getAllReaders(accessToken);
                 const fetchedExemplars = await getAllExemplars(accessToken);
 
-                setBook(fetchedBook);
-                setCheckouts(fetchedCheckouts.filter(checkout => checkout.bookIsbn.localeCompare(params.bookIsbn) === 0
-                                                                 && checkout.checkoutRealFinishDate === null));
+                const bookCheckouts = fetchedCheckouts.filter(checkout => checkout.bookIsbn.localeCompare(params.bookIsbn) === 0
+                                                                          && checkout.checkoutRealFinishDate === null);
+                setCheckouts(bookCheckouts);
+
                 setReaders(fetchedReaders.map(reader => {
                     return {
                         ticketNumber: reader.ticketNumber,
@@ -97,7 +107,9 @@ function LibrarianBookDetails() {
                                     checkout.readerTicketNumber === reader.ticketNumber).length
                     }
                 }));
+
                 setExemplars(fetchedExemplars);
+                setBook(fetchedBook);
             } catch(e) {
                 console.log(e);
             } finally {
@@ -127,6 +139,8 @@ function LibrarianBookDetails() {
                                                                 onCheckoutAdd={sendAddCheckout}
                                                 />}
                     {addExemplarFormVisible && <AddExemplarForm exemplars={exemplars} onExemplarAdd={sendAddExemplar}/>}
+                    {deleteBookFormVisible && <DeleteBookForm book={{title: book.title, activeCheckouts: checkouts.length}}
+                                                              onDeleteBook={sendDeleteBook} />}
                 </Modal>
             }
         </LibrarianLayout>

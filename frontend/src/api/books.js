@@ -50,3 +50,15 @@ export async function getAllAuthors(accessToken) {
     }
 };
 
+export async function deleteBook(accessToken, bookIsbn) {
+    const response = await fetch(BOOKS_URL + `/${bookIsbn}`, {
+        method: 'DELETE',
+        headers: {
+            'Authorization': `Bearer ${accessToken}`
+        },
+    });
+
+    if(!response.ok) {
+        throw new Error("Book deletion failed");
+    }
+};
