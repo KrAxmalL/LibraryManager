@@ -96,19 +96,14 @@ function ReaderBooks() {
     }, [accessToken, setIsLoading]);
 
     const authorsSelectionChangeHandler = (newSelectedAuthors) => {
-        console.log('new selected authors: ' + newSelectedAuthors);
         setSelectedAuthors(authors.filter((author, index) => newSelectedAuthors[index]));
     }
 
     const areasSelectionChangeHandler = (newSelectedAreas) => {
-        console.log('new selected areas: ' + newSelectedAreas);
         setSelectedAreas(areas.filter((area, index) => newSelectedAreas[index]));
     }
 
     const findClickHandler = () => {
-        console.log('authors to find: ' + JSON.stringify(selectedAuthors));
-        console.log('areas to find: ' + JSON.stringify(selectedAreas));
-
         const title = titleInputRef.current.value.trim();
 
         const hasTitle = title.length === 0
