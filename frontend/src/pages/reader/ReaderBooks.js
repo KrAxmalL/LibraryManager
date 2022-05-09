@@ -12,16 +12,43 @@ import ReaderLayout from "../../components/reader/ReaderLayout";
 
 const bookFields = ['ISBN', 'Назва', 'Автори', 'Жанри', 'Детальніше'];
 
+const alwaysTrue = () => true;
+
+const bookHasAuthor = (book, authors) => authors.filter(author => book.authors.includes(author)).length > 0;
+const bookHasArea = (book, areas) => areas.filter(area => book.areas.includes(area.subjectAreaName)).length > 0;
+const bookHasTitle = (book, title) => book.title.toLowerCase().includes(title.toLowerCase());
+
 function ReaderBooks() {
 
     const accessToken = useSelector(state => state.auth.accessToken);
     const [isLoading, setIsLoading] = useState(false);
     const [books, setBooks] = useState([]);
+    const [displayBooks, setDisplayBooks] = useState([]);
     const [authors, setAuthors] = useState([]);
     const [selectedAuthors, setSelectedAuthors] = useState([]);
     const [areas, setAreas] = useState([]);
     const [selectedAreas, setSelectedAreas] = useState([]);
     const titleInputRef = useRef();
+
+    const areasForCheckbox = useMemo(() => {
+        return areas.map(area => {
+                return {
+                    id: area.cipher,
+                    displayValue: area.subjectAreaName
+                }
+            }
+        )
+    }, [areas]);
+
+    const authorsForCheckbox = useMemo(() => {
+        return authors.map((author, index) => {
+                return {
+                    id: index,
+                    displayValue: author
+                }
+            }
+        )
+    }, [authors]);
 
     useEffect(() => {
         const fetchBooks = async() => {
@@ -34,6 +61,7 @@ function ReaderBooks() {
                     details: <Link to={`/reader/books/${book.isbn}`}>Детальніше</Link>
                 }})
                 setBooks(mappedBooks);
+                setDisplayBooks([...mappedBooks]);
             } catch(e) {
                 console.log(e);
             }
@@ -68,25 +96,37 @@ function ReaderBooks() {
     }, [accessToken, setIsLoading]);
 
     const authorsSelectionChangeHandler = (newSelectedAuthors) => {
-        //setSelectedAuthors(newSelectedAuthors.filter(author => author));
-        console.log(newSelectedAuthors);
+        console.log('new selected authors: ' + newSelectedAuthors);
+        setSelectedAuthors(authors.filter((author, index) => newSelectedAuthors[index]));
     }
 
     const areasSelectionChangeHandler = (newSelectedAreas) => {
-        console.log(newSelectedAreas);
+        console.log('new selected areas: ' + newSelectedAreas);
+        setSelectedAreas(areas.filter((area, index) => newSelectedAreas[index]));
     }
 
     const findClickHandler = () => {
-        
-    }
+        console.log('authors to find: ' + JSON.stringify(selectedAuthors));
+        console.log('areas to find: ' + JSON.stringify(selectedAreas));
 
-    // const displayBooks = useMemo(() => {
-    //     books.filter(book => {
-    //         let bookIsCorrect = false;
-    //         return book.authors.some(author => selectedAuthors.includes(author))
-    //                && book.areas.some(area => selectedAreas.find(selectedArea => selectedArea.cipher === area.cipher));
-    //     });
-    // }, [books, selectedAuthors, selectedAreas, titleInputRef]);
+        const title = titleInputRef.current.value.trim();
+
+        const hasTitle = title.length === 0
+                            ? alwaysTrue
+                            : bookHasTitle;
+
+        const hasAuthor = selectedAuthors.length === 0
+                                ? alwaysTrue
+                                : bookHasAuthor;
+
+        const hasArea = selectedAreas.length === 0 
+                                ? alwaysTrue
+                                : bookHasArea
+
+        setDisplayBooks(books.filter(book => hasTitle(book, title) && hasArea(book, selectedAreas)
+                                             && hasAuthor(book, selectedAuthors))
+                        );
+    }
 
     return (
         <ReaderLayout>
@@ -95,26 +135,16 @@ function ReaderBooks() {
             {!isLoading &&
                 <div className={`container text-left ${classes['middle-container']}`}>
                     <p className={classes.paragraph}>Назва:
-                        <input className={classes.input} type="text" size="40" ref={titleInputRef} />
+                        <input className={classes.input} type="text" ref={titleInputRef} />
                         <button className={classes.btn} onClick={findClickHandler}>Знайти</button>
                     </p>
                     <p className={classes.paragraph}>Жанри:</p>
-                    <CheckboxGroup className={classes['checkbox-list']} items={areas.map(area => {
-                            return {
-                                id: area.cipher,
-                                displayValue: area.subjectAreaName
-                            }
-                        }
-                    )} onSelectionChange={areasSelectionChangeHandler} />
+                    <CheckboxGroup className={classes['checkbox-list']} items={areasForCheckbox} 
+                                   onSelectionChange={areasSelectionChangeHandler} />
                     <p className={classes.paragraph}>Автори:</p>
-                    <CheckboxGroup className={classes['checkbox-list']} items={authors.map((author, index) => {
-                            return {
-                                id: index,
-                                displayValue: author
-                            }
-                        }
-                    )} onSelectionChange={authorsSelectionChangeHandler} />
-                    <ContentTable columns={bookFields} data={books} />
+                    <CheckboxGroup className={classes['checkbox-list']} items={authorsForCheckbox} 
+                                   onSelectionChange={authorsSelectionChangeHandler} />
+                    <ContentTable columns={bookFields} data={displayBooks} />
                 </div> }
             </div>
         </ReaderLayout>
