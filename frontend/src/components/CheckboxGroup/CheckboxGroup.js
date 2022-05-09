@@ -8,7 +8,9 @@ function CheckboxGroup(props) {
         setCheckedItems(items.map(item => {
             return {
                 ...item,
-                isChecked: false
+                isChecked: item.isChecked !== undefined
+                                ? item.isChecked
+                                : false
             }
         }));
     }, [items, setCheckedItems]);
