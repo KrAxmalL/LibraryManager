@@ -192,7 +192,7 @@ public class BookServiceImpl implements BookService {
         }
 
         bookRepository.deleteAreasForBook(bookIsbn);
-        addAreasForBook(bookIsbn, areaCiphers);
+        return addAreasForBook(bookIsbn, areaCiphers);
     }
 
     @Override
