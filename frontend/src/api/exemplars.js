@@ -36,3 +36,21 @@ export async function addExemplar(accessToken, bookIsbn, inventoryNumber, shelf)
         throw new Error("Exemplars fetching failed");
     }
 };
+
+export async function replaceExemplar(accessToken, exemplarToBeReplaced, exemplarToReplace, replacementDate) {
+    const response = await fetch(EXEMPLARS_URL + `/${exemplarToBeReplaced}/replace`, {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${accessToken}`,
+            'Content-Type': 'application/json; charset=utf-8'
+        },
+        body: JSON.stringify({
+            replacementDate,
+            newExemplarInventoryNumber: exemplarToReplace,
+        })
+    });
+
+    if(!response.ok) {
+        throw new Error("Exemplar replacing failed");
+    }
+};

@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { deleteBook, getBookDetails } from "../../api/books";
 import { addCheckout, getAllCheckouts } from "../../api/checkouts";
-import { addExemplar, getAllExemplars } from "../../api/exemplars";
+import { addExemplar, getAllExemplars, replaceExemplar } from "../../api/exemplars";
 import { getAllReaders } from "../../api/readers";
 import ContentTable from "../../components/layout/ContentTable";
 import Modal from "../../components/layout/Modal";
@@ -11,6 +11,7 @@ import AddCheckoutForm from "../../components/librarian/AddCheckoutForm";
 import AddExemplarForm from "../../components/librarian/AddExemplarForm";
 import DeleteBookForm from "../../components/librarian/DeleteBookForm";
 import LibrarianLayout from "../../components/librarian/LibrarianLayout";
+import ReplaceExemplarForm from "../../components/librarian/ReplaceExemplarForm";
 
 import classes from './LibrarianBookDetails.module.css';
 
@@ -77,6 +78,10 @@ function LibrarianBookDetails() {
         await addExemplar(accessToken, book.isbn, inventoryNumber, shelf);
     }
 
+    const sendReplaceExemplar = async(exemplarToBeReplaced, exemplarToReplace, replacementDate) => {
+        await replaceExemplar(accessToken, exemplarToBeReplaced, exemplarToReplace, replacementDate);
+    }
+
     const sendDeleteBook = async() => {
         await deleteBook(accessToken, book.isbn);
         navigate({
@@ -139,6 +144,8 @@ function LibrarianBookDetails() {
                                                                 onCheckoutAdd={sendAddCheckout}
                                                 />}
                     {addExemplarFormVisible && <AddExemplarForm exemplars={exemplars} onExemplarAdd={sendAddExemplar}/>}
+                    {replaceExemplarFormVisible && <ReplaceExemplarForm exemplars={book.exemplars} checkouts={checkouts}
+                                                                        onReplaceExemplar={sendReplaceExemplar}/>}
                     {deleteBookFormVisible && <DeleteBookForm book={{title: book.title, activeCheckouts: checkouts.length}}
                                                               onDeleteBook={sendDeleteBook} />}
                 </Modal>
