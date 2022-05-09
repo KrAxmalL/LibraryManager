@@ -1,28 +1,35 @@
-import React from "react";
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 function CheckboxGroup(props) {
     const items = props.items;
-    console.log('items from parent: ' + JSON.stringify(items));
-    const [checkedItems, setCheckedItems] = useState(new Array(items.length).fill(false));
-    console.log('checked Items: ' + JSON.stringify(checkedItems));
+    const [checkedItems, setCheckedItems] = useState([]);
+
+    useEffect(() => {
+        setCheckedItems(items.map(item => {
+            return {
+                ...item,
+                isChecked: false
+            }
+        }));
+    }, [items, setCheckedItems]);
 
     const handleCheckStateChange = (index) => {
-        setCheckedItems(prevState => prevState.map((isChecked, position) => {
-            return index === position
-                    ? !isChecked
-                    : isChecked;
-        }));
-
-        props.onSelectionChange(checkedItems.map(item => item.id));
+        const newCheckedItems = checkedItems.map((item, position) => {
+            if(index === position) {
+                item.isChecked = !item.isChecked
+            }
+            return item;
+        });
+        setCheckedItems(newCheckedItems);
+        props.onSelectionChange(newCheckedItems.map(item => item.isChecked));
     };
 
     return (
         <ul className={props.className}>
-            {items.map((item, index) =>
+            {checkedItems.map((item, index) =>
                 <li key={item.id}>
                     <input type='checkbox' value={item.id}
-                           checked={checkedItems[index]}
+                           checked={item.isChecked}
                            onChange={() => handleCheckStateChange(index)}>
                     </input>
                     {item.displayValue}
