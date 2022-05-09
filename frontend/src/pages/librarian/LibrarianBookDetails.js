@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import { deleteBook, getBookDetails } from "../../api/books";
+import { getAllAreas } from "../../api/areas";
+import { deleteBook, getBookDetails, setAreasForBook } from "../../api/books";
 import { addCheckout, getAllCheckouts } from "../../api/checkouts";
 import { addExemplar, getAllExemplars, replaceExemplar } from "../../api/exemplars";
 import { getAllReaders } from "../../api/readers";
@@ -10,6 +11,7 @@ import Modal from "../../components/layout/Modal";
 import AddCheckoutForm from "../../components/librarian/AddCheckoutForm";
 import AddExemplarForm from "../../components/librarian/AddExemplarForm";
 import DeleteBookForm from "../../components/librarian/DeleteBookForm";
+import EditAreasForm from "../../components/librarian/EditAreasForm";
 import LibrarianLayout from "../../components/librarian/LibrarianLayout";
 import ReplaceExemplarForm from "../../components/librarian/ReplaceExemplarForm";
 
@@ -26,6 +28,7 @@ function LibrarianBookDetails() {
     const accessToken = useSelector(state => state.auth.accessToken);
     const [isLoading, setIsLoading] = useState(false);
     const [book, setBook] = useState(null);
+    const [areas, setAreas] = useState([]);
     const [checkouts, setCheckouts] = useState([]);
     const [readers, setReaders] = useState([]);
     const [exemplars, setExemplars] = useState([]);
@@ -82,6 +85,10 @@ function LibrarianBookDetails() {
         await replaceExemplar(accessToken, exemplarToBeReplaced, exemplarToReplace, replacementDate);
     }
 
+    const sendEditAreas = async(areas) => {
+        await setAreasForBook(accessToken, book.isbn, areas.map(area => area.cipher));
+    }
+
     const sendDeleteBook = async() => {
         await deleteBook(accessToken, book.isbn);
         navigate({
@@ -96,6 +103,7 @@ function LibrarianBookDetails() {
                 console.log(accessToken);
                 console.log('fetching book details');
                 const fetchedBook = await getBookDetails(accessToken, params.bookIsbn);
+                const fetchedAreas = await getAllAreas(accessToken);
                 const fetchedCheckouts = await getAllCheckouts(accessToken);
                 const fetchedReaders = await getAllReaders(accessToken);
                 const fetchedExemplars = await getAllExemplars(accessToken);
@@ -115,6 +123,7 @@ function LibrarianBookDetails() {
 
                 setExemplars(fetchedExemplars);
                 setBook(fetchedBook);
+                setAreas(fetchedAreas);
             } catch(e) {
                 console.log(e);
             } finally {
@@ -146,6 +155,7 @@ function LibrarianBookDetails() {
                     {addExemplarFormVisible && <AddExemplarForm exemplars={exemplars} onExemplarAdd={sendAddExemplar}/>}
                     {replaceExemplarFormVisible && <ReplaceExemplarForm exemplars={book.exemplars} checkouts={checkouts}
                                                                         onReplaceExemplar={sendReplaceExemplar}/>}
+                    {editAreasFormVisible && <EditAreasForm areas={areas} bookAreas={book.areas} onEditAreas={sendEditAreas} />}
                     {deleteBookFormVisible && <DeleteBookForm book={{title: book.title, activeCheckouts: checkouts.length}}
                                                               onDeleteBook={sendDeleteBook} />}
                 </Modal>

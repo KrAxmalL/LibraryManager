@@ -1,0 +1,27 @@
+.edit-areas-form {
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    color: #484043;
+}
+
+.input {
+    margin: 1%;
+    border-radius: 10px;
+}
+
+.submit {
+    background-color:#bb8c46;
+}
+
+.error {
+    color: red;
+}
+
+.checkbox-list li {
+    list-style: none;
+}
+
+.checkbox-list input {
+    margin-right: 0.3rem;
+}

@@ -50,6 +50,23 @@ export async function getAllAuthors(accessToken) {
     }
 };
 
+export async function setAreasForBook(accessToken, bookIsbn, areas) {
+    const response = await fetch(BOOKS_URL + `/${bookIsbn}`, {
+        method: 'PATCH',
+        headers: {
+            'Authorization': `Bearer ${accessToken}`,
+            'Content-Type': 'application/json; charset=utf-8'
+        },
+        body: JSON.stringify({
+            areaCiphers: areas
+        })
+    });
+
+    if(!response.ok) {
+        throw new Error("Book areas changing failed");
+    }
+};
+
 export async function deleteBook(accessToken, bookIsbn) {
     const response = await fetch(BOOKS_URL + `/${bookIsbn}`, {
         method: 'DELETE',
