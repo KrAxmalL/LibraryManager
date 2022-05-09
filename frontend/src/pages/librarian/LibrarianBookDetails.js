@@ -3,10 +3,12 @@ import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { getBookDetails } from "../../api/books";
 import { addCheckout, getAllCheckouts } from "../../api/checkouts";
+import { addExemplar, getAllExemplars } from "../../api/exemplars";
 import { getAllReaders } from "../../api/readers";
 import ContentTable from "../../components/layout/ContentTable";
 import Modal from "../../components/layout/Modal";
 import AddCheckoutForm from "../../components/librarian/AddCheckoutForm";
+import AddExemplarForm from "../../components/librarian/AddExemplarForm";
 import LibrarianLayout from "../../components/librarian/LibrarianLayout";
 
 import classes from './LibrarianBookDetails.module.css';
@@ -23,6 +25,7 @@ function LibrarianBookDetails() {
     const [book, setBook] = useState(null);
     const [checkouts, setCheckouts] = useState([]);
     const [readers, setReaders] = useState([]);
+    const [exemplars, setExemplars] = useState([]);
     const [modalVisible, setModalVisible] = useState(false);
     const [addCheckoutFormVisible, setAddCheckoutFormVisible] = useState(false);
     const [addExemplarFormVisible, setAddExemplarFormVisible] = useState(false);
@@ -68,6 +71,10 @@ function LibrarianBookDetails() {
         await addCheckout(accessToken, exemplarInventoryNumber, readerTicketNumber, startDate, returnDate);
     }
 
+    const sendAddExemplar = async(inventoryNumber, shelf) => {
+        await addExemplar(accessToken, book.isbn, inventoryNumber, shelf);
+    }
+
     useEffect(() => {
         const fetchBooks = async() => {
             setIsLoading(true);
@@ -77,6 +84,7 @@ function LibrarianBookDetails() {
                 const fetchedBook = await getBookDetails(accessToken, params.bookIsbn);
                 const fetchedCheckouts = await getAllCheckouts(accessToken);
                 const fetchedReaders = await getAllReaders(accessToken);
+                const fetchedExemplars = await getAllExemplars(accessToken);
 
                 setBook(fetchedBook);
                 setCheckouts(fetchedCheckouts.filter(checkout => checkout.bookIsbn.localeCompare(params.bookIsbn) === 0
@@ -89,6 +97,7 @@ function LibrarianBookDetails() {
                                     checkout.readerTicketNumber === reader.ticketNumber).length
                     }
                 }));
+                setExemplars(fetchedExemplars);
             } catch(e) {
                 console.log(e);
             } finally {
@@ -117,6 +126,7 @@ function LibrarianBookDetails() {
                                                                 readers={readers} checkouts={checkouts}
                                                                 onCheckoutAdd={sendAddCheckout}
                                                 />}
+                    {addExemplarFormVisible && <AddExemplarForm exemplars={exemplars} onExemplarAdd={sendAddExemplar}/>}
                 </Modal>
             }
         </LibrarianLayout>
