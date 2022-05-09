@@ -1,0 +1,37 @@
+.add-book-form {
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    color: #484043;
+}
+
+.form-title {
+    font-family:'Imprint MT Shadow';
+    font-size: 60px;
+    color:#523931;
+    text-align: center;
+}
+
+.form-sub-title {
+    font-family:'Imprint MT Shadow';
+    font-size: 40px;
+    color:#523931;
+    text-align: center;
+}
+
+.input {
+    margin: 1%;
+    border-radius: 10px;
+}
+
+.submit {
+    background-color:#bb8c46;
+}
+
+.checkbox-list li {
+    list-style: none;
+}
+
+.checkbox-list input {
+    margin-right: 0.3rem;
+}
