@@ -9,10 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ua.edu.ukma.LibraryManager.models.domain.Book;
 import ua.edu.ukma.LibraryManager.models.domain.BookExemplar;
-import ua.edu.ukma.LibraryManager.models.dto.book.AddBookDTO;
-import ua.edu.ukma.LibraryManager.models.dto.book.LibrarianBookDetailsDTO;
-import ua.edu.ukma.LibraryManager.models.dto.book.ReaderBookDetailsDTO;
-import ua.edu.ukma.LibraryManager.models.dto.book.BookSummaryDTO;
+import ua.edu.ukma.LibraryManager.models.dto.book.*;
 import ua.edu.ukma.LibraryManager.models.dto.mappers.BookMapper;
 import ua.edu.ukma.LibraryManager.security.jwt.JWTManager;
 import ua.edu.ukma.LibraryManager.services.BookService;
@@ -110,6 +107,18 @@ public class BookController {
         log.info(bookToAdd.toString());
         final boolean addedSuccessfully = bookService.addNewBook(bookToAdd);
         if(addedSuccessfully) {
+            return ResponseEntity.noContent().build();
+        }
+        else {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @PatchMapping("/{isbn}")
+    public ResponseEntity<Void> addNewBook(@PathVariable(name = "isbn", required = true) String isbn,
+                                           @RequestBody(required = true) SetAreasForBookDTO areasToSet) {
+        final boolean setSuccessfully = bookService.setAreasForBook(isbn, areasToSet.getAreaCiphers());
+        if(setSuccessfully) {
             return ResponseEntity.noContent().build();
         }
         else {

@@ -38,6 +38,8 @@ public interface BookService {
 
     boolean addAuthorsForBook(String bookIsbn, List<String> authorNames);
 
+    boolean setAreasForBook(String bookIsbn, List<String> areaCiphers);
+
     boolean addAreasForBook(String bookIsbn, List<String> areaCiphers);
 
     boolean addExemplarForBook(String bookIsbn, Integer exemplarInventoryNumber);

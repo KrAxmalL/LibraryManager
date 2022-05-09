@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ukma.LibraryManager.models.domain.Book;
 import ua.edu.ukma.LibraryManager.models.domain.BookExemplar;
 import ua.edu.ukma.LibraryManager.models.dto.book.AddBookDTO;
+import ua.edu.ukma.LibraryManager.models.dto.bookExemplar.BookExemplarDTO;
 import ua.edu.ukma.LibraryManager.repositories.BookRepository;
 import ua.edu.ukma.LibraryManager.repositories.SubjectAreaRepository;
 
@@ -26,6 +27,7 @@ import static ua.edu.ukma.LibraryManager.utils.StringUtils.isNotNullOrBlank;
 public class BookServiceImpl implements BookService {
 
     private final BookRepository bookRepository;
+    private final BookExemplarService bookExemplarService;
 
     private static final String ISBN_REGEXP = "^\\d{3}-\\d-\\d{5}-\\d{3}-\\d$";
 
@@ -109,10 +111,15 @@ public class BookServiceImpl implements BookService {
 
             boolean authorsAdded = addAuthorsForBook(bookIsbn, bookToAdd.getAuthors());
             boolean areasAdded = false;
+            boolean exemplarAdded = false;
             if(authorsAdded) {
                 areasAdded = addAreasForBook(bookIsbn, bookToAdd.getAreas());
+                if(areasAdded) {
+                    exemplarAdded = bookExemplarService.addExemplarForBook(new BookExemplarDTO(bookIsbn,
+                            bookToAdd.getExemplarInventoryNumber(), bookToAdd.getShelf()));
+                }
             }
-            return authorsAdded && areasAdded;
+            return authorsAdded && areasAdded && exemplarAdded;
         }
         else {
             return false;
@@ -176,6 +183,16 @@ public class BookServiceImpl implements BookService {
             }
         }
         return true;
+    }
+
+    @Override
+    public boolean setAreasForBook(String bookIsbn, List<String> areaCiphers) {
+        if(areaCiphers == null || areaCiphers.isEmpty()) {
+            return false;
+        }
+
+        bookRepository.deleteAreasForBook(bookIsbn);
+        addAreasForBook(bookIsbn, areaCiphers);
     }
 
     @Override

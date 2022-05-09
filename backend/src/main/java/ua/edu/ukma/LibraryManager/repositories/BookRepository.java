@@ -117,6 +117,12 @@ public interface BookRepository extends JpaRepository<Book, String> {
                         @Param("target_subject_area_cipher") String areaCipher);
 
     @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Query(value  = "DELETE FROM book_subject_area " +
+            "WHERE book_isbn = :target_book_isbn",
+            nativeQuery = true)
+    void deleteAreasForBook(@Param("target_book_isbn") String bookIsbn);
+
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query(value  = "INSERT INTO book_author(book_isbn, author_name) " +
                     "VALUES(:target_book_isbn, :target_author_name)",
             nativeQuery = true)
