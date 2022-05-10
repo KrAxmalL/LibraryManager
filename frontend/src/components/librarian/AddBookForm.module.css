@@ -35,3 +35,7 @@
 .checkbox-list input {
     margin-right: 0.3rem;
 }
+
+.error {
+    color: red;
+}

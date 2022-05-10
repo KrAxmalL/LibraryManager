@@ -50,6 +50,21 @@ export async function getAllAuthors(accessToken) {
     }
 };
 
+export async function addNewBook(accessToken, bookToAdd) {
+    const response = await fetch(BOOKS_URL, {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${accessToken}`,
+            'Content-Type': 'application/json; charset=utf-8'
+        },
+        body: JSON.stringify(bookToAdd)
+    });
+
+    if(!response.ok) {
+        throw new Error("Book adding failed");
+    }
+};
+
 export async function setAreasForBook(accessToken, bookIsbn, areas) {
     const response = await fetch(BOOKS_URL + `/${bookIsbn}`, {
         method: 'PATCH',

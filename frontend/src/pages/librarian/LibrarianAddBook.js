@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { getAllAreas } from "../../api/areas";
 import { addNewBook, getBooksSummary } from "../../api/books";
 import { getAllExemplars } from "../../api/exemplars";
@@ -11,6 +12,7 @@ import classes from './LibrarianAddBook.module.css';
 
 function LibrarianAddBook() {
     const accessToken = useSelector(state => state.auth.accessToken);
+    const navigate = useNavigate();
 
     const [books, setBooks] = useState([]);
     const [areas, setAreas] = useState([]);
@@ -35,7 +37,11 @@ function LibrarianAddBook() {
     }, [accessToken]);
 
     const sendAddBook = async(bookToAdd) => {
+        console.log('book to add: ' + JSON.stringify(bookToAdd));
         await addNewBook(accessToken, bookToAdd);
+        navigate({
+            pathname: '/librarian/books'
+        });
     }
 
     return (
@@ -44,7 +50,7 @@ function LibrarianAddBook() {
                 <div className={`container text-center ${classes['middle-container']}`}>
                 <div className="container">
                     <section>
-                        <AddBookForm books={books} areas={areas} exemplars={exemplars} onBookAdd={sendAddBook}/>
+                        <AddBookForm books={books} areas={areas} exemplars={exemplars} onAddBook={sendAddBook}/>
                     </section>
                 </div>
                 </div>
