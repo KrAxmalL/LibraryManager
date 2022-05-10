@@ -25,6 +25,9 @@ public class AddBookDTO {
     private Integer pageNumber;
     private BigDecimal price;
 
+    private Integer exemplarInventoryNumber;
+    private String shelf;
+
     @Override
     public String toString() {
         return "AddBookDTO{" +
@@ -37,6 +40,8 @@ public class AddBookDTO {
                 ", publishingYear=" + publishingYear +
                 ", pageNumber=" + pageNumber +
                 ", price=" + price +
+                ", exemplarInventoryNumber=" + exemplarInventoryNumber +
+                ", shelf='" + shelf + '\'' +
                 '}';
     }
 }
