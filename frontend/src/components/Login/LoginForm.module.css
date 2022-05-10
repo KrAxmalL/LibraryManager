@@ -1,5 +1,4 @@
 .login-form {
-    width: 50%;
     height: fit-content;
     display: flex;
     flex-direction: column;
@@ -17,4 +16,8 @@
 
 .link {
     color: #523931;
+}
+
+.error {
+    color: red;
 }

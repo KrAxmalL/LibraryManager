@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import { useRef } from 'react';
 import { useDispatch } from "react-redux";
@@ -18,6 +18,7 @@ function LoginForm() {
 
   const emailInputRef = useRef();
   const passwordInputRef = useRef();
+  const [loginError, setLoginError] = useState(false);
 
   const navigate = useNavigate();
 
@@ -47,36 +48,29 @@ function LoginForm() {
 
     try {
         const { accessToken } = await login(email, password);
-        dispatch(authActions.setAccessToken({ accessToken }));
-        console.log('logged in');
-        console.log('token: ' + accessToken);
-
         const decodedToken = jwtDecode(accessToken);
         const roles = decodedToken.roles;
+        dispatch(authActions.setAccessToken({ accessToken }));
         dispatch(authActions.setRoles({ roles }));
-        console.log('decoded token: ' + JSON.stringify(decodedToken));
-        console.log('roles: ' + roles);
+
+        setLoginError(false);
         navigate({
           pathname: navigateAfterLogin(roles)
         });
     } catch(error) {
-      //todo: add proper error handling
-        console.log(error);
+        setLoginError(true);
     }
   }
 
     return (
-        <form onSubmit={submitFormHandler}>
-          <div>
-            <input className={classes.input} type='email' placeholder="Email" id='email' required  ref={emailInputRef}></input>
-          </div>
-          <div>
-            <input className={classes.input} type='password' placeholder="Password" id='password' required ref={passwordInputRef}></input>
-          </div>
-          <div>
-            <input className={`${classes.input} ${classes.submit}`} type='submit' value='Login'></input>
-            <Link className={classes.link} to='../registerReader'>Register</Link>
-          </div>
+        <form onSubmit={submitFormHandler} className={classes['login-form']}>
+          <input className={classes.input} type='email' placeholder="Електронна пошта" id='email' required  ref={emailInputRef}></input>
+          <input className={classes.input} type='password' placeholder="Пароль" id='password' required ref={passwordInputRef}></input>
+          {loginError && 
+            <p className={classes.error}>Не вдалось увійти в систему! Перевірте електронну пошта та пароль і спробуйте ще раз</p>
+          }
+          <input className={`${classes.input} ${classes.submit}`} type='submit' value='Увійти'></input>
+          <Link className={classes.link} to='../register'>Зареєструватися</Link>
         </form>
     );
 }

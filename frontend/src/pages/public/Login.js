@@ -7,7 +7,7 @@ import classes from './Login.module.css'
 function Login() {
     return (
         <Layout>
-            <h1 className={classes['form-title']}>Login Form</h1>
+            <h1 className={classes['form-title']}>Увійти</h1>
             <div className="container">
                 <div className={`container text-center ${classes['middle-container']}`}>
                     <div className="container">
