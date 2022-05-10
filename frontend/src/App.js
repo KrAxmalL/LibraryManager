@@ -46,7 +46,7 @@ function App() {
       <Routes>
         <Route path='/' exact element={<Navigate redirect to={navigateAfterLogin(roles)} />}></Route>
         <Route path='/login' exact element={<Login />}></Route>
-        <Route path='/registerReader' exact element={<ReaderRegistration />}></Route>
+        <Route path='/register' exact element={<ReaderRegistration />}></Route>
         <Route path='/unauthorized' exact element={<Unauthorized />}></Route>
 
         <Route element={<RequireAuth allowedRoles={['READER']}></RequireAuth>}>
@@ -54,6 +54,7 @@ function App() {
           <Route path='/reader/books/:bookIsbn' element={<ReaderBookDetails />} />
           <Route path='/reader/checkouts' element={<ReaderCheckouts />} />
         </Route>
+
         <Route element={<RequireAuth allowedRoles={['LIBRARIAN']}></RequireAuth>}>
           <Route path='/librarian/books' element={<LibrarianBooks />} />
           <Route path='/librarian/books/:bookIsbn' element={<LibrarianBookDetails />} />
@@ -61,6 +62,7 @@ function App() {
           <Route path='/librarian/checkouts' element={<LibrarianCheckouts />} />
           <Route path='/librarian/readers' element={<LibrarianReaders />} />
         </Route>
+  
         <Route element={<RequireAuth allowedRoles={['ADMINISTRATOR']}></RequireAuth>}>
           <Route path='/administratorBooks' element={<AdministratorBooks />} />
         </Route>
