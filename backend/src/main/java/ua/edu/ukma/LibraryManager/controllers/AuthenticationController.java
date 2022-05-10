@@ -46,14 +46,13 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<JwtToken> register(@RequestBody RegisterReaderDTO readerToRegister) {
+    public ResponseEntity<Void> register(@RequestBody RegisterReaderDTO readerToRegister) {
         Optional<Principal> registeredPrincipalOpt = principalService.registerReader(readerToRegister);
         if(registeredPrincipalOpt.isPresent()) {
-            Principal principal = registeredPrincipalOpt.get();
-            String accessToken = jwtManager.getAccessToken(principal);
-            return ResponseEntity.ok(new JwtToken(accessToken));
+            return ResponseEntity.noContent().build();
         }
-
-        return ResponseEntity.badRequest().build();
+        else {
+            return ResponseEntity.badRequest().build();
+        }
     }
 }
