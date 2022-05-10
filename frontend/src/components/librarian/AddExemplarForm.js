@@ -1,6 +1,8 @@
 import { useRef, useState } from 'react';
 import classes from './AddExemplarForm.module.css';
 
+const startsWithDigitRegexp = /^\d/;
+
 function AddExemplarForm(props) {
     const exemplars = props.exemplars;
 
@@ -18,7 +20,7 @@ function AddExemplarForm(props) {
         setInventoryNumberError(!validInventoryNumber);
 
         const shelf = shelfRef.current.value;
-        const validShelf = shelf !== undefined && shelf.trim().length > 0 && shelf.match(/^\d/);
+        const validShelf = shelf && shelf.trim().length > 0 && startsWithDigitRegexp.test(shelf);
         setShelfError(!validShelf);
 
         console.log(inventoryNumber);
