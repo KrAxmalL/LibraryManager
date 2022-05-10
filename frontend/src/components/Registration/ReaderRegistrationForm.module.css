@@ -1,10 +1,13 @@
+.registration-form {
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    color: #484043;
+}
+
 .input {
     margin: 1%;
     border-radius: 10px;
-}
-
-.wide {
-    width: 261px;
 }
 
 .submit {
@@ -13,4 +16,8 @@
 
 .link {
     color: #523931;
+}
+
+.error {
+    color: red;
 }

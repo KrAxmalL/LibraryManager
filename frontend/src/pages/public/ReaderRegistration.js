@@ -7,7 +7,7 @@ import classes from './ReaderRegistration.module.css';
 function ReaderRegistration() {
     return (
         <Layout>
-            <h1 className={classes['form-title']}>Registration</h1>
+            <h1 className={classes['form-title']}>Зареєструватися</h1>
             <div className="container">
                 <div className={`container text-center ${classes['middle-container']}`}>
                 <div className="container">
