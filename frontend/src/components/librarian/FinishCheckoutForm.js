@@ -1,6 +1,8 @@
 import { useRef, useState } from 'react';
 import classes from './FinishCheckoutForm.module.css';
 
+const startsWithDigitRegexp = /^\d/;
+
 function FinishCheckoutForm(props) {
     const checkouts = props.checkouts;
     const selectedCheckoutRef = useRef();
@@ -18,13 +20,13 @@ function FinishCheckoutForm(props) {
         const finishReturnDate = finishReturnDateRef.current.value;
         const shelf = shelfRef.current.value.trim();
 
-        const validSelectedCheckout = selectedCheckout != null;
+        const validSelectedCheckout = selectedCheckout !== null;
 
         const startDate = checkouts.find(checkout => checkout.checkoutNumber === Number.parseInt(selectedCheckout))
                                        .checkoutStartDate;
         const validFinishDate = finishReturnDate && ((new Date(finishReturnDate)).getTime() >= (new Date(startDate)).getTime());
 
-        const validShelf = shelf != null && shelf.length > 0;
+        const validShelf = shelf && shelf.length > 0 && startsWithDigitRegexp.test(shelf);
 
         setSelectCheckoutError(!validSelectedCheckout);
         setSelectDateError(!validFinishDate);
@@ -45,10 +47,10 @@ function FinishCheckoutForm(props) {
 
             <label>Введіть дату повернення:</label>
             <input className={classes.input} type='date' placeholder="Дата повернення" required ref={finishReturnDateRef}></input>
-            {selectDateError && <p className={classes.error}>Нова дата повернення має бути більшою за поточну</p>}
+            {selectDateError && <p className={classes.error}>Дата повернення має бути більшою за дату видачі або дорівнювати їй</p>}
 
             <input type='text' placeholder="Полиця примірника" required ref={shelfRef}></input>
-            {shelfError && <p className={classes.error}>Поле полиці не має бути пустим</p>}
+            {shelfError && <p className={classes.error}>Номер полиці має починатися з цифри</p>}
 
             <input className={`${classes.input} ${classes.submit}`} type="submit" value="Повернути" />
         </form>

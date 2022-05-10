@@ -43,15 +43,29 @@ function AddCheckoutForm(props) {
         e.preventDefault();
 
         const selectedExemplar = selectedExemplarRef.current.value;
+        const validExemplar = checkouts.filter(checkout =>
+                        checkout.exemplarInventoryNumber === Number.parseInt(selectedExemplar)).length === 0;
+        setSelectExemplarError(!validExemplar);
+
         const selectedReader = selectedReaderRef.current.value;
+        const validReader = checkouts.filter(checkout =>
+                        checkout.readerTicketNumber === Number.parseInt(selectedReader)).length === 0;
+        setSelectReaderError(!validReader)
+
         const startDate = startDateRef.current.value;
+        const validStartDate = startDate !== null;
+        setStartDateError(!validStartDate);
+
         const returnDate = returnDateRef.current.value;
+        const validReturnDate = returnDate !== null && ((new Date(startDate).getTime()) < (new Date(returnDate).getTime()));
+        setReturnDateError(!validReturnDate);
+
         console.log(selectedExemplar);
         console.log(selectedReader);
         console.log(startDate);
         console.log(returnDate);
 
-        if(!selectExemplarError && !selectReaderError && !startDateError && !returnDateError) {
+        if(validExemplar && validReader && validStartDate && validReturnDate) {
             props.onCheckoutAdd(Number.parseInt(selectedExemplar), Number.parseInt(selectedReader),
                                 startDate, returnDate);
         }

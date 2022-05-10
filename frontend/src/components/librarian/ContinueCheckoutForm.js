@@ -15,7 +15,7 @@ function ContinueCheckoutForm(props) {
         const selectedCheckout = selectedCheckoutRef.current.value;
         const newReturnDate = newReturnDateRef.current.value;
 
-        const validSelectedCheckout = selectedCheckout != null;
+        const validSelectedCheckout = selectedCheckout !== null;
 
         const oldReturnDate = checkouts.find(checkout => checkout.checkoutNumber === Number.parseInt(selectedCheckout))
                                        .checkoutExpectedFinishDate;

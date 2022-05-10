@@ -16,7 +16,7 @@ function AddExemplarForm(props) {
         e.preventDefault();
 
         const inventoryNumber = Number.parseInt(inventoryNumberRef.current.value);
-        const validInventoryNumber = exemplars.find(exemplar => exemplar.inventoryNumber === inventoryNumber) === undefined;
+        const validInventoryNumber = !exemplars.find(exemplar => exemplar.inventoryNumber === inventoryNumber);
         setInventoryNumberError(!validInventoryNumber);
 
         const shelf = shelfRef.current.value;
