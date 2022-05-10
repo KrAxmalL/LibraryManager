@@ -76,7 +76,7 @@ function ReplaceExemplarForm(props) {
             {replacementDateError && <p className={classes.error}>Дата заміни</p>}
 
             {sameExemplarsChosenError && <p className={classes.error}>Обрані примірники мають бути різними</p>}
-            <input className={`${classes.input} ${classes.submit}`} type="submit" value="Видати книгу"
+            <input className={`${classes.input} ${classes.submit}`} type="submit" value="Замінити примірник"
                    disabled={selectedExemplarToBeReplacedError || selectedExemplarToReplaceError
                              || replacementDateError} />
         </form>
