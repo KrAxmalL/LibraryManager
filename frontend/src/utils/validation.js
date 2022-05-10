@@ -6,6 +6,8 @@ export const priceRegexp = /^\d+[.,]\d{2}$/;
 
 export const phoneNumberRegexp = /^(\+38)\d{10}$/;
 
+export const numberRegexp = /^-?([1-9]\d*)$/;
+
 export const notEmptyString = (str) => str && str.trim().length > 0;
 
 export const positiveNumber = (number) => number && number > 0;
