@@ -1,7 +1,6 @@
 import { useRef, useState } from 'react';
+import { startsWithDigitRegexp } from '../../utils/validation';
 import classes from './FinishCheckoutForm.module.css';
-
-const startsWithDigitRegexp = /^\d/;
 
 function FinishCheckoutForm(props) {
     const checkouts = props.checkouts;

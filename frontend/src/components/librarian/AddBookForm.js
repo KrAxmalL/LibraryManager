@@ -1,14 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { isbnRegexp, notEmptyString, positiveNumber, priceRegexp, startsWithDigitRegexp } from '../../utils/validation';
 import CheckboxGroup from '../CheckboxGroup/CheckboxGroup';
 import classes from './AddBookForm.module.css';
-
-const isbnRegexp = /^\d{3}-\d-\d{5}-\d{3}-\d$/;
-const priceRegexp = /^\d+[.,]\d{2}$/;
-const startsWithDigitRegexp = /^\d/;
-
-const notEmptyString = (str) => str && str.length > 0;
-const positiveNumber = (number) => number && number > 0;
 
 function AddBookForm(props) {
 
