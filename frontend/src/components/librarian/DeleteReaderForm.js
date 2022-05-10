@@ -12,10 +12,13 @@ function DeleteReaderForm(props) {
         e.preventDefault();
 
         const selectedReader = selectedReaderRef.current.value;
+        const activeCheckoutsNumber = readers.find(reader => reader.ticketNumber === Number.parseInt(selectedReader))
+                                             .activeCheckouts;
+        setActiveCheckoutsCount(activeCheckoutsNumber);
         const validReader = selectedReader !== null;
 
         setSelectReaderError(!validReader);
-        if(validReader && (activeCheckoutsCount === 0)) {
+        if(validReader && (activeCheckoutsNumber === 0)) {
             props.onReaderSelected(selectedReader);
         }
     }
