@@ -42,7 +42,6 @@ function AddCheckoutForm(props) {
     const submitFormHandler = (e) => {
         e.preventDefault();
 
-        //todo: fix first time opening list onChange is not triggered
         const selectedExemplar = selectedExemplarRef.current.value;
         const selectedReader = selectedReaderRef.current.value;
         const startDate = startDateRef.current.value;
