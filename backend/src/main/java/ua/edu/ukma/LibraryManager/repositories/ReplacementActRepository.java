@@ -34,4 +34,13 @@ public interface ReplacementActRepository extends JpaRepository<ReplacementAct, 
                          "ON book.isbn = book_exemplar.book_isbn",
             nativeQuery = true)
     List<Object[]> findReplacementActsDetails();
+
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Query(value = "DELETE FROM replacement_act " +
+            "WHERE replaced_exemplar_number IN " +
+                        "(SELECT inventory_number " +
+                         "FROM book_exemplar " +
+                         "WHERE book_isbn = :target_book_isbn)",
+            nativeQuery = true)
+    void deleteReplacementsOfBook(@Param("target_book_isbn") String bookIsbn);
 }

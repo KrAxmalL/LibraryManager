@@ -55,4 +55,13 @@ public class ReplacementActServiceImpl implements ReplacementActService {
 
         return false;
     }
+
+    @Override
+    public boolean deleteReplacementsOfBook(String bookIsbn) {
+        replacementActRepository.deleteReplacementsOfBook(bookIsbn);
+        return replacementActRepository.findAll().stream().noneMatch(act -> act.getReplacedExemplar()
+                .getParentBook()
+                .getIsbn()
+                .equalsIgnoreCase(bookIsbn));
+    }
 }

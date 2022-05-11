@@ -66,4 +66,13 @@ public interface CheckoutRepository extends JpaRepository<Checkout, Integer> {
             nativeQuery = true)
     void setExpectedFinishDateForCheckout(@Param("target_checkout_number") Integer checkoutNumber,
                                       @Param("target_expected_finish_date") LocalDate expectedFinishDate);
+
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Query(value = "DELETE FROM checkout_history " +
+            "WHERE exemplar_inventory_number IN " +
+                    "(SELECT inventory_number " +
+                     "FROM book_exemplar " +
+                     "WHERE book_isbn = :target_book_isbn)",
+            nativeQuery = true)
+    void deleteCheckoutHistoryOfBook(@Param("target_book_isbn") String bookIsbn);
 }

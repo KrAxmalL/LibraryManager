@@ -12,4 +12,6 @@ public interface ReplacementActService {
     List<ReplacementActDetailsDTO> getReplacementActsDetails();
 
     boolean addReplacementAct(Integer replacedExemplarNumber, AddReplacementActDTO replacementActToAdd);
+
+    boolean deleteReplacementsOfBook(String bookIsbn);
 }

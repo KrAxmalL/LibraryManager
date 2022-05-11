@@ -31,6 +31,8 @@ public class BookServiceImpl implements BookService {
 
     private final BookRepository bookRepository;
     private final BookExemplarService bookExemplarService;
+    private final CheckoutService checkoutService;
+    private final ReplacementActService replacementActService;
 
     private static final String ISBN_REGEXP = "^\\d{3}-\\d-\\d{5}-\\d{3}-\\d$";
 
@@ -197,8 +199,14 @@ public class BookServiceImpl implements BookService {
         if(!isbnToDelete.matches(ISBN_REGEXP) || bookExists(isbnToDelete)) {
             List<Integer> activeCheckouts = bookRepository.getActiveCheckoutOfBook(isbnToDelete);
             if(activeCheckouts.isEmpty()) {
-                bookRepository.deleteBook(isbnToDelete);
-                return true;
+                boolean deletedReplacements = replacementActService.deleteReplacementsOfBook(isbnToDelete);
+                if(deletedReplacements) {
+                    boolean deletedCheckouts = checkoutService.deleteCheckoutHistoryForBook(isbnToDelete);
+                    if(deletedCheckouts) {
+                        bookRepository.deleteBook(isbnToDelete);
+                        return !bookExists(isbnToDelete);
+                    }
+                }
             }
         }
 

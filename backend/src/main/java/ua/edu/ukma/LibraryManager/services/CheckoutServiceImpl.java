@@ -122,6 +122,16 @@ public class CheckoutServiceImpl implements CheckoutService {
         return false;
     }
 
+    @Override
+    public boolean deleteCheckoutHistoryForBook(String bookIsbn) {
+        checkoutRepository.deleteCheckoutHistoryOfBook(bookIsbn);
+        return checkoutRepository.findAll().stream().noneMatch(checkout ->
+                checkout
+                .getExemplar().getParentBook()
+                .getIsbn()
+                .equalsIgnoreCase(bookIsbn));
+    }
+
     public boolean isValidCheckout(AddCheckoutDTO checkoutToAdd) {
         return checkoutToAdd.getExemplarInventoryNumber() != null
                 && checkoutToAdd.getReaderTicketNumber() != null

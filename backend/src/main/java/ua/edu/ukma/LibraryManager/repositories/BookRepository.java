@@ -221,7 +221,7 @@ public interface BookRepository extends JpaRepository<Book, String> {
                           @Param("target_author_name") String authorName);
 
     @Query(value  = "SELECT checkout_number FROM checkout_history " +
-                    "WHERE checkout_real_finish_date IS NOT NULL " +
+                    "WHERE checkout_real_finish_date IS NULL " +
                           "AND exemplar_inventory_number IN " +
                               "(SELECT inventory_number " +
                                "FROM book_exemplar " +

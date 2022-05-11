@@ -15,4 +15,6 @@ public interface CheckoutService {
     boolean finishCheckout(Integer checkoutNumber, FinishCheckoutDTO checkoutToFinish);
 
     boolean continueCheckout(Integer checkoutNumber, ContinueCheckoutDTO checkoutToContinue);
+
+    boolean deleteCheckoutHistoryForBook(String bookIsbn);
 }
