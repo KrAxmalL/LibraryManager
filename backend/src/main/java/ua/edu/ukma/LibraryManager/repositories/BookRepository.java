@@ -64,6 +64,8 @@ public interface BookRepository extends JpaRepository<Book, String> {
             " WHERE NOT EXISTS (SELECT * FROM checkout_history" +
             "                   WHERE book_exemplar.inventory_number = checkout_history.exemplar_inventory_number" +
             "                   AND checkout_real_finish_date IS NULL)" +
+            " AND NOT EXISTS (SELECT * FROM replacement_act " +
+                             "WHERE book_exemplar.inventory_number = replacement_act.replaced_exemplar_number)" +
             " AND book_isbn = :searched_book_isbn",
             nativeQuery = true)
     List<Object[]> findAvailableBookExemplars(@Param("searched_book_isbn") String bookIsbn);
