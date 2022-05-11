@@ -24,11 +24,11 @@ public interface ReaderRepository extends JpaRepository<Reader, Integer> {
     List<Integer> findActiveCheckoutsOfReader(@Param("target_ticket_number") Integer ticketNumber);
 
     @Modifying(clearAutomatically = true, flushAutomatically = true)
-    @Query(value = "INSERT INTO reader(ticket_number, last_name, first_name, patronymic," +
+    @Query(value = "INSERT INTO reader(last_name, first_name, patronymic," +
                                       "birth_date, home_city, home_street," +
                                       "home_building_number, home_flat_number," +
                                       "work_place, principal_id)" +
-                   "VALUES(2222, :target_last_name, :target_first_name, :target_patronymic, :target_birth_date, :target_home_city," +
+                   "VALUES(:target_last_name, :target_first_name, :target_patronymic, :target_birth_date, :target_home_city," +
                           ":target_home_street, :target_home_building_number, :target_home_flat_number, :target_work_place," +
                           ":target_principal_id)",
             nativeQuery = true)

@@ -88,11 +88,12 @@ public class PrincipalServiceImpl implements PrincipalService, UserDetailsServic
                     readerToAdd.setHomeFlatNumber(homeFlatNumber);
                     readerToAdd.setWorkPlace(workPlace.trim());
 
-                    readerService.addReader(readerToAdd, principalId);
+                    boolean addedReader = readerService.addReader(readerToAdd, principalId);
+                    if(addedReader) {
+                        return registeredPrincipalOpt;
+                    }
                 }
             }
-
-            return registeredPrincipalOpt;
         }
         return Optional.empty();
     }
