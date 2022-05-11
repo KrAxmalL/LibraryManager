@@ -6,9 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ukma.LibraryManager.models.dto.mappers.SubjectAreaMapper;
+import ua.edu.ukma.LibraryManager.models.dto.subjectArea.SubjectAreaStatisticsDTO;
 import ua.edu.ukma.LibraryManager.models.dto.subjectArea.SubjectAreaSummaryDTO;
 import ua.edu.ukma.LibraryManager.repositories.SubjectAreaRepository;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,5 +29,17 @@ public class SubjectAreaServiceImpl implements SubjectAreaService {
         return subjectAreaRepository.findAll().stream()
                                     .map(SubjectAreaMapper::toSubjectAreaSummaryDTO)
                                     .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<SubjectAreaStatisticsDTO> getStatisticsForSubjectAreasForPeriod(LocalDate startDate, LocalDate endDate) {
+        List<Object[]> areas = subjectAreaRepository.findNumberOfTakenBooksForAllAreas(startDate, endDate);
+        return areas.stream().map(area -> {
+            SubjectAreaStatisticsDTO resDTO = new SubjectAreaStatisticsDTO();
+            resDTO.setCipher(area[0].toString());
+            resDTO.setSubjectAreaName(area[1].toString());
+            resDTO.setTakenBooks(((BigInteger) area[2]).intValue());
+            return resDTO;
+        }).collect(Collectors.toList());
     }
 }
