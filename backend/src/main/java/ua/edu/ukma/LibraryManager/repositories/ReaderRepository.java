@@ -96,11 +96,7 @@ public interface ReaderRepository extends JpaRepository<Reader, Integer> {
                                              "WHERE isbn IN " +
                                                   "(SELECT book_isbn " +
                                                    "FROM book_subject_area " +
-                                                   "WHERE subject_area_cipher IN " +
-                                                        "(SELECT cipher " +
-                                                         "FROM subject_area " +
-                                                         "WHERE subject_area_cipher = :target_area_cipher)" +
-                                                  ")" +
+                                                   "WHERE subject_area_cipher = :target_area_cipher)" +
                                             ")" +
                                     ")" +
                             "GROUP BY reader_ticket_number " +
