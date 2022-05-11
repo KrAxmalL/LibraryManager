@@ -94,6 +94,32 @@ public class ReaderServiceImpl implements ReaderService {
     }
 
     @Override
+    public List<ReaderSummaryDTO> getReadersWhoReadAllBooksFromArea(String areaCipher) {
+        List<Object[]> readers = readerRepository.findReadersWhoReadAllBooksFromArea(areaCipher);
+        return readers.stream().map(reader -> {
+            ReaderSummaryDTO resDTO = new ReaderSummaryDTO();
+            resDTO.setTicketNumber((Integer) reader[0]);
+            resDTO.setLastName(reader[1].toString());
+            resDTO.setFirstName(reader[2].toString());
+            resDTO.setPatronymic(reader[3].toString());
+            return resDTO;
+        }).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ReaderSummaryDTO> getReadersWhoReadAtLeastOneBooksFromArea(String areaCipher) {
+        List<Object[]> readers = readerRepository.findReadersWhoReadAtLeastOneBooksFromArea(areaCipher);
+        return readers.stream().map(reader -> {
+            ReaderSummaryDTO resDTO = new ReaderSummaryDTO();
+            resDTO.setTicketNumber((Integer) reader[0]);
+            resDTO.setLastName(reader[1].toString());
+            resDTO.setFirstName(reader[2].toString());
+            resDTO.setPatronymic(reader[3].toString());
+            return resDTO;
+        }).collect(Collectors.toList());
+    }
+
+    @Override
     public Optional<Integer> getIdOfPrincipal(Integer ticketNumber) {
         if(ticketNumber != null && readerExists(ticketNumber)) {
             return readerRepository.findIdOfPrincipal(ticketNumber);

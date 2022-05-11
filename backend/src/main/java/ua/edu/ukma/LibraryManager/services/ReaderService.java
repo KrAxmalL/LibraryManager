@@ -23,6 +23,10 @@ public interface ReaderService {
 
     List<OwerReaderDTO> geOwerReaders();
 
+    List<ReaderSummaryDTO> getReadersWhoReadAllBooksFromArea(String areaCipher);
+
+    List<ReaderSummaryDTO> getReadersWhoReadAtLeastOneBooksFromArea(String areaCipher);
+
     Optional<Integer> getIdOfPrincipal(Integer ticketNumber);
 
     boolean addReader(AddReaderDTO addReaderDTO, Integer principalId);

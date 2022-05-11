@@ -34,6 +34,18 @@ public class ReaderController {
         return readerService.getReadersWhoReadBook(bookIsbn);
     }
 
+    @GetMapping("/statistics/allBooksFromArea")
+    public List<ReaderSummaryDTO> getAllReadersWhoReadAllBookFromArea(@RequestParam(name = "area", required = true)
+                                                                                  String areaCipher) {
+        return readerService.getReadersWhoReadAllBooksFromArea(areaCipher);
+    }
+
+    @GetMapping("/statistics/atLeastOneBooksFromArea")
+    public List<ReaderSummaryDTO> getAllReadersWhoReadAtLeastOneBookFromArea(@RequestParam(name = "area", required = true)
+                                                                              String areaCipher) {
+        return readerService.getReadersWhoReadAtLeastOneBooksFromArea(areaCipher);
+    }
+
     @GetMapping("/statistics/numberOfBooks")
     public List<ReaderReadBooksStatisticsDTO> getAllReadersWhoReadBook() {
         return readerService.getReadersReadBooksStatistics();

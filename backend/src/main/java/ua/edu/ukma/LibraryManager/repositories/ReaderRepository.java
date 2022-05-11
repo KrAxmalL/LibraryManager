@@ -59,6 +59,56 @@ public interface ReaderRepository extends JpaRepository<Reader, Integer> {
             nativeQuery = true)
     List<Object[]> findOwerReaders();
 
+    @Query(value = "SELECT ticket_number, last_name, first_name, patronymic " +
+                   "FROM reader " +
+                   "WHERE NOT EXISTS " +
+                       "(SELECT * " +
+                        "FROM book " +
+                        "WHERE NOT EXISTS " +
+                                "(SELECT * " +
+                                 "FROM checkout_history " +
+                                 "WHERE checkout_real_finish_date IS NOT NULL " +
+                                       "AND checkout_history.reader_ticket_number =  reader.ticket_number " +
+                                       "AND checkout_history.exemplar_inventory_number IN " +
+                                               "(SELECT inventory_number " +
+                                                "FROM book_exemplar " +
+                                                "WHERE book_exemplar.book_isbn = book.isbn) " +
+                                ") " +
+                        "AND isbn IN " +
+                                "(SELECT book_isbn " +
+                                 "FROM book_subject_area " +
+                                 "WHERE subject_area_cipher = :target_area_cipher) " +
+                       ")",
+            nativeQuery = true)
+    List<Object[]> findReadersWhoReadAllBooksFromArea(@Param("target_area_cipher") String areaCipher);
+
+    @Query(value = "SELECT ticket_number, last_name, first_name, patronymic " +
+                   "FROM reader " +
+                   "WHERE ticket_number IN " +
+                           "(SELECT reader_ticket_number " +
+                            "FROM checkout_history " +
+                            "WHERE exemplar_inventory_number IN " +
+                                    "(SELECT inventory_number " +
+                                     "FROM book_exemplar " +
+                                     "WHERE book_isbn IN " +
+                                            "(SELECT isbn " +
+                                             "FROM book " +
+                                             "WHERE isbn IN " +
+                                                  "(SELECT book_isbn " +
+                                                   "FROM book_subject_area " +
+                                                   "WHERE subject_area_cipher IN " +
+                                                        "(SELECT cipher " +
+                                                         "FROM subject_area " +
+                                                         "WHERE subject_area_cipher = :target_area_cipher)" +
+                                                  ")" +
+                                            ")" +
+                                    ")" +
+                            "GROUP BY reader_ticket_number " +
+                            "HAVING COUNT(DISTINCT exemplar_inventory_number) > 1" +
+                           ")",
+            nativeQuery = true)
+    List<Object[]> findReadersWhoReadAtLeastOneBooksFromArea(@Param("target_area_cipher") String areaCipher);
+
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query(value = "INSERT INTO reader(last_name, first_name, patronymic," +
                                       "birth_date, home_city, home_street," +
