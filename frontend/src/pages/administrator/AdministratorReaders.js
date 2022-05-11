@@ -1,12 +1,12 @@
 import React from "react";
 import AdministratorLayout from "../../components/administrator/AdministratorLayout";
 
-function AdministratorBooks() {
+function AdministratorReaders() {
     return (
         <AdministratorLayout>
-            <div>Administrator Books page!</div>
+            <div>Administrator Readers page!</div>
         </AdministratorLayout>
     );
 }
 
-export default AdministratorBooks;
+export default AdministratorReaders;

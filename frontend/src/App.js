@@ -18,6 +18,9 @@ import LibrarianCheckouts from './pages/librarian/LibrarianCheckouts';
 import LibrarianReaders from './pages/librarian/LibrarianReaders';
 import Unauthorized from './pages/public/Unauthorized';
 import LibrarianBookDetails from './pages/librarian/LibrarianBookDetails';
+import AdministratorReaders from './pages/administrator/AdministratorReaders';
+import AdministratorAreas from './pages/administrator/AdministratorAreas';
+import AdministratorReplacementActs from './pages/administrator/AdministratorReplacementActs';
 
 function App() {
 
@@ -34,7 +37,7 @@ function App() {
       return '/librarian/books';
     }
     else if(roles.includes('ADMINISTRATOR')) {
-      return '/administrator/books';
+      return '/administrator/readers';
     }
     else {
       return '/unauthorized';
@@ -62,9 +65,12 @@ function App() {
           <Route path='/librarian/checkouts' element={<LibrarianCheckouts />} />
           <Route path='/librarian/readers' element={<LibrarianReaders />} />
         </Route>
-  
+
         <Route element={<RequireAuth allowedRoles={['ADMINISTRATOR']}></RequireAuth>}>
-          <Route path='/administratorBooks' element={<AdministratorBooks />} />
+          <Route path='/administrator/readers' element={<AdministratorReaders />} />
+          <Route path='/administrator/books' element={<AdministratorBooks />} />
+          <Route path='/administrator/areas' element={<AdministratorAreas />} />
+          <Route path='/administrator/replacements' element={<AdministratorReplacementActs />} />
         </Route>
       </Routes>
     </div>

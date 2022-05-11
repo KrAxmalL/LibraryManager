@@ -26,7 +26,7 @@ function Login() {
             return '/librarian/books';
         }
         else if(roles.includes('ADMINISTRATOR')) {
-            return '/administrator/books';
+            return '/administrator/readers';
         }
         else {
             return '/unauthorized';
