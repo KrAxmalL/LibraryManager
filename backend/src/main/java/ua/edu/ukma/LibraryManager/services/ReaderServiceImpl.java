@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ukma.LibraryManager.models.domain.Reader;
 import ua.edu.ukma.LibraryManager.models.dto.principal.AddReaderDTO;
 import ua.edu.ukma.LibraryManager.models.dto.principal.RegisterReaderDTO;
+import ua.edu.ukma.LibraryManager.models.dto.reader.OwerReaderDTO;
 import ua.edu.ukma.LibraryManager.models.dto.reader.ReaderDetailsDTO;
 import ua.edu.ukma.LibraryManager.models.dto.reader.ReaderReadBooksStatisticsDTO;
 import ua.edu.ukma.LibraryManager.models.dto.reader.ReaderSummaryDTO;
@@ -74,6 +75,20 @@ public class ReaderServiceImpl implements ReaderService {
             resDTO.setFirstName(reader[2].toString());
             resDTO.setPatronymic(reader[3].toString());
             resDTO.setReadBooks(((BigInteger) reader[4]).intValue());
+            return resDTO;
+        }).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<OwerReaderDTO> geOwerReaders() {
+        List<Object[]> readers = readerRepository.findOwerReaders();
+        return readers.stream().map(reader -> {
+            OwerReaderDTO resDTO = new OwerReaderDTO();
+            resDTO.setTicketNumber((Integer) reader[0]);
+            resDTO.setLastName(reader[1].toString());
+            resDTO.setFirstName(reader[2].toString());
+            resDTO.setPatronymic(reader[3].toString());
+            resDTO.setDebtBooks(((BigInteger) reader[4]).intValue());
             return resDTO;
         }).collect(Collectors.toList());
     }

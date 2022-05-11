@@ -3,6 +3,7 @@ package ua.edu.ukma.LibraryManager.services;
 import ua.edu.ukma.LibraryManager.models.domain.Reader;
 import ua.edu.ukma.LibraryManager.models.dto.principal.AddReaderDTO;
 import ua.edu.ukma.LibraryManager.models.dto.principal.RegisterReaderDTO;
+import ua.edu.ukma.LibraryManager.models.dto.reader.OwerReaderDTO;
 import ua.edu.ukma.LibraryManager.models.dto.reader.ReaderDetailsDTO;
 import ua.edu.ukma.LibraryManager.models.dto.reader.ReaderReadBooksStatisticsDTO;
 import ua.edu.ukma.LibraryManager.models.dto.reader.ReaderSummaryDTO;
@@ -19,6 +20,8 @@ public interface ReaderService {
     List<ReaderSummaryDTO> getReadersWhoReadBook(String bookIsbn);
 
     List<ReaderReadBooksStatisticsDTO> getReadersReadBooksStatistics();
+
+    List<OwerReaderDTO> geOwerReaders();
 
     Optional<Integer> getIdOfPrincipal(Integer ticketNumber);
 

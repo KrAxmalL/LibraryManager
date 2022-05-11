@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ua.edu.ukma.LibraryManager.models.domain.Reader;
+import ua.edu.ukma.LibraryManager.models.dto.reader.OwerReaderDTO;
 import ua.edu.ukma.LibraryManager.models.dto.reader.ReaderDetailsDTO;
 import ua.edu.ukma.LibraryManager.models.dto.reader.ReaderReadBooksStatisticsDTO;
 import ua.edu.ukma.LibraryManager.models.dto.reader.ReaderSummaryDTO;
@@ -36,6 +37,11 @@ public class ReaderController {
     @GetMapping("/statistics/numberOfBooks")
     public List<ReaderReadBooksStatisticsDTO> getAllReadersWhoReadBook() {
         return readerService.getReadersReadBooksStatistics();
+    }
+
+    @GetMapping("/statistics/owers")
+    public List<OwerReaderDTO> getOwerReaders() {
+        return readerService.geOwerReaders();
     }
 
     @DeleteMapping("/{ticketNumber}")

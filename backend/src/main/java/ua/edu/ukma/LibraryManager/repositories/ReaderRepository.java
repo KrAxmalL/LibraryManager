@@ -49,6 +49,16 @@ public interface ReaderRepository extends JpaRepository<Reader, Integer> {
             nativeQuery = true)
     List<Object[]> findNumberOfReadBooksForAllReaders();
 
+    @Query(value = "SELECT reader.ticket_number, reader.last_name, reader.first_name, reader.patronymic, " +
+            "              COUNT(checkout_history.checkout_number) AS debt_books " +
+            "FROM reader INNER JOIN checkout_history  " +
+            "ON reader.ticket_number = checkout_history.reader_ticket_number " +
+            "WHERE CURRENT_DATE > checkout_history.checkout_expected_finish_date " +
+                   "AND checkout_real_finish_date IS NULL " +
+            "GROUP BY reader.ticket_number",
+            nativeQuery = true)
+    List<Object[]> findOwerReaders();
+
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query(value = "INSERT INTO reader(last_name, first_name, patronymic," +
                                       "birth_date, home_city, home_street," +
