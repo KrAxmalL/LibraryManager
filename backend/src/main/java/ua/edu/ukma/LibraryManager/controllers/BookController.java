@@ -15,6 +15,7 @@ import ua.edu.ukma.LibraryManager.security.jwt.JWTManager;
 import ua.edu.ukma.LibraryManager.services.BookService;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -80,15 +81,13 @@ public class BookController {
         else if(roles.contains("READER")) {
             ReaderBookDetailsDTO resultBook = BookMapper.toReaderBookDetailsDTO(bookOpt.get());
             List<BookExemplar> availableExemplars = bookService.getAvailableExemplars(resultBook.getIsbn());
-            if(availableExemplars.isEmpty()) {
+            List<Integer> exemplarsIds = availableExemplars.stream()
+                    .map(BookExemplar::getInventoryNumber)
+                    .collect(Collectors.toList());
+            resultBook.setAvailableExemplars(exemplarsIds);
+            if(exemplarsIds.isEmpty()) {
                 Optional<LocalDate> closestDate = bookService.getClosestAvailableExemplarDate(resultBook.getIsbn());
                 resultBook.setClosestAvailableExemplar(closestDate.orElse(null));
-            }
-            else {
-                List<Integer> exemplarsIds = availableExemplars.stream()
-                        .map(BookExemplar::getInventoryNumber)
-                        .collect(Collectors.toList());
-                resultBook.setAvailableExemplars(exemplarsIds);
             }
             return ResponseEntity.ok().body(resultBook);
         }
