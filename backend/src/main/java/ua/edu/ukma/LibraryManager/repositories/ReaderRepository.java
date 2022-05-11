@@ -99,8 +99,9 @@ public interface ReaderRepository extends JpaRepository<Reader, Integer> {
                                                    "WHERE subject_area_cipher = :target_area_cipher)" +
                                             ")" +
                                     ")" +
+                            "AND checkout_real_finish_date IS NOT NULL " +
                             "GROUP BY reader_ticket_number " +
-                            "HAVING COUNT(DISTINCT exemplar_inventory_number) > 1" +
+                            "HAVING COUNT(DISTINCT exemplar_inventory_number) > 0" +
                            ")",
             nativeQuery = true)
     List<Object[]> findReadersWhoReadAtLeastOneBooksFromArea(@Param("target_area_cipher") String areaCipher);
