@@ -6,6 +6,7 @@ import { deleteBook, getBookDetails, setAreasForBook } from "../../api/books";
 import { addCheckout, getAllCheckouts } from "../../api/checkouts";
 import { addExemplar, getAllExemplars, replaceExemplar } from "../../api/exemplars";
 import { getAllReaders } from "../../api/readers";
+import { getAllReplacementActs } from "../../api/replacementActs";
 import ContentTable from "../../components/layout/ContentTable";
 import Modal from "../../components/layout/Modal";
 import AddCheckoutForm from "../../components/librarian/AddCheckoutForm";
@@ -32,12 +33,25 @@ function LibrarianBookDetails() {
     const [checkouts, setCheckouts] = useState([]);
     const [readers, setReaders] = useState([]);
     const [exemplars, setExemplars] = useState([]);
+    const [replacedExemplars, setReplacedExemplars] = useState([]);
     const [modalVisible, setModalVisible] = useState(false);
     const [addCheckoutFormVisible, setAddCheckoutFormVisible] = useState(false);
     const [addExemplarFormVisible, setAddExemplarFormVisible] = useState(false);
     const [replaceExemplarFormVisible, setReplaceExemplarFormVisible] = useState(false);
     const [editAreasFormVisible, setEditAreasFormVisible] = useState(false);
     const [deleteBookFormVisible, setDeleteBookFormVisible] = useState(false);
+
+    const bookToDisplay = useMemo(() => {
+        if(book) {
+            const bookExemplarsToDisplay = book.exemplars.map(exemplar => {
+                return replacedExemplars.includes(exemplar)
+                            ? `${exemplar} (замінений)`
+                            : `${exemplar}`;
+            });
+            return {...book, exemplars: bookExemplarsToDisplay}
+        }
+        return book;
+    }, [book, replacedExemplars]);
 
     const showAddCheckoutFormHandler = () => {
         setModalVisible(true);
@@ -107,11 +121,11 @@ function LibrarianBookDetails() {
                 const fetchedCheckouts = await getAllCheckouts(accessToken);
                 const fetchedReaders = await getAllReaders(accessToken);
                 const fetchedExemplars = await getAllExemplars(accessToken);
+                const fetchedReplacementActs = await getAllReplacementActs(accessToken);
 
                 const bookCheckouts = fetchedCheckouts.filter(checkout => checkout.bookIsbn.localeCompare(params.bookIsbn) === 0
                                                                           && checkout.checkoutRealFinishDate === null);
                 setCheckouts(bookCheckouts);
-
                 setReaders(fetchedReaders.map(reader => {
                     return {
                         ticketNumber: reader.ticketNumber,
@@ -120,8 +134,9 @@ function LibrarianBookDetails() {
                                     checkout.readerTicketNumber === reader.ticketNumber).length
                     }
                 }));
-
                 setExemplars(fetchedExemplars);
+                const replacedExemplars = fetchedReplacementActs.map(act => act.replacedExemplarInventoryNumber);
+                setReplacedExemplars(replacedExemplars);
                 setBook(fetchedBook);
                 setAreas(fetchedAreas);
             } catch(e) {
@@ -138,7 +153,7 @@ function LibrarianBookDetails() {
             <h1 className={classes['page-title']}>Книга</h1>
             <div className="container">
                 <div className={`container text-left ${classes['middle-container']}`}>
-                    {!isLoading && <ContentTable columns={bookFields} data={[book]} />}
+                    {!isLoading && <ContentTable columns={bookFields} data={[bookToDisplay]} />}
                 </div>
                 <button className={classes.btn} onClick={showAddCheckoutFormHandler}>Видати книгу</button>
                 <button className={classes.btn} onClick={showAddExemplarFormHandler}>Додати примірник</button>
@@ -149,11 +164,13 @@ function LibrarianBookDetails() {
             {modalVisible &&
                 <Modal onClose={hideModalClickHandler}>
                     {addCheckoutFormVisible && <AddCheckoutForm book={book.isbn} exemplars={book.exemplars}
+                                                                replacedExemplars={replacedExemplars}
                                                                 readers={readers} checkouts={checkouts}
                                                                 onCheckoutAdd={sendAddCheckout}
                                                 />}
                     {addExemplarFormVisible && <AddExemplarForm exemplars={exemplars} onExemplarAdd={sendAddExemplar}/>}
                     {replaceExemplarFormVisible && <ReplaceExemplarForm exemplars={book.exemplars} checkouts={checkouts}
+                                                                        replacedExemplars={replacedExemplars}
                                                                         onReplaceExemplar={sendReplaceExemplar}/>}
                     {editAreasFormVisible && <EditAreasForm areas={areas} bookAreas={book.areas} onEditAreas={sendEditAreas} />}
                     {deleteBookFormVisible && <DeleteBookForm book={{title: book.title, activeCheckouts: checkouts.length}}

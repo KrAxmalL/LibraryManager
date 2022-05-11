@@ -5,20 +5,32 @@ function AddCheckoutForm(props) {
     const readers = props.readers;
     const exemplars = props.exemplars;
     const checkouts = props.checkouts;
+    const replacedExemplars = props.replacedExemplars;
 
     const selectedExemplarRef = useRef();
     const selectedReaderRef = useRef();
     const startDateRef = useRef();
     const returnDateRef = useRef();
 
-    const [selectExemplarError, setSelectExemplarError] = useState(false);
+    const [selectExemplarError, setSelectExemplarError] = useState(null);
     const [selectReaderError, setSelectReaderError] = useState(false);
     const [startDateError, setStartDateError] = useState(false);
     const [returnDateError, setReturnDateError] = useState(false);
 
     const selectedExemplarChangeHandler = () => {
-        const selectedExemplar = selectedExemplarRef.current.value;
-        setSelectExemplarError(checkouts.filter(checkout => checkout.exemplarInventoryNumber === Number.parseInt(selectedExemplar)).length > 0);
+        const selectedExemplar = Number.parseInt(selectedExemplarRef.current.value);
+        let isTaken = checkouts.filter(checkout => checkout.exemplarInventoryNumber === Number.parseInt(selectedExemplar)).length > 0;
+        let message = null;
+        if(isTaken) {
+            message = 'Цей примірник уже взятий іншим читачем';
+        }
+        else {
+            isTaken = replacedExemplars.filter(exemplar => exemplar === selectedExemplar).length > 0;
+            if(isTaken) {
+                message = 'Цей примірник списаний, неможливо видати';
+            }
+        }
+        setSelectExemplarError(message);
     }
 
     const selectedReaderChangeHandler = () => {
@@ -42,10 +54,19 @@ function AddCheckoutForm(props) {
     const submitFormHandler = (e) => {
         e.preventDefault();
 
-        const selectedExemplar = selectedExemplarRef.current.value;
-        const validExemplar = checkouts.filter(checkout =>
-                        checkout.exemplarInventoryNumber === Number.parseInt(selectedExemplar)).length === 0;
-        setSelectExemplarError(!validExemplar);
+        const selectedExemplar = Number.parseInt(selectedExemplarRef.current.value);
+        let validExemplar = checkouts.filter(checkout => checkout.exemplarInventoryNumber === selectedExemplar).length === 0;
+        let message = null;
+        if(!validExemplar) {
+            message = 'Цей примірник уже взятий іншим читачем';
+        }
+        else {
+            validExemplar = replacedExemplars.filter(exemplar => exemplar === selectedExemplar).length === 0;
+            if(!validExemplar) {
+                message = 'Цей примірник списаний, неможливо видати';
+            }
+        }
+        setSelectExemplarError(message);
 
         const selectedReader = selectedReaderRef.current.value;
         const validReader = checkouts.filter(checkout =>
@@ -78,7 +99,7 @@ function AddCheckoutForm(props) {
             <select ref={selectedExemplarRef} onChange={selectedExemplarChangeHandler}>
                 {exemplars.map(exemplar => <option key={exemplar} value={exemplar}>{exemplar}</option>)}
             </select>
-            {selectExemplarError && <p className={classes.error}>Цей примірник уже взятий іншим читачем</p>}
+            {selectExemplarError && <p className={classes.error}>{selectExemplarError}</p>}
 
             <label>Оберіть читача:</label>
             <select ref={selectedReaderRef} onChange={selectedReaderChangeHandler}>

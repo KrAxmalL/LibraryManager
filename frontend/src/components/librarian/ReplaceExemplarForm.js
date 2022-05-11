@@ -4,40 +4,85 @@ import classes from './ReplaceExemplarForm.module.css';
 function ReplaceExemplarForm(props) {
     const exemplars = props.exemplars;
     const checkouts = props.checkouts;
+    const replacedExemplars = props.replacedExemplars;
 
     const selectedExemplarToBeReplacedRef = useRef();
     const selectedExemplarToReplaceRef = useRef();
     const replacementDateRef = useRef();
 
-    const [selectedExemplarToBeReplacedError, setSelectedExemplarToBeReplacedError] = useState(false);
-    const [selectedExemplarToReplaceError, setSelectedExemplarToReplaceError] = useState(false);
+    const [selectedExemplarToBeReplacedError, setSelectedExemplarToBeReplacedError] = useState(null);
+    const [selectedExemplarToReplaceError, setSelectedExemplarToReplaceError] = useState(null);
     const [replacementDateError, setReplacementDateError] = useState(false);
     const [sameExemplarsChosenError, setSameExemplarsChosenError] = useState(false);
 
     const selectedExemplarToBeReplacedChangeHandler = () => {
-        const selectedExemplarToBeReplaced = selectedExemplarToBeReplacedRef.current.value;
-        setSelectedExemplarToBeReplacedError(checkouts.filter(checkout => checkout.exemplarInventoryNumber ===
-                                                                          Number.parseInt(selectedExemplarToBeReplaced)).length > 0);
+        const selectedExemplarToBeReplaced = Number.parseInt(selectedExemplarToBeReplacedRef.current.value);
+        let isTaken = checkouts.filter(checkout => checkout.exemplarInventoryNumber ===
+                                                         selectedExemplarToBeReplaced).length > 0
+        let message = null;
+        if(isTaken) {
+            message = 'Цей примірник уже взятий іншим читачем';
+        }
+        else {
+            isTaken = replacedExemplars.filter(exemplar => exemplar === selectedExemplarToBeReplaced).length > 0;
+            if(isTaken) {
+                message = 'Цей примірник списаний, неможливо видати';
+            }
+        }
+        setSelectedExemplarToBeReplacedError(message);
     }
 
     const selectedExemplarToReplaceChangeHandler = () => {
-        const selectedExemplarToReplace = selectedExemplarToReplaceRef.current.value;
-        setSelectedExemplarToReplaceError(checkouts.filter(checkout => checkout.exemplarInventoryNumber ===
-                                                                          Number.parseInt(selectedExemplarToReplace)).length > 0);
+        const selectedExemplarToReplace = Number.parseInt(selectedExemplarToReplaceRef.current.value);
+        let isTaken = checkouts.filter(checkout => checkout.exemplarInventoryNumber ===
+            selectedExemplarToReplace).length > 0
+        let message = null;
+        if(isTaken) {
+            message = 'Цей примірник уже взятий іншим читачем';
+        }
+        else {
+            isTaken = replacedExemplars.filter(exemplar => exemplar === selectedExemplarToReplace).length > 0;
+            if(isTaken) {
+                message = 'Цей примірник списаний, неможливо видати';
+            }
+        }
+        setSelectedExemplarToReplaceError(message);
     }
 
     const submitFormHandler = (e) => {
         e.preventDefault();
 
         const selectedExemplarToBeReplaced = Number.parseInt(selectedExemplarToBeReplacedRef.current.value);
-        const validExemplarToBeReplaced = checkouts.filter(checkout => checkout.exemplarInventoryNumber ===
-                                                                       Number.parseInt(selectedExemplarToBeReplaced)).length === 0;
-        setSelectedExemplarToBeReplacedError(!validExemplarToBeReplaced);
+        let validExemplarToBeReplaced = checkouts.filter(checkout => checkout.exemplarInventoryNumber ===
+                                                            selectedExemplarToBeReplaced).length === 0
+        let toBeReplacedMessage = null;
+        if(!validExemplarToBeReplaced) {
+            toBeReplacedMessage = 'Цей примірник уже взятий іншим читачем';
+        }
+        else {
+            validExemplarToBeReplaced = replacedExemplars.filter(exemplar => exemplar ===
+                                                            selectedExemplarToBeReplaced).length === 0;
+            if(!validExemplarToBeReplaced) {
+                toBeReplacedMessage = 'Цей примірник списаний, неможливо видати';
+            }
+        }
+        setSelectedExemplarToBeReplacedError(toBeReplacedMessage);
 
         const selectedExemplarToReplace = Number.parseInt(selectedExemplarToReplaceRef.current.value);
-        const validExemplarToReplace = checkouts.filter(checkout => checkout.exemplarInventoryNumber ===
-                                                                    Number.parseInt(selectedExemplarToReplace)).length === 0;
-        setSelectedExemplarToReplaceError(!validExemplarToReplace);
+        let validExemplarToReplace = checkouts.filter(checkout => checkout.exemplarInventoryNumber ===
+                                                            selectedExemplarToReplace).length === 0
+        let replaceMessage = null;
+        if(!validExemplarToReplace) {
+            replaceMessage = 'Цей примірник уже взятий іншим читачем';
+        }
+        else {
+            validExemplarToReplace = replacedExemplars.filter(exemplar => exemplar ===
+                                                            selectedExemplarToReplace).length === 0;
+            if(!validExemplarToReplace) {
+                replaceMessage = 'Цей примірник списаний, неможливо видати';
+            }
+        }
+        setSelectedExemplarToReplaceError(replaceMessage);
 
         const replacementDate = replacementDateRef.current.value;
         const validReplacementDate = replacementDate !== undefined;
@@ -62,13 +107,13 @@ function ReplaceExemplarForm(props) {
             <select ref={selectedExemplarToBeReplacedRef} onChange={selectedExemplarToBeReplacedChangeHandler}>
                 {exemplars.map(exemplar => <option key={exemplar} value={exemplar}>{exemplar}</option>)}
             </select>
-            {selectedExemplarToBeReplacedError && <p className={classes.error}>Цей примірник перебуває у читача</p>}
+            {selectedExemplarToBeReplacedError && <p className={classes.error}>{selectedExemplarToBeReplacedError}</p>}
 
             <label>Оберіть примірник, який є заміною:</label>
             <select ref={selectedExemplarToReplaceRef} onChange={selectedExemplarToReplaceChangeHandler}>
                 {exemplars.map(exemplar => <option key={exemplar} value={exemplar}>{exemplar}</option>)}
             </select>
-            {selectedExemplarToReplaceError && <p className={classes.error}>Цей примірник перебуває у читача</p>}
+            {selectedExemplarToReplaceError && <p className={classes.error}>{selectedExemplarToReplaceError}</p>}
 
             <label>Введіть дату заміни:</label>
             <input className={classes.input} type='date' placeholder="Дата початку" required 
