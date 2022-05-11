@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ua.edu.ukma.LibraryManager.models.domain.Reader;
 import ua.edu.ukma.LibraryManager.models.dto.reader.ReaderDetailsDTO;
+import ua.edu.ukma.LibraryManager.models.dto.reader.ReaderReadBooksStatisticsDTO;
 import ua.edu.ukma.LibraryManager.models.dto.reader.ReaderSummaryDTO;
 import ua.edu.ukma.LibraryManager.services.PrincipalService;
 import ua.edu.ukma.LibraryManager.services.ReaderService;
@@ -30,6 +31,11 @@ public class ReaderController {
     @GetMapping("/statistics/readBook")
     public List<ReaderSummaryDTO> getAllReadersWhoReadBook(@RequestParam(name = "isbn", required = true) String bookIsbn) {
         return readerService.getReadersWhoReadBook(bookIsbn);
+    }
+
+    @GetMapping("/statistics/numberOfBooks")
+    public List<ReaderReadBooksStatisticsDTO> getAllReadersWhoReadBook() {
+        return readerService.getReadersReadBooksStatistics();
     }
 
     @DeleteMapping("/{ticketNumber}")

@@ -9,9 +9,11 @@ import ua.edu.ukma.LibraryManager.models.domain.Reader;
 import ua.edu.ukma.LibraryManager.models.dto.principal.AddReaderDTO;
 import ua.edu.ukma.LibraryManager.models.dto.principal.RegisterReaderDTO;
 import ua.edu.ukma.LibraryManager.models.dto.reader.ReaderDetailsDTO;
+import ua.edu.ukma.LibraryManager.models.dto.reader.ReaderReadBooksStatisticsDTO;
 import ua.edu.ukma.LibraryManager.models.dto.reader.ReaderSummaryDTO;
 import ua.edu.ukma.LibraryManager.repositories.ReaderRepository;
 
+import java.math.BigInteger;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -58,6 +60,20 @@ public class ReaderServiceImpl implements ReaderService {
             resDTO.setLastName(reader[1].toString());
             resDTO.setFirstName(reader[2].toString());
             resDTO.setPatronymic(reader[3].toString());
+            return resDTO;
+        }).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ReaderReadBooksStatisticsDTO> getReadersReadBooksStatistics() {
+        List<Object[]> readers = readerRepository.findNumberOfReadBooksForAllReaders();
+        return readers.stream().map(reader -> {
+            ReaderReadBooksStatisticsDTO resDTO = new ReaderReadBooksStatisticsDTO();
+            resDTO.setTicketNumber((Integer) reader[0]);
+            resDTO.setLastName(reader[1].toString());
+            resDTO.setFirstName(reader[2].toString());
+            resDTO.setPatronymic(reader[3].toString());
+            resDTO.setReadBooks(((BigInteger) reader[4]).intValue());
             return resDTO;
         }).collect(Collectors.toList());
     }

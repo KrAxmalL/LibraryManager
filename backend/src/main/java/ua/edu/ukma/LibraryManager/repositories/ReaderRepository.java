@@ -37,6 +37,18 @@ public interface ReaderRepository extends JpaRepository<Reader, Integer> {
             nativeQuery = true)
     List<Object[]> findReadersWhoReadBook(@Param("target_book_isbn") String bookIsbn);
 
+    @Query(value = "SELECT reader.ticket_number, reader.last_name, reader.first_name, reader.patronymic, " +
+                          "COUNT(DISTINCT book.isbn) AS read_books " +
+                   "FROM reader LEFT JOIN checkout_history  " +
+                    "ON reader.ticket_number = checkout_history.reader_ticket_number " +
+                   "LEFT JOIN book_exemplar " +
+                    "ON book_exemplar.inventory_number = checkout_history.exemplar_inventory_number " +
+                   "LEFT JOIN book " +
+                    "ON book_exemplar.book_isbn = book.isbn " +
+                   "GROUP BY reader.ticket_number",
+            nativeQuery = true)
+    List<Object[]> findNumberOfReadBooksForAllReaders();
+
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query(value = "INSERT INTO reader(last_name, first_name, patronymic," +
                                       "birth_date, home_city, home_street," +
