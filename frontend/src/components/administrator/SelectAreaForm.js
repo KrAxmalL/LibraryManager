@@ -22,7 +22,7 @@ function SelectAreaForm(props) {
     return (
         <form name="select-area-form" className={classes['select-area-form']} onSubmit={submitFormHandler}>
             <h2>Оберіть галузь знань для отримання статистики</h2>
-            <label>Оберіть галузб:</label>
+            <label>Оберіть галузь:</label>
             <select ref={selectedAreaRef}>
                 {areas.map(area => <option key={area.cipher} value={area.cipher}>{area.cipher + ', ' + area.subjectAreaName}</option>)}
             </select>
