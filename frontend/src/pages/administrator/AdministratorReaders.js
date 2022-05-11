@@ -107,7 +107,7 @@ function AdministratorReaders() {
 
     return (
         <AdministratorLayout>
-            <h1 className={classes['page-title']}>Статистика по книгам</h1>
+            <h1 className={classes['page-title']}>Статистика по читачам</h1>
             <div className="container">
                 <button className={classes.btn} onClick={showOwersHandler}>Показати боржників</button>
                 <button className={classes.btn} onClick={showReadBooksStatisticsHandler}>Для кожного читача показати кількість унікальних книг, яку він взяв у бібліотеці</button>
