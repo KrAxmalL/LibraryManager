@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import ua.edu.ukma.LibraryManager.models.domain.ReplacementAct;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 public interface ReplacementActRepository extends JpaRepository<ReplacementAct, Integer> {
@@ -23,4 +24,14 @@ public interface ReplacementActRepository extends JpaRepository<ReplacementAct, 
             "WHERE replaced_exemplar_number = :target_replaced_exemplar_number",
             nativeQuery = true)
     Optional<Integer> findReplacementActForExemplar(@Param("target_replaced_exemplar_number") Integer replacedExemplarNumber);
+
+    @Query(value = "SELECT book.isbn, book.title, replacement_act.act_number, " +
+                          "replacement_act.replaced_exemplar_number, replacement_act.new_exemplar_number, " +
+                          "replacement_act.replacement_date, book.price " +
+                   "FROM replacement_act INNER JOIN book_exemplar " +
+                         "ON replacement_act.replaced_exemplar_number = book_exemplar.inventory_number " +
+                   "INNER JOIN book " +
+                         "ON book.isbn = book_exemplar.book_isbn",
+            nativeQuery = true)
+    List<Object[]> findReplacementActsDetails();
 }
