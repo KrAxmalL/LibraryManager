@@ -6,6 +6,7 @@ import { login } from "../../api/authentication";
 import Layout from "../../components/layout/Layout";
 import LoginForm from "../../components/login/LoginForm";
 import { authActions } from "../../store/auth-slice";
+import { getHomePageForUser } from "../../utils/navigation";
 
 import classes from './Login.module.css'
 
@@ -14,24 +15,6 @@ function Login() {
     const dispatch = useDispatch();
 
     const [loginError, setLoginError] = useState(false);
-
-    const navigateAfterLogin = (roles) => {
-        if(!roles) {
-            return '/login';
-        }
-        else if(roles.includes('READER')) {
-            return '/reader/books';
-        }
-        else if(roles.includes('LIBRARIAN')) {
-            return '/librarian/books';
-        }
-        else if(roles.includes('ADMINISTRATOR')) {
-            return '/administrator/readers';
-        }
-        else {
-            return '/unauthorized';
-        }
-    }
 
     const loginHandler = async (email, password) => {
         try {
@@ -43,7 +26,7 @@ function Login() {
 
             setLoginError(false);
             navigate({
-              pathname: navigateAfterLogin(roles)
+              pathname: getHomePageForUser(roles)
             });
         } catch(error) {
             setLoginError(true);

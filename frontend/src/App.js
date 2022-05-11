@@ -21,33 +21,16 @@ import LibrarianBookDetails from './pages/librarian/LibrarianBookDetails';
 import AdministratorReaders from './pages/administrator/AdministratorReaders';
 import AdministratorAreas from './pages/administrator/AdministratorAreas';
 import AdministratorReplacementActs from './pages/administrator/AdministratorReplacementActs';
+import { getHomePageForUser } from './utils/navigation';
 
 function App() {
 
   const roles = useSelector(state => state.auth.roles);
 
-  const navigateAfterLogin = (roles) => {
-    if(!roles) {
-      return '/login';
-    }
-    else if(roles.includes('READER')) {
-      return '/reader/books';
-    }
-    else if(roles.includes('LIBRARIAN')) {
-      return '/librarian/books';
-    }
-    else if(roles.includes('ADMINISTRATOR')) {
-      return '/administrator/readers';
-    }
-    else {
-      return '/unauthorized';
-    }
-  }
-
   return (
     <div className="App">
       <Routes>
-        <Route path='/' exact element={<Navigate redirect to={navigateAfterLogin(roles)} />}></Route>
+        <Route path='/' exact element={<Navigate redirect to={getHomePageForUser(roles)} />}></Route>
         <Route path='/login' exact element={<Login />}></Route>
         <Route path='/register' exact element={<ReaderRegistration />}></Route>
         <Route path='/unauthorized' exact element={<Unauthorized />}></Route>
