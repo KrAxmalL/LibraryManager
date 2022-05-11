@@ -28,7 +28,6 @@ public interface BookRepository extends JpaRepository<Book, String> {
             nativeQuery = true)
     List<Book> findBooksByAuthor(@Param("author") String author);
 
-
     @Query(value  = "SELECT * FROM book WHERE title LIKE %:title%" +
             " AND isbn IN (SELECT book_isbn FROM book_author WHERE author_name IN :authors)",
             nativeQuery = true)
@@ -53,6 +52,14 @@ public interface BookRepository extends JpaRepository<Book, String> {
             nativeQuery = true)
     List<BookExemplar> findBookExemplars(@Param("searched_book_isbn") String bookIsbn);
 
+    @Query(value = "SELECT subject_area_name FROM subject_area " +
+                   "WHERE cipher IN " +
+                        "(SELECT subject_area_cipher " +
+                         "FROM book_subject_area " +
+                         "WHERE book_isbn = :target_book_isbn)",
+            nativeQuery = true)
+    List<String> findAreasNamesOfBook(@Param("target_book_isbn") String bookIsbn);
+
     @Query(value  = "SELECT * FROM book_exemplar" +
             " WHERE NOT EXISTS (SELECT * FROM checkout_history" +
             "                   WHERE book_exemplar.inventory_number = checkout_history.exemplar_inventory_number" +
@@ -70,16 +77,98 @@ public interface BookRepository extends JpaRepository<Book, String> {
             nativeQuery = true)
     Optional<LocalDate> findClosestExemplarAvailableDate(@Param("searched_book_isbn") String bookIsbn);
 
-    @Query(value  = "SELECT DISTINCT author_name FROM book_author",
+    @Query(value = "SELECT isbn, title " +
+                   "FROM book " +
+                   "WHERE isbn IN " +
+                        "(SELECT book_isbn " +
+                         "FROM book_exemplar " +
+                         "GROUP BY book_isbn " +
+                         "HAVING COUNT(inventory_number) = " +
+                                "(SELECT COUNT(inventory_number) " +
+                                 "FROM book_exemplar " +
+                                 "WHERE book_isbn = book.isbn " +
+                                       "AND inventory_number NOT IN " +
+                                            "(SELECT exemplar_inventory_number " +
+                                             "FROM checkout_history " +
+                                             "WHERE checkout_real_finish_date IS NULL)" +
+                                ")" +
+                        ")",
+            nativeQuery = true)
+    List<Object[]> findBooksAllExemplarsAvailable();
+
+    @Query(value = "SELECT isbn, title " +
+                   "FROM book " +
+                   "WHERE isbn IN " +
+                       "(SELECT book_isbn " +
+                        "FROM book_exemplar " +
+                        "WHERE inventory_number IN " +
+                             "(SELECT exemplar_inventory_number " +
+                              "FROM checkout_history " +
+                              "WHERE reader_ticket_number IN " +
+                                    "(SELECT ticket_number " +
+                                     "FROM reader " +
+                                     "WHERE home_city = :target_city) " +
+                              "AND checkout_real_finish_date IS NOT NULL) " +
+                        "AND isbn IN " +
+                            "(SELECT book_isbn " +
+                             "FROM book_subject_area " +
+                             "WHERE subject_area_cipher = :target_area_cipher)" +
+                       ")",
+            nativeQuery = true)
+    List<Object[]> findBooksOfAreaAndReaderCity(@Param("target_area_cipher") String areaCipher,
+                                                @Param("target_city") String readerCity);
+
+    @Query(value = "SELECT isbn, title " +
+                   "FROM book " +
+                   "WHERE NOT EXISTS " +
+                        "(SELECT ticket_number " +
+                         "FROM reader " +
+                         "WHERE ticket_number IN " +
+                              "(SELECT reader_ticket_number " +
+                               "FROM reader_phone " +
+                               "WHERE phone_number LIKE :target_phone_number || '%') " +
+                         "AND NOT EXISTS " +
+                              "(SELECT * " +
+                               "FROM book_exemplar " +
+                               "WHERE book_isbn = book.isbn " +
+                                     "AND inventory_number IN " +
+                                            "(SELECT exemplar_inventory_number " +
+                                             "FROM checkout_history " +
+                                             "WHERE reader_ticket_number = reader.ticket_number " +
+                                                   "AND checkout_real_finish_date IS NOT NULL)" +
+                              ")" +
+                        ")" +
+                         "AND EXISTS " +
+                                "(SELECT * " +
+                                 "FROM reader " +
+                                 "WHERE ticket_number IN " +
+                                    "(SELECT reader_ticket_number " +
+                                     "FROM reader_phone " +
+                                     "WHERE phone_number LIKE :target_phone_number || '%')" +
+                                ")",
+            nativeQuery = true)
+    List<Object[]> findBooksReadByAllReadersWithNumber(@Param("target_phone_number") String phoneNumber);
+
+    @Query(value = "SELECT book.isbn, book.title, " +
+                          "COUNT(checkout_history.checkout_number) AS popularity " +
+                   "FROM book LEFT JOIN book_exemplar " +
+                     "ON book.isbn = book_exemplar.book_isbn " +
+                   "LEFT JOIN checkout_history " +
+                     "ON book_exemplar.inventory_number = checkout_history.exemplar_inventory_number " +
+                   "GROUP BY book.isbn, book.title ",
+            nativeQuery = true)
+    List<Object[]> findBooksAndPopularity();
+
+    @Query(value = "SELECT DISTINCT author_name FROM book_author",
             nativeQuery = true)
     List<String> findAllAuthors();
 
-    @Query(value  = "SELECT author_name FROM book_author " +
+    @Query(value = "SELECT author_name FROM book_author " +
                     "WHERE book_isbn = :target_book_isbn",
             nativeQuery = true)
     List<String> findAuthorsOfBook(@Param("target_book_isbn") String bookIsbn);
 
-    @Query(value  = "SELECT subject_area_cipher FROM book_subject_area " +
+    @Query(value = "SELECT subject_area_cipher FROM book_subject_area " +
             "WHERE book_isbn = :target_book_isbn",
             nativeQuery = true)
     List<String> findAreasOfBook(@Param("target_book_isbn") String bookIsbn);

@@ -101,6 +101,30 @@ public class BookController {
         return bookService.getAllAuthors();
     }
 
+    @GetMapping("/statistics/allExemplarsAvailable")
+    public List<BookSummaryDTO> getBooksWithAllExemplarsAvailable() {
+        return bookService.getBooksWithAllAvailableExemplars();
+    }
+
+    @GetMapping("/statistics/booksOfAreaAndCity")
+    public List<BookSummaryDTO> getBooksWithAllExemplarsAvailable(@RequestParam(name = "area", required = true)
+                                                                              String areaCipher,
+                                                                  @RequestParam(name = "city", required = true)
+                                                                          String city) {
+        return bookService.getBooksOfAreaAndReaderCity(areaCipher, city);
+    }
+
+    @GetMapping("/statistics/readAllReadersWithPhone")
+    public List<BookSummaryDTO> getBooksWithAllExemplarsAvailable(@RequestParam(name = "phone", required = true)
+                                                                          String phoneNumber) {
+        return bookService.getBooksAllReadersWithPhoneRead(phoneNumber);
+    }
+
+    @GetMapping("/statistics/popularity")
+    public List<BookPopularityDTO> getBooksWithPopularity() {
+        return bookService.getBooksWithPopularity();
+    }
+
     @PostMapping("")
     public ResponseEntity<Void> addNewBook(@RequestBody(required = true) AddBookDTO bookToAdd) {
         log.info(bookToAdd.toString());

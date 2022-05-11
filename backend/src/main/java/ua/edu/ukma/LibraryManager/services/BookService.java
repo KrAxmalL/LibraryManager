@@ -3,6 +3,8 @@ package ua.edu.ukma.LibraryManager.services;
 import ua.edu.ukma.LibraryManager.models.domain.Book;
 import ua.edu.ukma.LibraryManager.models.domain.BookExemplar;
 import ua.edu.ukma.LibraryManager.models.dto.book.AddBookDTO;
+import ua.edu.ukma.LibraryManager.models.dto.book.BookPopularityDTO;
+import ua.edu.ukma.LibraryManager.models.dto.book.BookSummaryDTO;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -25,6 +27,14 @@ public interface BookService {
     List<Book> getBooksOfAreaAndTitle(String title, List<String> areasIds);
 
     List<Book> getBooksOfAuthorAndAreaAndTitle(String title, List<String> authors, List<String> areasIds);
+
+    List<BookSummaryDTO> getBooksWithAllAvailableExemplars();
+
+    List<BookSummaryDTO> getBooksOfAreaAndReaderCity(String areaCipher, String readerCity);
+
+    List<BookSummaryDTO> getBooksAllReadersWithPhoneRead(String phoneNumber);
+
+    List<BookPopularityDTO> getBooksWithPopularity();
 
     List<String> getAllAuthors();
 

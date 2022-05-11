@@ -8,11 +8,14 @@ import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ukma.LibraryManager.models.domain.Book;
 import ua.edu.ukma.LibraryManager.models.domain.BookExemplar;
 import ua.edu.ukma.LibraryManager.models.dto.book.AddBookDTO;
+import ua.edu.ukma.LibraryManager.models.dto.book.BookPopularityDTO;
+import ua.edu.ukma.LibraryManager.models.dto.book.BookSummaryDTO;
 import ua.edu.ukma.LibraryManager.models.dto.bookExemplar.BookExemplarDTO;
 import ua.edu.ukma.LibraryManager.repositories.BookRepository;
 import ua.edu.ukma.LibraryManager.repositories.SubjectAreaRepository;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -69,6 +72,63 @@ public class BookServiceImpl implements BookService {
     @Override
     public List<Book> getBooksOfAuthorAndAreaAndTitle(String title, List<String> authors, List<String> areasIds) {
         return bookRepository.findBooksByAreasAndAuthorsAndTitle(title, areasIds, authors);
+    }
+
+    @Override
+    public List<BookSummaryDTO> getBooksWithAllAvailableExemplars() {
+        List<Object[]> books = bookRepository.findBooksAllExemplarsAvailable();
+        return books.stream().map(book -> {
+            String isbn = book[0].toString();
+            BookSummaryDTO resDTO = new BookSummaryDTO();
+            resDTO.setIsbn(isbn);
+            resDTO.setTitle(book[1].toString());
+            resDTO.setAuthors(bookRepository.findAuthorsOfBook(isbn));
+            resDTO.setAreas(bookRepository.findAreasNamesOfBook(isbn));
+            return resDTO;
+        }).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<BookSummaryDTO> getBooksOfAreaAndReaderCity(String areaCipher, String readerCity) {
+        List<Object[]> books = bookRepository.findBooksOfAreaAndReaderCity(areaCipher, readerCity);
+        return books.stream().map(book -> {
+            String isbn = book[0].toString();
+            BookSummaryDTO resDTO = new BookSummaryDTO();
+            resDTO.setIsbn(isbn);
+            resDTO.setTitle(book[1].toString());
+            resDTO.setAuthors(bookRepository.findAuthorsOfBook(isbn));
+            resDTO.setAreas(bookRepository.findAreasNamesOfBook(isbn));
+            return resDTO;
+        }).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<BookSummaryDTO> getBooksAllReadersWithPhoneRead(String phoneNumber) {
+        List<Object[]> books = bookRepository.findBooksReadByAllReadersWithNumber(phoneNumber);
+        return books.stream().map(book -> {
+            String isbn = book[0].toString();
+            BookSummaryDTO resDTO = new BookSummaryDTO();
+            resDTO.setIsbn(isbn);
+            resDTO.setTitle(book[1].toString());
+            resDTO.setAuthors(bookRepository.findAuthorsOfBook(isbn));
+            resDTO.setAreas(bookRepository.findAreasNamesOfBook(isbn));
+            return resDTO;
+        }).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<BookPopularityDTO> getBooksWithPopularity() {
+        List<Object[]> books = bookRepository.findBooksAndPopularity();
+        return books.stream().map(book -> {
+            String isbn = book[0].toString();
+            BookPopularityDTO resDTO = new BookPopularityDTO();
+            resDTO.setIsbn(isbn);
+            resDTO.setTitle(book[1].toString());
+            resDTO.setPopularity(((BigInteger) book[2]).intValue());
+            resDTO.setAuthors(bookRepository.findAuthorsOfBook(isbn));
+            resDTO.setAreas(bookRepository.findAreasNamesOfBook(isbn));
+            return resDTO;
+        }).collect(Collectors.toList());
     }
 
     @Override
