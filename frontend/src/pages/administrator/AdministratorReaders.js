@@ -40,7 +40,7 @@ function AdministratorReaders() {
             }
         }
         fetchData();
-    }, [accessToken, setBooks]);
+    }, [accessToken, setBooks, setAreas]);
 
     const showOwersHandler = async (e) => {
         e.preventDefault();
