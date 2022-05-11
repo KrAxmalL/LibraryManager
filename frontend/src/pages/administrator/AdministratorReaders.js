@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { getAllAreas } from "../../api/areas";
 import { getBooksSummary } from "../../api/books";
-import { getOwerReaders, getReadersAndNumberOfReadBooks, getReadersWhoReadBook } from "../../api/readers";
+import { getOwerReaders, getReadersAndNumberOfReadBooks, getReadersWhoReadAllBooksFromArea, getReadersWhoReadAtLeastOneBooksFromArea, getReadersWhoReadBook } from "../../api/readers";
 import AdministratorLayout from "../../components/administrator/AdministratorLayout";
+import SelectAreaForm from "../../components/administrator/SelectAreaForm";
 import SelectBookForm from "../../components/administrator/SelectBookForm";
 import ContentTable from "../../components/layout/ContentTable";
 import Modal from "../../components/layout/Modal";
@@ -20,19 +22,24 @@ function AdministratorReaders() {
 
     const [modalVisible, setModalVisible] = useState(false);
     const [selectBookFormVisible, setSelectBookFormVisible] = useState(false);
+    const [selectAreaFormVisible, setSelectAreaFormVisible] = useState(false);
+    const [allBooksButtonClicked, setAllBookButtonClicked] = useState(false);
 
     const [books, setBooks] = useState([]);
+    const [areas, setAreas] = useState([]);
 
     useEffect(() => {
-        const fetchBooks = async() => {
+        const fetchData = async() => {
             try {
                 const books = await getBooksSummary(accessToken);
+                const areas = await getAllAreas(accessToken);
                 setBooks(books);
+                setAreas(areas);
             } catch (e) {
                 console.log(e);
             }
         }
-        fetchBooks();
+        fetchData();
     }, [accessToken, setBooks]);
 
     const showOwersHandler = async (e) => {
@@ -95,14 +102,64 @@ function AdministratorReaders() {
         }
     }
 
+    const showReadersReadAllBooksFromAreaHandler = async (areaCipher) => {
+        setIsLoading(true);
+        try {
+            const readers = await getReadersWhoReadAllBooksFromArea(accessToken, areaCipher);
+            const readersForTable = readers.map(reader => {
+                return {
+                    ticketNumber: reader.ticketNumber,
+                    initials: reader.lastName + ' ' + reader.firstName + ' ' + reader.patronymic,
+                }
+            });
+            setTableContent({fields: readerSummaryFields, content: readersForTable});
+        } catch(e) {
+            console.log(e);
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
+    const showReadersReadAtLeastOneBookFromAreaHandler = async (areaCipher) => {
+        setIsLoading(true);
+        try {
+            const readers = await getReadersWhoReadAtLeastOneBooksFromArea(accessToken, areaCipher);
+            const readersForTable = readers.map(reader => {
+                return {
+                    ticketNumber: reader.ticketNumber,
+                    initials: reader.lastName + ' ' + reader.firstName + ' ' + reader.patronymic,
+                }
+            });
+            setTableContent({fields: readerSummaryFields, content: readersForTable});
+        } catch(e) {
+            console.log(e);
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
     const showSelectBookFormHandler = (e) => {
         setModalVisible(true);
         setSelectBookFormVisible(true);
     }
 
+    const showSelectAreaFormForAllBooksHandler = (e) => {
+        setModalVisible(true);
+        setSelectAreaFormVisible(true);
+        setAllBookButtonClicked(true);
+    }
+
+    const showSelectAreaFormForAtLeastOneBooksHandler = (e) => {
+        setModalVisible(true);
+        setSelectAreaFormVisible(true);
+        setAllBookButtonClicked(false);
+    }
+
     const hideModalClickHandler = (e) => {
         setModalVisible(false);
         setSelectBookFormVisible(false);
+        setSelectAreaFormVisible(false);
+        setAllBookButtonClicked(false);
     }
 
     return (
@@ -112,13 +169,20 @@ function AdministratorReaders() {
                 <button className={classes.btn} onClick={showOwersHandler}>Показати боржників</button>
                 <button className={classes.btn} onClick={showReadBooksStatisticsHandler}>Для кожного читача показати кількість унікальних книг, яку він взяв у бібліотеці</button>
                 <button className={classes.btn} onClick={showSelectBookFormHandler}>Показати читачів, які прочитали задану книгу</button>
-                <button className={classes.btn}>Показати читачів, які прочитали усі книги заданої галузі знань</button>
+                <button className={classes.btn} onClick={showSelectAreaFormForAllBooksHandler}>Показати читачів, які прочитали усі книги із заданої галузі знань</button>
+                <button className={classes.btn} onClick={showSelectAreaFormForAtLeastOneBooksHandler}>Показати читачів, які прочитали хоча б одну книгу із заданої галузі знань</button>
             {!isLoading &&
                 <ContentTable columns={tableContent.fields} data={tableContent.content} />
             }
             {modalVisible &&
                 <Modal onClose={hideModalClickHandler}>
                     {selectBookFormVisible && <SelectBookForm books={books} onSelectBook={showReadersReadChosenBookHandler}/>}
+                    {selectAreaFormVisible
+                        && <SelectAreaForm areas={areas} 
+                                           onSelectArea={allBooksButtonClicked
+                                                            ? showReadersReadAllBooksFromAreaHandler
+                                                            : showReadersReadAtLeastOneBookFromAreaHandler} />
+                    }
                 </Modal>
             }
             </div>

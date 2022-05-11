@@ -67,6 +67,38 @@ export async function getOwerReaders(accessToken) {
     }
 };
 
+export async function getReadersWhoReadAllBooksFromArea(accessToken, areaCipher) {
+    const response = await fetch(READERS_STATISTIC_URL + `/allBooksFromArea?area=${areaCipher}`, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${accessToken}`
+        },
+    });
+
+    if(response.ok) {
+        return await response.json();
+    }
+    else {
+        throw new Error("Readers fetching failed");
+    }
+};
+
+export async function getReadersWhoReadAtLeastOneBooksFromArea(accessToken, areaCipher) {
+    const response = await fetch(READERS_STATISTIC_URL + `/atLeastOneBooksFromArea?area=${areaCipher}`, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${accessToken}`
+        },
+    });
+
+    if(response.ok) {
+        return await response.json();
+    }
+    else {
+        throw new Error("Readers fetching failed");
+    }
+};
+
 export async function deleteReader(accessToken, readerTicketNumber) {
     const response = await fetch(READERS_URL + `/${readerTicketNumber}`, {
         method: 'DELETE',
