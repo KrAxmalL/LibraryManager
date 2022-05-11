@@ -9,6 +9,7 @@ import ua.edu.ukma.LibraryManager.models.domain.Reader;
 import ua.edu.ukma.LibraryManager.models.dto.principal.AddReaderDTO;
 import ua.edu.ukma.LibraryManager.models.dto.principal.RegisterReaderDTO;
 import ua.edu.ukma.LibraryManager.models.dto.reader.ReaderDetailsDTO;
+import ua.edu.ukma.LibraryManager.models.dto.reader.ReaderSummaryDTO;
 import ua.edu.ukma.LibraryManager.repositories.ReaderRepository;
 
 import java.util.List;
@@ -44,6 +45,19 @@ public class ReaderServiceImpl implements ReaderService {
             resDTO.setHomeBuildingNumber(reader.getHomeBuildingNumber());
             resDTO.setHomeFlatNumber(reader.getHomeFlatNumber());
             resDTO.setWorkPlace(reader.getWorkPlace());
+            return resDTO;
+        }).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ReaderSummaryDTO> getReadersWhoReadBook(String bookIsbn) {
+        List<Object[]> readers = readerRepository.findReadersWhoReadBook(bookIsbn);
+        return readers.stream().map(reader -> {
+            ReaderSummaryDTO resDTO = new ReaderSummaryDTO();
+            resDTO.setTicketNumber((Integer) reader[0]);
+            resDTO.setLastName(reader[1].toString());
+            resDTO.setFirstName(reader[2].toString());
+            resDTO.setPatronymic(reader[3].toString());
             return resDTO;
         }).collect(Collectors.toList());
     }

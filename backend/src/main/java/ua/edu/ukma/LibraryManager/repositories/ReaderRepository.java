@@ -23,6 +23,20 @@ public interface ReaderRepository extends JpaRepository<Reader, Integer> {
             nativeQuery = true)
     List<Integer> findActiveCheckoutsOfReader(@Param("target_ticket_number") Integer ticketNumber);
 
+    @Query(value = "SELECT ticket_number, last_name, first_name, patronymic " +
+            "FROM reader " +
+            "WHERE ticket_number IN " +
+            "(SELECT reader_ticket_number " +
+            "FROM checkout_history " +
+            "WHERE checkout_real_finish_date IS NOT NULL " +
+            "AND exemplar_inventory_number IN " +
+            "(SELECT inventory_number " +
+            "FROM book_exemplar " +
+            "WHERE book_isbn = :target_book_isbn)" +
+            ")",
+            nativeQuery = true)
+    List<Object[]> findReadersWhoReadBook(@Param("target_book_isbn") String bookIsbn);
+
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query(value = "INSERT INTO reader(last_name, first_name, patronymic," +
                                       "birth_date, home_city, home_street," +
