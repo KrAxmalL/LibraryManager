@@ -1,6 +1,7 @@
 package ua.edu.ukma.LibraryManager.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import ua.edu.ukma.LibraryManager.models.domain.SubjectArea;
@@ -24,4 +25,10 @@ public interface SubjectAreaRepository extends JpaRepository<SubjectArea, String
             nativeQuery = true)
     List<Object[]> findNumberOfTakenBooksForAllAreas(@Param("target_start_date") LocalDate startDate,
                                                      @Param("target_end_date") LocalDate endDate);
+
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Query(value = "INSERT INTO subject_area(cipher, subject_area_name) " +
+                   "VALUES(:target_area_cipher, :target_area_name)", nativeQuery = true)
+    void addSubjectArea(@Param("target_area_cipher") String areaCipher,
+                        @Param("target_area_name") String areaName);
 }

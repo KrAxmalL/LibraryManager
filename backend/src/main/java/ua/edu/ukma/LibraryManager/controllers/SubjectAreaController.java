@@ -3,10 +3,9 @@ package ua.edu.ukma.LibraryManager.controllers;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import ua.edu.ukma.LibraryManager.models.dto.subjectArea.AddSubjectAreaDTO;
 import ua.edu.ukma.LibraryManager.models.dto.subjectArea.SubjectAreaStatisticsDTO;
 import ua.edu.ukma.LibraryManager.models.dto.subjectArea.SubjectAreaSummaryDTO;
 import ua.edu.ukma.LibraryManager.services.SubjectAreaService;
@@ -35,5 +34,16 @@ public class SubjectAreaController {
         final LocalDate startDate = LocalDate.parse(startDateStr);
         final LocalDate endDate = LocalDate.parse(endDateStr);
         return subjectAreaService.getStatisticsForSubjectAreasForPeriod(startDate, endDate);
+    }
+
+    @PostMapping("")
+    public ResponseEntity<Void> addNewSubjectArea(@RequestBody AddSubjectAreaDTO areaToAdd) {
+        final boolean addedSuccessfully = subjectAreaService.addSubjectArea(areaToAdd);
+        if(addedSuccessfully) {
+            return ResponseEntity.noContent().build();
+        }
+        else {
+            return ResponseEntity.badRequest().build();
+        }
     }
 }

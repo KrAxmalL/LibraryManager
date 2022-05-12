@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.edu.ukma.LibraryManager.models.dto.mappers.SubjectAreaMapper;
+import ua.edu.ukma.LibraryManager.models.dto.subjectArea.AddSubjectAreaDTO;
 import ua.edu.ukma.LibraryManager.models.dto.subjectArea.SubjectAreaStatisticsDTO;
 import ua.edu.ukma.LibraryManager.models.dto.subjectArea.SubjectAreaSummaryDTO;
 import ua.edu.ukma.LibraryManager.repositories.SubjectAreaRepository;
@@ -41,5 +42,15 @@ public class SubjectAreaServiceImpl implements SubjectAreaService {
             resDTO.setTakenBooks(((BigInteger) area[2]).intValue());
             return resDTO;
         }).collect(Collectors.toList());
+    }
+
+    @Override
+    public boolean addSubjectArea(AddSubjectAreaDTO areaToAdd) {
+        if(!subjectAreaRepository.existsById(areaToAdd.getCipher())) {
+            subjectAreaRepository.addSubjectArea(areaToAdd.getCipher(), areaToAdd.getSubjectAreaName());
+            return subjectAreaRepository.existsById(areaToAdd.getCipher());
+        }
+
+        return false;
     }
 }

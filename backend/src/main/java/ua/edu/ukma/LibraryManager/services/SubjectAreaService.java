@@ -1,5 +1,6 @@
 package ua.edu.ukma.LibraryManager.services;
 
+import ua.edu.ukma.LibraryManager.models.dto.subjectArea.AddSubjectAreaDTO;
 import ua.edu.ukma.LibraryManager.models.dto.subjectArea.SubjectAreaStatisticsDTO;
 import ua.edu.ukma.LibraryManager.models.dto.subjectArea.SubjectAreaSummaryDTO;
 
@@ -11,4 +12,6 @@ public interface SubjectAreaService {
     List<SubjectAreaSummaryDTO> getAllAreas();
 
     List<SubjectAreaStatisticsDTO> getStatisticsForSubjectAreasForPeriod(LocalDate startDate, LocalDate endDate);
+
+    boolean addSubjectArea(AddSubjectAreaDTO areaToAdd);
 }
