@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import { getAllAreas } from "../../api/areas";
+import { addNewArea, getAllAreas } from "../../api/areas";
 import { deleteBook, getBookDetails, setAreasForBook } from "../../api/books";
 import { addCheckout, getAllCheckouts } from "../../api/checkouts";
 import { addExemplar, getAllExemplars, replaceExemplar } from "../../api/exemplars";
@@ -9,6 +9,7 @@ import { getAllReaders } from "../../api/readers";
 import { getAllReplacementActs } from "../../api/replacementActs";
 import ContentTable from "../../components/layout/ContentTable";
 import Modal from "../../components/layout/Modal";
+import AddAreaForm from "../../components/librarian/AddAreaForm";
 import AddCheckoutForm from "../../components/librarian/AddCheckoutForm";
 import AddExemplarForm from "../../components/librarian/AddExemplarForm";
 import DeleteBookForm from "../../components/librarian/DeleteBookForm";
@@ -35,6 +36,7 @@ function LibrarianBookDetails() {
     const [exemplars, setExemplars] = useState([]);
     const [replacedExemplars, setReplacedExemplars] = useState([]);
     const [modalVisible, setModalVisible] = useState(false);
+    const [addAreaFormVisible, setAddAreaFormVisible] = useState(false);
     const [addCheckoutFormVisible, setAddCheckoutFormVisible] = useState(false);
     const [addExemplarFormVisible, setAddExemplarFormVisible] = useState(false);
     const [replaceExemplarFormVisible, setReplaceExemplarFormVisible] = useState(false);
@@ -52,6 +54,11 @@ function LibrarianBookDetails() {
         }
         return book;
     }, [book, replacedExemplars]);
+
+    const showAddAreaFormHandler = () => {
+        setModalVisible(true);
+        setAddAreaFormVisible(true);
+    }
 
     const showAddCheckoutFormHandler = () => {
         setModalVisible(true);
@@ -80,12 +87,17 @@ function LibrarianBookDetails() {
 
     const hideModalClickHandler = () => {
         setModalVisible(false);
+        setAddAreaFormVisible(false);
         setAddCheckoutFormVisible(false);
         setAddExemplarFormVisible(false);
         setReplaceExemplarFormVisible(false);
         setEditAreasFormVisible(false);
         setDeleteBookFormVisible(false);
     };
+
+    const sendAddArea = async(areaCipher, areaName) => {
+        await addNewArea(accessToken, {cipher: areaCipher, subjectAreaName: areaName});
+    }
 
     const sendAddCheckout = async(exemplarInventoryNumber, readerTicketNumber, startDate, returnDate) => {
         await addCheckout(accessToken, exemplarInventoryNumber, readerTicketNumber, startDate, returnDate);
@@ -155,6 +167,7 @@ function LibrarianBookDetails() {
                 <div className={`container text-left ${classes['middle-container']}`}>
                     {!isLoading && <ContentTable columns={bookFields} data={[bookToDisplay]} />}
                 </div>
+                <button className={classes.btn} onClick={showAddAreaFormHandler}>Додати галузь знань</button>
                 <button className={classes.btn} onClick={showAddCheckoutFormHandler}>Видати книгу</button>
                 <button className={classes.btn} onClick={showAddExemplarFormHandler}>Додати примірник</button>
                 <button className={classes.btn} onClick={showReplaceExemplarFormHandler}>Замінити примірник</button>
@@ -163,6 +176,7 @@ function LibrarianBookDetails() {
             </div>
             {modalVisible &&
                 <Modal onClose={hideModalClickHandler}>
+                    {addAreaFormVisible && <AddAreaForm areas={areas} onAddArea={sendAddArea}/>}
                     {addCheckoutFormVisible && <AddCheckoutForm book={book.isbn} exemplars={book.exemplars}
                                                                 replacedExemplars={replacedExemplars}
                                                                 readers={readers} checkouts={checkouts}
