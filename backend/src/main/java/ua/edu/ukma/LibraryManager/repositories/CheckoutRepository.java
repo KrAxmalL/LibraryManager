@@ -75,4 +75,10 @@ public interface CheckoutRepository extends JpaRepository<Checkout, Integer> {
                      "WHERE book_isbn = :target_book_isbn)",
             nativeQuery = true)
     void deleteCheckoutHistoryOfBook(@Param("target_book_isbn") String bookIsbn);
+
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Query(value = "DELETE FROM checkout_history " +
+            "WHERE exemplar_inventory_number = :target_exemplar_number ",
+            nativeQuery = true)
+    void deleteCheckoutsOfExemplar(@Param("target_exemplar_number") Integer exemplarNumber);
 }

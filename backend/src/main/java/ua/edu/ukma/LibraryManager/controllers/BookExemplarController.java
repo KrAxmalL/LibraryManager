@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import ua.edu.ukma.LibraryManager.models.dto.bookExemplar.BookExemplarDTO;
 import ua.edu.ukma.LibraryManager.models.dto.replacementAct.AddReplacementActDTO;
 import ua.edu.ukma.LibraryManager.services.BookExemplarService;
+import ua.edu.ukma.LibraryManager.services.CheckoutService;
 
 import java.util.List;
 
@@ -18,6 +19,7 @@ import java.util.List;
 public class BookExemplarController {
 
     private final BookExemplarService bookExemplarService;
+    private final CheckoutService checkoutService;
 
     @GetMapping("")
     public List<BookExemplarDTO> getAllExemplars() {
@@ -39,7 +41,7 @@ public class BookExemplarController {
     public ResponseEntity<Void> deleteExemplar(@PathVariable(value = "inventoryNumber", required = true)
                                                            Integer inventoryNumber) {
         final boolean deletedSuccessfully = bookExemplarService.deleteExemplar(inventoryNumber);
-        if(deletedSuccessfully) {
+        if (deletedSuccessfully) {
             return ResponseEntity.noContent().build();
         }
         else {

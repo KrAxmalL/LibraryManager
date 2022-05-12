@@ -10,6 +10,7 @@ import ua.edu.ukma.LibraryManager.models.dto.book.AddBookDTO;
 import ua.edu.ukma.LibraryManager.models.dto.bookExemplar.BookExemplarDTO;
 import ua.edu.ukma.LibraryManager.models.dto.replacementAct.AddReplacementActDTO;
 import ua.edu.ukma.LibraryManager.repositories.BookExemplarRepository;
+import ua.edu.ukma.LibraryManager.repositories.CheckoutRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +25,7 @@ import static ua.edu.ukma.LibraryManager.utils.StringUtils.isNotNullOrBlank;
 public class BookExemplarServiceImpl implements BookExemplarService {
 
     private final BookExemplarRepository bookExemplarRepository;
+    private final CheckoutRepository checkoutRepository;
     private final ReplacementActService replacementActService;
 
     @Override
@@ -74,6 +76,7 @@ public class BookExemplarServiceImpl implements BookExemplarService {
         if(bookExemplarRepository.existsById(inventoryNumber)) {
             List<Integer> activeCheckout = bookExemplarRepository.findActiveCheckoutsOfExemplar(inventoryNumber);
             if(activeCheckout.isEmpty()) {
+                checkoutRepository.deleteCheckoutsOfExemplar(inventoryNumber);
                 bookExemplarRepository.deleteBookExemplar(inventoryNumber);
                 return !bookExemplarRepository.existsById(inventoryNumber);
             }
