@@ -14,6 +14,10 @@ const administratorMenus = [
         link: '/administrator/areas'
     },
     {
+        title: 'Історія видач',
+        link: '/administrator/checkouts'
+    },
+    {
         title: 'Заміни книг',
         link: '/administrator/replacements'
     }

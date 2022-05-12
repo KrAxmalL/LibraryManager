@@ -40,7 +40,7 @@ public class CheckoutController {
         String accessToken = authorizationHeaderValues.get(0).substring(BEARER_LENGTH);
         List<String> roles = jwtManager.getRoles(accessToken);
 
-        if(roles.contains("LIBRARIAN")) {
+        if(roles.contains("LIBRARIAN") || roles.contains("ADMINISTRATOR")) {
             return ResponseEntity.ok().body(checkoutService.getAllCheckouts());
         }
         else if(roles.contains("READER")) {

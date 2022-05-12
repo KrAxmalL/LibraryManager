@@ -22,6 +22,7 @@ import AdministratorReaders from './pages/administrator/AdministratorReaders';
 import AdministratorAreas from './pages/administrator/AdministratorAreas';
 import AdministratorReplacementActs from './pages/administrator/AdministratorReplacementActs';
 import { getHomePageForUser } from './utils/navigation';
+import AdministratorCheckouts from './pages/administrator/AdministratorCheckouts';
 
 function App() {
 
@@ -53,6 +54,7 @@ function App() {
           <Route path='/administrator/readers' element={<AdministratorReaders />} />
           <Route path='/administrator/books' element={<AdministratorBooks />} />
           <Route path='/administrator/areas' element={<AdministratorAreas />} />
+          <Route path='/administrator/checkouts' element={<AdministratorCheckouts />} />
           <Route path='/administrator/replacements' element={<AdministratorReplacementActs />} />
         </Route>
       </Routes>
