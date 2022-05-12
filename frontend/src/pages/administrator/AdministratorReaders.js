@@ -11,9 +11,9 @@ import Modal from "../../components/layout/Modal";
 
 import classes from './AdministratorReaders.module.css';
 
-const readerSummaryFields = ['Номер читацького квитка', 'ПІБ'];
-const readerReadBooksFields = ['Номер читацького квитка', 'ПІБ', 'Кількість взятих унікальних книг'];
-const owerReaderFields = ['Номер читацького квитка', 'ПІБ', 'Кількість незданих книг, які знаходяться у читача'];
+const readerSummaryFields = ['Номер читацького квитка', 'ПІБ', 'Номери телефону'];
+const readerReadBooksFields = ['Номер читацького квитка', 'ПІБ', 'Номери телефону', 'Кількість взятих унікальних книг'];
+const owerReaderFields = ['Номер читацького квитка', 'ПІБ', 'Номери телефону', 'Кількість незданих книг, які знаходяться у читача'];
 
 function AdministratorReaders() {
     const accessToken = useSelector(state => state.auth.accessToken);
@@ -52,6 +52,7 @@ function AdministratorReaders() {
                 return {
                     ticketNumber: reader.ticketNumber,
                     initials: reader.lastName + ' ' + reader.firstName + ' ' + reader.patronymic,
+                    phoneNumbers: reader.phoneNumbers.reduce((acc, curr) => acc + ', ' + curr),
                     debtBooks: reader.debtBooks
                 }
             });
@@ -73,6 +74,7 @@ function AdministratorReaders() {
                 return {
                     ticketNumber: reader.ticketNumber,
                     initials: reader.lastName + ' ' + reader.firstName + ' ' + reader.patronymic,
+                    phoneNumbers: reader.phoneNumbers.reduce((acc, curr) => acc + ', ' + curr),
                     readBooks: reader.readBooks
                 }
             });
@@ -92,6 +94,7 @@ function AdministratorReaders() {
                 return {
                     ticketNumber: reader.ticketNumber,
                     initials: reader.lastName + ' ' + reader.firstName + ' ' + reader.patronymic,
+                    phoneNumbers: reader.phoneNumbers.reduce((acc, curr) => acc + ', ' + curr),
                 }
             });
             setTableContent({fields: readerSummaryFields, content: readersForTable});
@@ -110,6 +113,7 @@ function AdministratorReaders() {
                 return {
                     ticketNumber: reader.ticketNumber,
                     initials: reader.lastName + ' ' + reader.firstName + ' ' + reader.patronymic,
+                    phoneNumbers: reader.phoneNumbers.reduce((acc, curr) => acc + ', ' + curr),
                 }
             });
             setTableContent({fields: readerSummaryFields, content: readersForTable});
@@ -128,6 +132,7 @@ function AdministratorReaders() {
                 return {
                     ticketNumber: reader.ticketNumber,
                     initials: reader.lastName + ' ' + reader.firstName + ' ' + reader.patronymic,
+                    phoneNumbers: reader.phoneNumbers.reduce((acc, curr) => acc + ', ' + curr),
                 }
             });
             setTableContent({fields: readerSummaryFields, content: readersForTable});
