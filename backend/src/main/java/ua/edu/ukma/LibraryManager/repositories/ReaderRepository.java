@@ -133,6 +133,11 @@ public interface ReaderRepository extends JpaRepository<Reader, Integer> {
     void addPhoneForReader(@Param("target_phone_number") String phoneNumber,
                            @Param("target_ticket_number") Integer ticketNumber);
 
+    @Query(value = "SElECT phone_number FROM reader_phone " +
+                   "WHERE reader_ticket_number = :target_ticket_number",
+            nativeQuery = true)
+    List<String> getPhonesOfReader(@Param("target_ticket_number") Integer ticketNumber);
+
     @Query(value = "SELECT ticket_number FROM reader " +
                    "WHERE principal_id = :target_principal_id",
             nativeQuery = true)

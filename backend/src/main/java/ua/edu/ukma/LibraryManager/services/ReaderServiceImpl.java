@@ -61,6 +61,7 @@ public class ReaderServiceImpl implements ReaderService {
             resDTO.setLastName(reader[1].toString());
             resDTO.setFirstName(reader[2].toString());
             resDTO.setPatronymic(reader[3].toString());
+            resDTO.setPhoneNumbers(readerRepository.getPhonesOfReader((Integer) reader[0]));
             return resDTO;
         }).collect(Collectors.toList());
     }
@@ -74,6 +75,7 @@ public class ReaderServiceImpl implements ReaderService {
             resDTO.setLastName(reader[1].toString());
             resDTO.setFirstName(reader[2].toString());
             resDTO.setPatronymic(reader[3].toString());
+            resDTO.setPhoneNumbers(readerRepository.getPhonesOfReader((Integer) reader[0]));
             resDTO.setReadBooks(((BigInteger) reader[4]).intValue());
             return resDTO;
         }).collect(Collectors.toList());
@@ -88,6 +90,7 @@ public class ReaderServiceImpl implements ReaderService {
             resDTO.setLastName(reader[1].toString());
             resDTO.setFirstName(reader[2].toString());
             resDTO.setPatronymic(reader[3].toString());
+            resDTO.setPhoneNumbers(readerRepository.getPhonesOfReader((Integer) reader[0]));
             resDTO.setDebtBooks(((BigInteger) reader[4]).intValue());
             return resDTO;
         }).collect(Collectors.toList());
@@ -102,6 +105,7 @@ public class ReaderServiceImpl implements ReaderService {
             resDTO.setLastName(reader[1].toString());
             resDTO.setFirstName(reader[2].toString());
             resDTO.setPatronymic(reader[3].toString());
+            resDTO.setPhoneNumbers(readerRepository.getPhonesOfReader((Integer) reader[0]));
             return resDTO;
         }).collect(Collectors.toList());
     }
@@ -115,6 +119,7 @@ public class ReaderServiceImpl implements ReaderService {
             resDTO.setLastName(reader[1].toString());
             resDTO.setFirstName(reader[2].toString());
             resDTO.setPatronymic(reader[3].toString());
+            resDTO.setPhoneNumbers(readerRepository.getPhonesOfReader((Integer) reader[0]));
             return resDTO;
         }).collect(Collectors.toList());
     }
