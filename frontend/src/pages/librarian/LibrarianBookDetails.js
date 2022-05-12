@@ -4,7 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { addNewArea, getAllAreas } from "../../api/areas";
 import { deleteBook, getBookDetails, setAreasForBook } from "../../api/books";
 import { addCheckout, getAllCheckouts } from "../../api/checkouts";
-import { addExemplar, getAllExemplars, replaceExemplar } from "../../api/exemplars";
+import { addExemplar, deleteExemplar, getAllExemplars, replaceExemplar } from "../../api/exemplars";
 import { getAllReaders } from "../../api/readers";
 import { getAllReplacementActs } from "../../api/replacementActs";
 import ContentTable from "../../components/layout/ContentTable";
@@ -13,6 +13,7 @@ import AddAreaForm from "../../components/librarian/AddAreaForm";
 import AddCheckoutForm from "../../components/librarian/AddCheckoutForm";
 import AddExemplarForm from "../../components/librarian/AddExemplarForm";
 import DeleteBookForm from "../../components/librarian/DeleteBookForm";
+import DeleteExemplarForm from "../../components/librarian/DeleteExemplarForm";
 import EditAreasForm from "../../components/librarian/EditAreasForm";
 import LibrarianLayout from "../../components/librarian/LibrarianLayout";
 import ReplaceExemplarForm from "../../components/librarian/ReplaceExemplarForm";
@@ -40,20 +41,28 @@ function LibrarianBookDetails() {
     const [addCheckoutFormVisible, setAddCheckoutFormVisible] = useState(false);
     const [addExemplarFormVisible, setAddExemplarFormVisible] = useState(false);
     const [replaceExemplarFormVisible, setReplaceExemplarFormVisible] = useState(false);
+    const [deleteExemplarFormVisible, setDeleteExemplarFormVisible] = useState(false);
     const [editAreasFormVisible, setEditAreasFormVisible] = useState(false);
     const [deleteBookFormVisible, setDeleteBookFormVisible] = useState(false);
 
     const bookToDisplay = useMemo(() => {
         if(book) {
             const bookExemplarsToDisplay = book.exemplars.map(exemplar => {
-                return replacedExemplars.includes(exemplar)
-                            ? `${exemplar} (замінений)`
-                            : `${exemplar}`;
+                if(replacedExemplars.includes(exemplar)) {
+                    return `${exemplar} (замінений)`;
+                }
+                else if(checkouts.filter(checkout => checkout.exemplarInventoryNumber === exemplar).length > 0) {
+                    return `${exemplar} (у читача)`;
+                }
+                else {
+                    const shelf = exemplars.filter(exemplarFromAll => exemplarFromAll.inventoryNumber === exemplar)[0].shelf;
+                    return `${exemplar} (полиця - ${shelf})`;
+                }
             });
             return {...book, exemplars: bookExemplarsToDisplay}
         }
         return book;
-    }, [book, replacedExemplars]);
+    }, [book, exemplars, replacedExemplars, checkouts]);
 
     const showAddAreaFormHandler = () => {
         setModalVisible(true);
@@ -75,6 +84,11 @@ function LibrarianBookDetails() {
         setReplaceExemplarFormVisible(true);
     };
 
+    const showDeleteExemplarFormHandler = () => {
+        setModalVisible(true);
+        setDeleteExemplarFormVisible(true);
+    };
+
     const showEditAreasFormHandler = () => {
         setModalVisible(true);
         setEditAreasFormVisible(true);
@@ -91,6 +105,7 @@ function LibrarianBookDetails() {
         setAddCheckoutFormVisible(false);
         setAddExemplarFormVisible(false);
         setReplaceExemplarFormVisible(false);
+        setDeleteExemplarFormVisible(false);
         setEditAreasFormVisible(false);
         setDeleteBookFormVisible(false);
     };
@@ -120,6 +135,10 @@ function LibrarianBookDetails() {
         navigate({
             pathname: '/librarian/books'
         })
+    }
+
+    const sendDeleteExemplar = async(exemplarInventoryNumber) => {
+        await deleteExemplar(accessToken, exemplarInventoryNumber);
     }
 
     useEffect(() => {
@@ -171,6 +190,7 @@ function LibrarianBookDetails() {
                 <button className={classes.btn} onClick={showAddCheckoutFormHandler}>Видати книгу</button>
                 <button className={classes.btn} onClick={showAddExemplarFormHandler}>Додати примірник</button>
                 <button className={classes.btn} onClick={showReplaceExemplarFormHandler}>Замінити примірник</button>
+                <button className={classes.btn} onClick={showDeleteExemplarFormHandler}>Списати примірник</button>
                 <button className={classes.btn} onClick={showEditAreasFormHandler}>Редагувати жанри</button>
                 <button className={classes.btn} onClick={showDeleteBookFormHandler}>Списати книгу</button>
             </div>
@@ -186,6 +206,9 @@ function LibrarianBookDetails() {
                     {replaceExemplarFormVisible && <ReplaceExemplarForm exemplars={book.exemplars} checkouts={checkouts}
                                                                         replacedExemplars={replacedExemplars}
                                                                         onReplaceExemplar={sendReplaceExemplar}/>}
+                    {deleteExemplarFormVisible && <DeleteExemplarForm exemplars={book.exemplars} checkouts={checkouts}
+                                                                       replacedExemplars={replacedExemplars}
+                                                                       onDeleteExemplar={sendDeleteExemplar} />}
                     {editAreasFormVisible && <EditAreasForm areas={areas} bookAreas={book.areas} onEditAreas={sendEditAreas} />}
                     {deleteBookFormVisible && <DeleteBookForm book={{title: book.title, activeCheckouts: checkouts.length}}
                                                               onDeleteBook={sendDeleteBook} />}

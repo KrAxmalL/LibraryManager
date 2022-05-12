@@ -54,3 +54,16 @@ export async function replaceExemplar(accessToken, exemplarToBeReplaced, exempla
         throw new Error("Exemplar replacing failed");
     }
 };
+
+export async function deleteExemplar(accessToken, exemplarInventoryNumber) {
+    const response = await fetch(EXEMPLARS_URL + `/${exemplarInventoryNumber}`, {
+        method: 'DELETE',
+        headers: {
+            'Authorization': `Bearer ${accessToken}`
+        },
+    });
+
+    if(!response.ok) {
+        throw new Error("Exemplar deletion failed");
+    }
+};
