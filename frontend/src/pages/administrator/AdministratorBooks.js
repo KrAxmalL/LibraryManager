@@ -109,7 +109,7 @@ function AdministratorBooks() {
             <div className="container">
                 <button className={classes.btn} onClick={showPopularityHandler}>Показати книги та їх популярність</button>
                 <button className={classes.btn} onClick={showBooksAllExemplarsInLibraryHandler}>Показати книги, усі примірники яких знаходяться у бібліотеці</button>
-                <button className={classes.btn} onClick={showSelectAreaAndCityFormHandler}>Показати книги, обраної галузі, які читали читачі із обраного міста</button>
+                <button className={classes.btn} onClick={showSelectAreaAndCityFormHandler}>Показати книги обраної галузі, які читали читачі із обраного міста</button>
                 <button className={classes.btn} onClick={showSelectPhoneFormHandler}>Показати книги, які прочитали всі читачі із обраним номером телефону</button>
             {!isLoading &&
                 <ContentTable columns={tableContent.fields} data={tableContent.content} />
